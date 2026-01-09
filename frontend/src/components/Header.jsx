@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Phone, User, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
+import { authAPI } from '../services/api';
+import { toast } from 'sonner';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const currentUser = authAPI.getUser();
+    setUser(currentUser);
+  }, [location]);
 
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    authAPI.logout();
+    setUser(null);
+    toast.success('Logged out successfully');
+    navigate('/');
+  };
+
+  const isAdmin = user && user.role === 'admin';
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
@@ -60,17 +78,42 @@ const Header = () => {
               <Phone className="w-4 h-4" />
               <span className="text-sm font-medium">08154675347</span>
             </a>
-            <Link to="/login">
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:text-red-600 hover:bg-red-50">
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Button>
-            </Link>
-            <Link to="/admin">
-              <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
-                Admin
-              </Button>
-            </Link>
+            
+            {user ? (
+              <>
+                <span className="text-sm text-gray-600">Hello, {user.name}</span>
+                {isAdmin && (
+                  <Link to="/admin">
+                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
+                      Admin Panel
+                    </Button>
+                  </Link>
+                )}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-red-600 hover:bg-red-50"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" size="sm" className="text-gray-700 hover:text-red-600 hover:bg-red-50">
+                    <User className="w-4 h-4 mr-2" />
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -117,17 +160,45 @@ const Header = () => {
                 <Phone className="w-4 h-4" />
                 <span className="text-sm font-medium">08154675347</span>
               </a>
-              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" size="sm" className="w-full">
-                  <User className="w-4 h-4 mr-2" />
-                  Login
-                </Button>
-              </Link>
-              <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-                <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
-                  Admin
-                </Button>
-              </Link>
+              
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-600">Hello, {user.name}</span>
+                  {isAdmin && (
+                    <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                      <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                        Admin Panel
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <User className="w-4 h-4 mr-2" />
+                      Login
+                    </Button>
+                  </Link>
+                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                    <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </nav>
           </div>
         )}

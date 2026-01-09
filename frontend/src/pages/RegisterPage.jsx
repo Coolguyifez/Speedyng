@@ -21,7 +21,7 @@ const RegisterPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -29,10 +29,20 @@ const RegisterPage = () => {
       return;
     }
 
-    // Mock registration - will be connected to backend later
-    localStorage.setItem('user', JSON.stringify({ email: formData.email, name: formData.name }));
-    toast.success('Registration successful!');
-    navigate('/');
+    try {
+      const { authAPI } = await import('../services/api');
+      await authAPI.register({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password
+      });
+      toast.success('Registration successful!');
+      navigate('/');
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error(error.response?.data?.detail || 'Registration failed. Please try again.');
+    }
   };
 
   return (

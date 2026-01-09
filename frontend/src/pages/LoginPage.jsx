@@ -17,12 +17,17 @@ const LoginPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock login - will be connected to backend later
-    localStorage.setItem('user', JSON.stringify({ email: formData.email }));
-    toast.success('Login successful!');
-    navigate('/');
+    try {
+      const { authAPI } = await import('../services/api');
+      await authAPI.login(formData);
+      toast.success('Login successful!');
+      navigate('/');
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error(error.response?.data?.detail || 'Login failed. Please check your credentials.');
+    }
   };
 
   return (

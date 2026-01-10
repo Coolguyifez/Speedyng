@@ -1,127 +1,31 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Query
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import select, update, delete, func
-from datetime import datetime
 import os
 import logging
-
-from db import database, metadata, engine
-from models import *
+from datetime import datetime
+from typing import List, Optional
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.future import select
 from auth import get_password_hash, verify_password, create_access_token, get_current_user, get_current_admin
+from models import Base, User, Car, Contact, ChatSession
+from schemas import (
+    UserCreate, UserLogin, UserResponse, TokenResponse,
+    CarCreate, CarUpdate, CarResponse,
+    ContactCreate, ContactResponse,
+    ChatMessage, ChatResponse, ChatSessionResponse, MessageHistory,
+    StatsResponse, CategoryResponse
+)
+import json
 
-metadata.create_all(engine)
+# -------------------- Config --------------------
+DATABASE_URL = os.environ.get("DATABASE_URL")  # e.g., postgresql+asyncpg://user:pass@localhost/dbname
+engine = create_async_engine(DATABASE_URL, echo=True)
+AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
+# -------------------- App Setup --------------------
 app = FastAPI(title="Speedy Car Dealership API")
 api_router = APIRouter(prefix="/api")
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# ----------------- Startup / Shutdown -----------------
-@app.on_event("startup")
-async def startup():
-    await database.connect()
-
-@app.on_event("shutdown")
-async def shutdown():
-    await database.disconnect()
-
-# ----------------- Auth Routes -----------------
-@api_router.post("/auth/register", response_model=TokenResponse)
-async def register(user_data: UserCreate):
-    query = select(users).where(users.c.email == user_data.email)
-    existing_user = await database.fetch_one(query)
-    if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    hashed_password = get_password_hash(user_data.password)
-    user_doc = {
-        "name": user_data.name,
-        "email": user_data.email,
-        "phone": user_data.phone,
-        "password": hashed_password,
-        "role": "user",
-        "favorites": [],
-        "created_at": datetime.utcnow(),
-        "updated_at": datetime.utcnow()
-    }
-    query = users.insert().values(**user_doc)
-    user_id = await database.execute(query)
-    user_doc["id"] = user_id
-
-    token_data = {"sub": user_data.email, "role": "user"}
-    access_token = create_access_token(token_data)
-
-    return TokenResponse(
-        access_token=access_token,
-        token_type="bearer",
-        user=UserResponse(**user_doc)
-    )
-
-@api_router.post("/auth/login", response_model=TokenResponse)
-async def login(credentials: UserLogin):
-    query = select(users).where(users.c.email == credentials.email)
-    user = await database.fetch_one(query)
-    if not user or not verify_password(credentials.password, user['password']):
-        raise HTTPException(status_code=401, detail="Invalid email or password")
-
-    token_data = {"sub": credentials.email, "role": user['role']}
-    access_token = create_access_token(token_data)
-    return TokenResponse(
-        access_token=access_token,
-        token_type="bearer",
-        user=UserResponse(**user)
-    )
-
-@api_router.get("/auth/me", response_model=UserResponse)
-async def get_current_user_profile(current_user: dict = Depends(get_current_user)):
-    query = select(users).where(users.c.email == current_user['sub'])
-    user = await database.fetch_one(query)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    return UserResponse(**user)
-
-# ----------------- Car Routes -----------------
-@api_router.get("/cars", response_model=list[CarResponse])
-async def get_cars(
-    category: str | None = None,
-    location: str | None = None,
-    condition: str | None = None,
-    min_price: int | None = None,
-    max_price: int | None = None,
-    search: str | None = None,
-    limit: int = Query(100, le=100)
-):
-    query = select(cars)
-    if category:
-        query = query.where(cars.c.category == category)
-    if location:
-        query = query.where(cars.c.location == location)
-    if condition:
-        query = query.where(cars.c.condition == condition)
-    if min_price is not None:
-        query = query.where(cars.c.price >= min_price)
-    if max_price is not None:
-        query = query.where(cars.c.price <= max_price)
-    if search:
-        query = query.where(cars.c.name.ilike(f"%{search}%"))
-
-    query = query.limit(limit)
-    result = await database.fetch_all(query)
-    return [CarResponse(**car) for car in result]
-
-@api_router.post("/cars", response_model=CarResponse)
-async def create_car(car_data: CarCreate, current_admin: dict = Depends(get_current_admin)):
-    car_doc = car_data.dict()
-    car_doc['created_at'] = datetime.utcnow()
-    car_doc['updated_at'] = datetime.utcnow()
-    query = cars.insert().values(**car_doc)
-    car_id = await database.execute(query)
-    car_doc["id"] = car_id
-    return CarResponse(**car_doc)
-
-# ----------------- Include Router -----------------
-app.include_router(api_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -131,14 +35,192 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+
+# -------------------- Dependency --------------------
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
+
+
+# -------------------- Helper --------------------
+def serialize_car(car: Car):
+    return CarResponse(
+        id=car.id,
+        name=car.name,
+        category=car.category,
+        price=car.price,
+        condition=car.condition,
+        location=car.location,
+        image=car.image,
+        images=car.images,
+        year=car.year,
+        mileage=car.mileage,
+        transmission=car.transmission,
+        fuel_type=car.fuel_type,
+        description=car.description,
+        features=car.features,
+        verified=car.verified,
+        created_at=car.created_at,
+        updated_at=car.updated_at
+    )
+
+
+# -------------------- Auth Routes --------------------
+@api_router.post("/auth/register", response_model=TokenResponse)
+async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).filter(User.email == user_data.email))
+    existing_user = result.scalar_one_or_none()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    user = User(
+        name=user_data.name,
+        email=user_data.email,
+        phone=user_data.phone,
+        password=get_password_hash(user_data.password),
+        role="user"
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+
+    token_data = {"sub": user.email, "role": "user"}
+    access_token = create_access_token(token_data)
+
+    user_response = UserResponse(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        role=user.role,
+        favorites=[],
+        created_at=user.created_at
+    )
+    return TokenResponse(access_token=access_token, token_type="bearer", user=user_response)
+
+
+@api_router.post("/auth/login", response_model=TokenResponse)
+async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).filter(User.email == credentials.email))
+    user = result.scalar_one_or_none()
+    if not user or not verify_password(credentials.password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    token_data = {"sub": user.email, "role": user.role}
+    access_token = create_access_token(token_data)
+
+    user_response = UserResponse(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        role=user.role,
+        favorites=user.favorites or [],
+        created_at=user.created_at
+    )
+    return TokenResponse(access_token=access_token, token_type="bearer", user=user_response)
+
+
+@api_router.get("/auth/me", response_model=UserResponse)
+async def get_current_user_profile(current_user: dict = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).filter(User.email == current_user['sub']))
+    user = result.scalar_one_or_none()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return UserResponse(
+        id=user.id,
+        name=user.name,
+        email=user.email,
+        phone=user.phone,
+        role=user.role,
+        favorites=user.favorites or [],
+        created_at=user.created_at
+    )
+
+
+# -------------------- Car Routes --------------------
+@api_router.get("/cars", response_model=List[CarResponse])
+async def get_cars(
+    category: Optional[str] = None,
+    location: Optional[str] = None,
+    condition: Optional[str] = None,
+    min_price: Optional[int] = None,
+    max_price: Optional[int] = None,
+    search: Optional[str] = None,
+    limit: int = Query(default=100, le=100),
+    db: AsyncSession = Depends(get_db)
+):
+    query = select(Car)
+    if category:
+        query = query.filter(Car.category == category)
+    if location:
+        query = query.filter(Car.location == location)
+    if condition:
+        query = query.filter(Car.condition == condition)
+    if min_price is not None:
+        query = query.filter(Car.price >= min_price)
+    if max_price is not None:
+        query = query.filter(Car.price <= max_price)
+    if search:
+        query = query.filter(Car.name.ilike(f"%{search}%"))
+
+    result = await db.execute(query.limit(limit))
+    cars = result.scalars().all()
+    return [serialize_car(car) for car in cars]
+
+
+@api_router.post("/cars", response_model=CarResponse)
+async def create_car(car_data: CarCreate, current_admin: dict = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):
+    car = Car(**car_data.dict())
+    db.add(car)
+    await db.commit()
+    await db.refresh(car)
+    return serialize_car(car)
+
+
+@api_router.put("/cars/{car_id}", response_model=CarResponse)
+async def update_car(car_id: int, car_data: CarUpdate, current_admin: dict = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Car).filter(Car.id == car_id))
+    car = result.scalar_one_or_none()
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+
+    for key, value in car_data.dict(exclude_unset=True).items():
+        setattr(car, key, value)
+    car.updated_at = datetime.utcnow()
+    db.add(car)
+    await db.commit()
+    await db.refresh(car)
+    return serialize_car(car)
+
+
+@api_router.delete("/cars/{car_id}")
+async def delete_car(car_id: int, current_admin: dict = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Car).filter(Car.id == car_id))
+    car = result.scalar_one_or_none()
+    if not car:
+        raise HTTPException(status_code=404, detail="Car not found")
+    await db.delete(car)
+    await db.commit()
+    return {"message": "Car deleted successfully"}
+
+
+# -------------------- Include Router --------------------
+app.include_router(api_router)
+
+# -------------------- Root --------------------
+@app.get("/")
+async def root():
+    return {"message": "Speedy Car Dealership API", "status": "running"}
+
+
+# -------------------- Create tables --------------------
+@app.on_event("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Database tables created/ready")

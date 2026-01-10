@@ -4,11 +4,11 @@ Seed script to populate PostgreSQL database with initial data
 import asyncio
 import psycopg
 from datetime import datetime
-from auth import get_password_hash
+from .auth import get_password_hash
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from database import AsyncSessionLocal
-from models import User, Car
+from .database import AsyncSessionLocal
+from .models import User, Car
 
 async def seed_database():
     async with AsyncSessionLocal() as session:

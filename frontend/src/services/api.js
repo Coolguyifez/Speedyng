@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Use localhost in development, external URL in production
-const BACKEND_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:8001' 
-  : process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL =
+  process.env.REACT_APP_BACKEND_URL ||
+  'https://speedy-backend-7lq3.onrender.com';
 
 const API = `${BACKEND_URL}/api`;
 

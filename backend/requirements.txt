@@ -4,7 +4,8 @@ gunicorn==21.2.0
 
 sqlalchemy==2.0.32
 
-psycopg2-binary==2.9.7
+psycopg[binary]==3.2.13
+
 
 python-dotenv==1.0.1
 

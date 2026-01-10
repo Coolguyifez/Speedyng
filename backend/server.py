@@ -9,6 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.future import select
 from auth import get_password_hash, verify_password, create_access_token, get_current_user, get_current_admin
 from models import Base, User, Car, Contact, ChatSession
+from .database import get_db
 from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse,
     CarCreate, CarUpdate, CarResponse,

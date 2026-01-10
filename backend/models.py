@@ -1,159 +1,66 @@
-from pydantic import BaseModel, Field, EmailStr
-from typing import List, Optional
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, ARRAY
+from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
-from bson import ObjectId
+
+Base = declarative_base()
 
 
-class PyObjectId(ObjectId):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate
+# ================== User Model ==================
+class User(Base):
+    __tablename__ = "users"
 
-    @classmethod
-    def validate(cls, v):
-        if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
-        return ObjectId(v)
-
-    @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
-
-
-# User Models
-class UserCreate(BaseModel):
-    name: str
-    email: EmailStr
-    phone: str
-    password: str
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, nullable=False, index=True)
+    phone = Column(String(20), nullable=False)
+    password = Column(String(255), nullable=False)
+    role = Column(String(20), default="user", nullable=False)
+    favorites = Column(ARRAY(Integer), default=[])  # stores car IDs
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+# ================== Car Model ==================
+class Car(Base):
+    __tablename__ = "cars"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200), nullable=False)
+    category = Column(String(50), nullable=False)
+    price = Column(Integer, nullable=False)
+    condition = Column(String(50), nullable=False)  # Brand New / Foreign Used / Nigerian Used
+    location = Column(String(50), nullable=False)
+    image = Column(String(255), nullable=False)
+    images = Column(ARRAY(String), default=[])
+    year = Column(Integer, nullable=False)
+    mileage = Column(String(50), nullable=False)
+    transmission = Column(String(50), nullable=False)
+    fuel_type = Column(String(50), nullable=False)
+    description = Column(Text, nullable=True)
+    features = Column(ARRAY(String), default=[])
+    verified = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
-class UserResponse(BaseModel):
-    id: str
-    name: str
-    email: str
-    phone: str
-    role: str
-    favorites: List[str] = []
-    created_at: datetime
+# ================== Contact Model ==================
+class Contact(Base):
+    __tablename__ = "contacts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), nullable=False)
+    phone = Column(String(20), nullable=False)
+    message = Column(Text, nullable=False)
+    status = Column(String(20), default="pending")  # pending, resolved
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 
-class TokenResponse(BaseModel):
-    access_token: str
-    token_type: str
-    user: UserResponse
+# ================== Chat Session Model ==================
+class ChatSession(Base):
+    __tablename__ = "chat_sessions"
 
-
-# Car Models
-class CarCreate(BaseModel):
-    name: str
-    category: str
-    price: int
-    condition: str
-    location: str
-    image: str
-    images: List[str]
-    year: int
-    mileage: str
-    transmission: str
-    fuel_type: str
-    description: str
-    features: List[str]
-    verified: bool = True
-
-
-class CarUpdate(BaseModel):
-    name: Optional[str] = None
-    category: Optional[str] = None
-    price: Optional[int] = None
-    condition: Optional[str] = None
-    location: Optional[str] = None
-    image: Optional[str] = None
-    images: Optional[List[str]] = None
-    year: Optional[int] = None
-    mileage: Optional[str] = None
-    transmission: Optional[str] = None
-    fuel_type: Optional[str] = None
-    description: Optional[str] = None
-    features: Optional[List[str]] = None
-    verified: Optional[bool] = None
-
-
-class CarResponse(BaseModel):
-    id: str
-    name: str
-    category: str
-    price: int
-    condition: str
-    location: str
-    image: str
-    images: List[str]
-    year: int
-    mileage: str
-    transmission: str
-    fuel_type: str
-    description: str
-    features: List[str]
-    verified: bool
-    created_at: datetime
-    updated_at: datetime
-
-
-# Contact Models
-class ContactCreate(BaseModel):
-    name: str
-    email: EmailStr
-    phone: str
-    message: str
-
-
-class ContactResponse(BaseModel):
-    id: str
-    name: str
-    email: str
-    phone: str
-    message: str
-    status: str
-    created_at: datetime
-
-
-# Chat Models
-class ChatMessage(BaseModel):
-    session_id: str
-    message: str
-
-
-class ChatResponse(BaseModel):
-    response: str
-    session_id: str
-
-
-class MessageHistory(BaseModel):
-    role: str
-    content: str
-    timestamp: datetime
-
-
-class ChatSessionResponse(BaseModel):
-    session_id: str
-    messages: List[MessageHistory]
-    created_at: datetime
-
-
-# Stats Models
-class StatsResponse(BaseModel):
-    total_cars: int
-    brand_new: int
-    foreign_used: int
-    nigerian_used: int
-    categories_count: int
-
-
-class CategoryResponse(BaseModel):
-    name: str
-    count: int
+    id = Column(Integer, primary_key=True, index=True)
+    session_id = Column(String(100), unique=True, nullable=False)
+    messages = Column(ARRAY(Text), default=[])  # store messages as JSON strings: {"role": "user", "content": "..."}
+    created_at = Column(DateTime, default=datetime.utcnow)

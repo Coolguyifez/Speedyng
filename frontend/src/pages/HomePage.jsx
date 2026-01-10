@@ -34,7 +34,7 @@ const HomePage = () => {
       <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black">
           <img
-            src="https://images.pexels.com/photos/28380943/pexels-photo-28380943.jpeg"
+            src="https://globemotors.ng/wp-content/uploads/2023/12/2024_mercedes-benz_gle-class_4dr-suv_amg-gle-53_fq_oem_1_1280x855-1024x684.webp"
             alt="Luxury showroom"
             className="w-full h-full object-cover opacity-40"
           />

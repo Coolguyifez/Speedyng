@@ -186,12 +186,12 @@ export const cars = [
 ];
 
 export const categories = [
-  { name: 'Sedans', icon: 'Car', count: 45 },
-  { name: 'SUVs', icon: 'Truck', count: 67 },
-  { name: 'Trucks', icon: 'TruckIcon', count: 28 },
-  { name: 'Luxury', icon: 'Crown', count: 34 },
-  { name: 'Budget', icon: 'DollarSign', count: 52 },
-  { name: 'Foreign Used', icon: 'Ship', count: 89 },
+  { name: 'Sedans', icon: 'Car', count: 2 },
+  { name: 'SUVs', icon: 'Truck', count: 2 },
+  { name: 'Trucks', icon: 'TruckIcon', count: 2 },
+  { name: 'Luxury', icon: 'Crown', count: 2 },
+  { name: 'Budget', icon: 'DollarSign', count: 2 },
+  { name: 'Foreign Used', icon: 'Ship', count: 0 },
 ];
 
 export const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];

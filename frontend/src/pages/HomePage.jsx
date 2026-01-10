@@ -56,7 +56,7 @@ const HomePage = () => {
             </Link>
             <a href="tel:08154675347">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                Call Now: 08154675347
+                📞: 08154675347
               </Button>
             </a>
           </div>

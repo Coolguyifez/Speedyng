@@ -5,7 +5,8 @@ asyncpg==0.31.0
 
 sqlalchemy==2.0.32
 
-psycopg[binary]==3.2.13
+psycopg2-binary==2.9.7
+
 
 
 python-dotenv==1.0.1

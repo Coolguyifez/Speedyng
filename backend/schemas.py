@@ -28,7 +28,7 @@ class UserResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+    from_attributes = True
 
 
 # -------------------- Token Schema --------------------
@@ -83,7 +83,7 @@ class CarResponse(CarBase):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+    from_attributes = True
 
 
 # -------------------- Contact Schemas --------------------
@@ -99,7 +99,7 @@ class ContactResponse(ContactCreate):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+    from_attributes = True
 
 
 # -------------------- Chat Schemas --------------------
@@ -116,7 +116,7 @@ class ChatSessionResponse(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+    from_attributes = True
 
 
 class ChatResponse(BaseModel):

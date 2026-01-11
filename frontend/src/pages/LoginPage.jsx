@@ -21,15 +21,17 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const { authAPI } = await import('../services/api');
-      await authAPI.login(formData);
-      toast.success('Login successful!');
-      navigate('/');
+      const data = await authAPI.login(formData);
+      
+      if (data.access_token) {
+        toast.success('Login successful!');
+        // Force a quick refresh or state update
+        window.location.href = '/'; 
+      }
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error(error.response?.data?.detail || 'Login failed. Please check your credentials.');
+      toast.error('Login failed.');
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md border-none shadow-2xl">

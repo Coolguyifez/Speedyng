@@ -19,33 +19,26 @@ from schemas import (
     ChatMessage, ChatResponse, ChatSessionResponse, MessageHistory,
     StatsResponse, CategoryResponse
 )
-import json
-
-# -------------------- Config --------------------
-DATABASE_URL = os.environ.get("DATABASE_URL")  # e.g., postgresql+asyncpg://user:pass@localhost/dbname
-engine = create_async_engine(DATABASE_URL, echo=True)
-AsyncSessionLocal = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
-
 # -------------------- App Setup --------------------
 app = FastAPI(title="Speedy Car Dealership API")
-api_router = APIRouter(prefix="/api")
 
+# REMOVED: prefix="/api" here because your frontend api.js 
+# already adds '/api' to the base URL.
+api_router = APIRouter()
+
+# UPDATED: Secure CORS configuration for Render
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=[
+        "https://speedyng.onrender.com", # Your frontend URL
+        "http://localhost:3000"           # Local development
+    ],
     allow_credentials=True,
-    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-# -------------------- Dependency --------------------
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        yield session
 
 
 # -------------------- Helper --------------------

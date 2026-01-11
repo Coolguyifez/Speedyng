@@ -2,53 +2,61 @@
 Seed script to populate PostgreSQL database with initial data
 """
 import asyncio
-import psycopg
+import os
+import logging
 from datetime import datetime
-from .auth import get_password_hash
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from .database import AsyncSessionLocal
-from .models import User, Car
+
+# Import your shared project components
+from database import AsyncSessionLocal, engine, Base
+from models import User, Car
+from auth import get_password_hash
+
+# Setup basic logging for the seed process
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 async def seed_database():
+    logger.info("Connecting to database for seeding...")
     async with AsyncSessionLocal() as session:
-        print("Starting database seeding...")
+        # 1. Ensure tables exist
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
 
-        # ----------------- Admin user -----------------
-        result = await session.execute(select(User).where(User.email == "admin@speedy.ng"))
-        admin_exists = result.scalars().first()
-        if not admin_exists:
-            admin_user = User(
-                name="Admin User",
-                email="admin@speedy.ng",
-                phone="08154675347",
-                password=get_password_hash("admin123"),
-                role="admin",
-                favorites=[]
-            )
-            session.add(admin_user)
-            await session.commit()
-            print("✓ Admin user created (email: admin@speedy.ng, password: admin123)")
-        else:
-            print("✓ Admin user already exists")
+        # ----------------- Admin & Test Users -----------------
+        users_to_create = [
+            {
+                "name": "Admin User",
+                "email": "admin@speedy.ng",
+                "phone": "08154675347",
+                "password": "admin123",
+                "role": "admin"
+            },
+            {
+                "name": "Test User",
+                "email": "user@test.com",
+                "phone": "08123456789",
+                "password": "password123",
+                "role": "user"
+            }
+        ]
 
-        # ----------------- Test user -----------------
-        result = await session.execute(select(User).where(User.email == "user@test.com"))
-        user_exists = result.scalars().first()
-        if not user_exists:
-            test_user = User(
-                name="Test User",
-                email="user@test.com",
-                phone="08123456789",
-                password=get_password_hash("password123"),
-                role="user",
-                favorites=[]
-            )
-            session.add(test_user)
-            await session.commit()
-            print("✓ Test user created (email: user@test.com, password: password123)")
-        else:
-            print("✓ Test user already exists")
+        for u_data in users_to_create:
+            result = await session.execute(select(User).where(User.email == u_data["email"]))
+            if not result.scalars().first():
+                new_user = User(
+                    name=u_data["name"],
+                    email=u_data["email"],
+                    phone=u_data["phone"],
+                    password=get_password_hash(u_data["password"]),
+                    role=u_data["role"],
+                    favorites=[]
+                )
+                session.add(new_user)
+                logger.info(f"✓ Created {u_data['role']}: {u_data['email']}")
+        
+        await session.commit()
 
         # ----------------- Cars -----------------
         result = await session.execute(select(Car))
@@ -230,14 +238,11 @@ async def seed_database():
             ]
             session.add_all(cars)
             await session.commit()
-            print(f"✓ {len(cars)} cars added to database")
+            logger.info(f"✓ {len(cars)} sample cars added.")
         else:
-            print(f"✓ Database already has {car_count} cars")
+            logger.info("✓ Cars already exist in database.")
 
-        print("\n✅ Database seeding completed!")
-        print("\nLogin credentials:")
-        print("  Admin: admin@speedy.ng / admin123")
-        print("  User:  user@test.com / password123")
+        logger.info("✅ Seeding complete!")
 
 
 if __name__ == "__main__":

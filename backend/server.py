@@ -112,16 +112,17 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
 
 # -------------------- Car Routes (Public) --------------------
 @api_router.get("/cars", response_model=List[CarResponse])
-async def get_cars(
-    category: Optional[str] = None,
-    db: AsyncSession = Depends(get_db)
-):
-    query = select(Car)
-    if category:
-        query = query.filter(Car.category == category)
-    result = await db.execute(query)
-    cars = result.scalars().all()
-    return [serialize_car(car) for car in cars]
+async def get_cars(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+    try:
+        query = select(Car)
+        if category:
+            query = query.filter(Car.category == category)
+        result = await db.execute(query)
+        cars = result.scalars().all()
+        return [serialize_car(car) for car in cars]
+    except Exception as e:
+        logger.error(f"Error fetching cars: {e}")
+        raise HTTPException(status_code=500, detail="Database connection failed")
 
 @api_router.get("/cars/{car_id}", response_model=CarResponse)
 async def get_car(car_id: int, db: AsyncSession = Depends(get_db)):

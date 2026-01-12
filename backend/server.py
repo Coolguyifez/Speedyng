@@ -45,25 +45,25 @@ app.add_middleware(
 # Helper to serialize car data for the frontend
 def serialize_car(car):
     return {
-        "id": car.id,
-        "name": car.name,
-        "category": car.category,
-        "price": car.price,
-        "condition": car.condition,
-        "location": car.location,
-        "image": car.image,
-        "images": car.images or [],
-        "year": car.year,
-        "mileage": car.mileage,
-        "transmission": car.transmission,
-        "fuel_type": car.fuel_type,
-        "description": car.description,
-        "features": car.features or [],
-        "verified": car.verified,
-        "created_at": car.created_at,
-        "updated_at": car.updated_at
+        "id": getattr(car, 'id', None),
+        "name": getattr(car, 'name', 'Unknown'),
+        "category": getattr(car, 'category', 'Uncategorized'),
+        "price": getattr(car, 'price', 0),
+        "condition": getattr(car, 'condition', 'Used'),
+        "location": getattr(car, 'location', 'Unknown'),
+        "image": getattr(car, 'image', ''),
+        "images": getattr(car, 'images', []) or [],
+        "year": getattr(car, 'year', None),
+        "mileage": getattr(car, 'mileage', '0'),
+        "transmission": getattr(car, 'transmission', 'Automatic'),
+        "fuel_type": getattr(car, 'fuel_type', 'Petrol'),
+        "description": getattr(car, 'description', ''),
+        "features": getattr(car, 'features', []) or [],
+        "verified": getattr(car, 'verified', False),
+        "created_at": getattr(car, 'created_at', datetime.utcnow()),
+        "updated_at": getattr(car, 'updated_at', datetime.utcnow())
     }
-
+    
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):

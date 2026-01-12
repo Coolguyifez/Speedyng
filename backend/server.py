@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 # Import shared components
-from database import get_db, engine
-from models import Base, User, Car, Contact, ChatSession
+from database import get_db, engine, Base
+from models import User, Car, Contact, ChatSession
 from auth import ( 
     get_password_hash, verify_password, create_access_token, 
     get_current_user, get_current_admin
@@ -42,7 +42,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Helper to serialize car data for the frontend
+# Updated helper to serialize car data correctly
 def serialize_car(car):
     return {
         "id": getattr(car, 'id', None),
@@ -60,8 +60,9 @@ def serialize_car(car):
         "description": getattr(car, 'description', ''),
         "features": getattr(car, 'features', []) or [],
         "verified": getattr(car, 'verified', False),
-        "created_at": getattr(car, 'created_at', datetime.utcnow()),
-        "updated_at": getattr(car, 'updated_at', datetime.utcnow())
+        # FIX: Convert datetime to ISO string format for JSON compatibility
+        "created_at": car.created_at.isoformat() if car.created_at else None,
+        "updated_at": car.updated_at.isoformat() if car.updated_at else None
     }
     
 # -------------------- Auth Routes --------------------

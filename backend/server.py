@@ -42,7 +42,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Updated helper to serialize car data correctly
+# Helper to serialize car data for the frontend
+# Added .isoformat() to prevent JSON 500 errors
 def serialize_car(car):
     return {
         "id": getattr(car, 'id', None),
@@ -60,7 +61,6 @@ def serialize_car(car):
         "description": getattr(car, 'description', ''),
         "features": getattr(car, 'features', []) or [],
         "verified": getattr(car, 'verified', False),
-        # FIX: Convert datetime to ISO string format for JSON compatibility
         "created_at": car.created_at.isoformat() if car.created_at else None,
         "updated_at": car.updated_at.isoformat() if car.updated_at else None
     }
@@ -107,7 +107,6 @@ async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
 
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_current_user_profile(current_user: User = Depends(get_current_user)):
-    """Returns the profile of the currently logged-in user."""
     return current_user
 
 # -------------------- Car Routes (Public) --------------------
@@ -136,7 +135,7 @@ async def get_car(car_id: int, db: AsyncSession = Depends(get_db)):
 @api_router.post("/cars", response_model=CarResponse)
 async def create_car(
     car_data: CarCreate, 
-    current_admin: User = Depends(get_current_admin), # Dependency added
+    current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     new_car = Car(**car_data.dict())
@@ -149,7 +148,7 @@ async def create_car(
 async def update_car(
     car_id: int, 
     car_data: CarUpdate, 
-    current_admin: User = Depends(get_current_admin), # Dependency added
+    current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(select(Car).filter(Car.id == car_id))
@@ -168,7 +167,7 @@ async def update_car(
 @api_router.delete("/cars/{car_id}")
 async def delete_car(
     car_id: int, 
-    current_admin: User = Depends(get_current_admin), # Dependency added
+    current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     result = await db.execute(select(Car).filter(Car.id == car_id))
@@ -180,7 +179,7 @@ async def delete_car(
     await db.commit()
     return {"message": "Car deleted successfully"}
 
-# -------------------- Include Router --------------------
+# -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
 
 @app.on_event("startup")

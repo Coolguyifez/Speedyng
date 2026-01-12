@@ -1,3 +1,4 @@
+import { authAPI } from '../services/api';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
@@ -20,16 +21,19 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { authAPI } = await import('../services/api');
       const data = await authAPI.login(formData);
+      toast.success('Login successful!');
       
-      if (data.access_token) {
-        toast.success('Login successful!');
-        // Force a quick refresh or state update
-        window.location.href = '/'; 
+      // Check if admin or user to redirect correctly
+      if (data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
       }
     } catch (error) {
-      toast.error('Login failed.');
+      console.error('Login error:', error);
+      const message = error.response?.data?.detail || 'Login failed. Check your connection.';
+      toast.error(message);
     }
   };
   return (

@@ -396,7 +396,7 @@ const AdminPanel = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Images URL</label>
                       <input
                         type="url"
                         name="images"
@@ -404,7 +404,7 @@ const AdminPanel = () => {
                         onChange={handleChange}
                         required
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="https://example.com/image.jpg"
+                        placeholder="https://example.com/image.jpg, https://example.com/image.jpg "
                       />
                     </div>
                     

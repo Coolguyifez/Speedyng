@@ -36,6 +36,12 @@ export const authAPI = {
     }
     return response.data;
   },
+  
+  getUser: () => {
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  },
+  
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

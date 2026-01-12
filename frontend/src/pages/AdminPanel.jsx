@@ -81,34 +81,30 @@ const AdminPanel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Convert comma-separated string back to array for the backend
     const processedData = {
       ...formData,
-      price: parseFloat(formData.price),
-      year: parseInt(formData.year),
-      // Fix field name if backend expects 'fuel_type' instead of 'fuelType'
-      fuel_type: formData.fuelType, 
+      price: parseFloat(formData.price), // Convert string to number
+      year: parseInt(formData.year),    // Convert string to number
       features: typeof formData.features === 'string' 
-        ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 
+        ? formData.features.split(',').map(f => f.trim()) 
         : formData.features
     };
-
+  
     try {
       if (editingCar) {
         await carAPI.update(editingCar.id, processedData);
-        toast.success('Car updated successfully');
       } else {
-        await carAPI.create(processedData);
-        toast.success('Car added successfully');
+        await carAPI.create(processedData); // Uses the converted data
       }
       setIsDialogOpen(false);
-      setEditingCar(null);
-      fetchInventory(); // Refresh list
+      fetchInventory(); 
+      toast.success('Success!');
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Database error");
+      console.error("Submission error:", error.response?.data);
+      toast.error("Failed to add car. Check console for details.");
     }
   };
-
+  
   const handleDelete = async (id) => {
     if (window.confirm('Permanently delete this car?')) {
       try {

@@ -87,6 +87,7 @@ const AdminPanel = () => {
       // Ensure these are numbers for the database
       price: parseFloat(formData.price),
       year: parseInt(formData.year),
+      verified: true,
       // Ensure features is an array, as backend expects a list
       features: typeof formData.features === 'string' 
         ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 

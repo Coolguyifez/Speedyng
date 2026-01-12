@@ -84,8 +84,12 @@ const AdminPanel = () => {
     // Convert comma-separated string back to array for the backend
     const processedData = {
       ...formData,
+      price: parseFloat(formData.price),
+      year: parseInt(formData.year),
+      // Fix field name if backend expects 'fuel_type' instead of 'fuelType'
+      fuel_type: formData.fuelType, 
       features: typeof formData.features === 'string' 
-        ? formData.features.split(',').map(f => f.trim()) 
+        ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 
         : formData.features
     };
 
@@ -99,7 +103,7 @@ const AdminPanel = () => {
       }
       setIsDialogOpen(false);
       setEditingCar(null);
-      loadInventory(); // Refresh list
+      fetchInventory(); // Refresh list
     } catch (error) {
       toast.error(error.response?.data?.detail || "Database error");
     }

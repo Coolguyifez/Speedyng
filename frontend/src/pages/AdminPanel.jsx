@@ -37,7 +37,7 @@ const AdminPanel = () => {
     transmission: 'Automatic',
     fuelType: 'Petrol',
     description: '',
-    features: []
+    features: ''
   });
 
   // Fetch data from real database on load
@@ -71,7 +71,7 @@ const AdminPanel = () => {
       transmission: 'Automatic',
       fuelType: 'Petrol',
       description: '',
-      features: []
+      features: ''
     });
   };
   const handleChange = (e) => {
@@ -83,28 +83,32 @@ const AdminPanel = () => {
     
     const processedData = {
       ...formData,
-      price: parseFloat(formData.price), // Convert string to number
-      year: parseInt(formData.year),    // Convert string to number
+      // Ensure these are numbers for the database
+      price: parseFloat(formData.price),
+      year: parseInt(formData.year),
+      // Ensure features is an array, as backend expects a list
       features: typeof formData.features === 'string' 
-        ? formData.features.split(',').map(f => f.trim()) 
+        ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 
         : formData.features
     };
   
     try {
       if (editingCar) {
         await carAPI.update(editingCar.id, processedData);
+        toast.success('Update successful!');
       } else {
-        await carAPI.create(processedData); // Uses the converted data
+        await carAPI.create(processedData);
+        toast.success('Car added to inventory!');
       }
       setIsDialogOpen(false);
-      fetchInventory(); 
-      toast.success('Success!');
+      fetchInventory(); // Refreshes your table
+      resetForm();
     } catch (error) {
-      console.error("Submission error:", error.response?.data);
-      toast.error("Failed to add car. Check console for details.");
+      // This will now catch the 500 or CORS error and show details
+      console.error("Submission error details:", error.response?.data);
+      toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
     }
-  };
-  
+  };  
   const handleDelete = async (id) => {
     if (window.confirm('Permanently delete this car?')) {
       try {
@@ -360,7 +364,7 @@ const AdminPanel = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Fuel Type</label>
-                      <Select value={formData.fuelType} onValueChange={(value) => setFormData({...formData, fuelType: value})}>
+                      <Select value={formData.fuelType} onValueChange={(value) => setFormData({...formData, fuel_type: value})}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>

@@ -124,6 +124,8 @@ async def get_cars(category: Optional[str] = None, db: AsyncSession = Depends(ge
         raise HTTPException(status_code=500, detail="Database connection failed")
 
 # .......SINGLE Admin Car Creation Route.................
+# --- server.py ---
+
 @api_router.post("/cars", response_model=CarResponse)
 async def create_car(
     car_data: CarCreate, 
@@ -131,15 +133,21 @@ async def create_car(
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        # Manually forcing verified=True for all admin uploads
-        new_car = Car(**car_data.dict(), verified=True)
+        # 1. Convert the incoming schema to a dictionary
+        car_dict = car_data.dict()
+        
+        # 2. Remove 'verified' if it exists in the incoming data to avoid conflicts
+        car_dict.pop('verified', None)
+        
+        # 3. Create the car with the dictionary and explicitly set verified=True
+        new_car = Car(**car_dict, verified=True)
+        
         db.add(new_car)
         await db.commit()
         await db.refresh(new_car)
         return serialize_car(new_car)
     except Exception as e:
         logger.error(f"Creation error: {e}")
-        # This will provide a more descriptive error than a generic 500
         raise HTTPException(status_code=400, detail=str(e))        
 
 @api_router.get("/cars/{car_id}", response_model=CarResponse)

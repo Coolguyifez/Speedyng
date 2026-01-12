@@ -238,6 +238,9 @@ const AdminPanel = () => {
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>{editingCar ? 'Edit Car' : 'Add New Car'}</DialogTitle>
+                    <DialogDescription>
+                      Fill out the details below to update the inventory.
+                    </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">

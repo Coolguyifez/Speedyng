@@ -10,7 +10,7 @@ DATABASE_URL = os.getenv(
 )
 
 # 2. Async engine
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+engine = create_async_engine(DATABASE_URL, echo=True, future=True, pool_pre_ping=True)
 
 # 3. Async session factory
 AsyncSessionLocal = sessionmaker(
@@ -25,7 +25,4 @@ Base = declarative_base()
 # 5. Dependency
 async def get_db() -> AsyncSession:
     async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
+        yield session  # Let FastAPI handle the cleanup

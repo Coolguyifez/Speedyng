@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle } from 'lucide-react';
+import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
-import { cars as initialCars, categories, locations } from '../mock';
+// KEEPING YOUR DESIGN - BUT ADDING API CALLS
+import { carAPI } from '../services/api';
 
 const AdminPanel = () => {
-  const [cars, setCars] = useState(initialCars);
+  const [cars, setCars] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCar, setEditingCar] = useState(null);
   const [formData, setFormData] = useState({
@@ -27,78 +29,80 @@ const AdminPanel = () => {
     features: ''
   });
 
+  // Fetch data from real database on load
+  useEffect(() => {
+    loadInventory();
+  }, []);
+
+  const loadInventory = async () => {
+    try {
+      const response = await carAPI.getAll();
+      setCars(response.data);
+    } catch (error) {
+      toast.error("Failed to sync with live database");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const carData = {
+    // Convert comma-separated string back to array for the backend
+    const processedData = {
       ...formData,
-      id: editingCar ? editingCar.id : String(cars.length + 1),
-      price: parseInt(formData.price),
-      year: parseInt(formData.year),
-      images: [formData.image],
-      features: formData.features.split(',').map(f => f.trim()),
-      verified: true
+      features: typeof formData.features === 'string' 
+        ? formData.features.split(',').map(f => f.trim()) 
+        : formData.features
     };
 
-    if (editingCar) {
-      setCars(cars.map(car => car.id === editingCar.id ? carData : car));
-      toast.success('Car updated successfully!');
-    } else {
-      setCars([...cars, carData]);
-      toast.success('Car added successfully!');
+    try {
+      if (editingCar) {
+        await carAPI.update(editingCar.id, processedData);
+        toast.success('Inventory updated successfully');
+      } else {
+        await carAPI.create(processedData);
+        toast.success('Car added to live database');
+      }
+      setIsDialogOpen(false);
+      setEditingCar(null);
+      loadInventory(); // Refresh list
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Database error");
     }
+  };
 
-    setIsDialogOpen(false);
-    resetForm();
+  const handleDelete = async (id) => {
+    if (window.confirm('Permanently delete this car?')) {
+      try {
+        await carAPI.delete(id);
+        toast.success('Car removed from database');
+        setCars(cars.filter(car => car.id !== id));
+      } catch (error) {
+        toast.error("Delete failed");
+      }
+    }
   };
 
   const handleEdit = (car) => {
     setEditingCar(car);
     setFormData({
-      name: car.name,
-      category: car.category,
-      price: car.price.toString(),
-      condition: car.condition,
-      location: car.location,
-      image: car.image,
-      year: car.year,
-      mileage: car.mileage,
-      transmission: car.transmission,
-      fuelType: car.fuelType,
-      description: car.description,
-      features: car.features.join(', ')
+      ...car,
+      features: Array.isArray(car.features) ? car.features.join(', ') : car.features
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this car?')) {
-      setCars(cars.filter(car => car.id !== id));
-      toast.success('Car deleted successfully!');
-    }
-  };
-
-  const resetForm = () => {
-    setEditingCar(null);
-    setFormData({
-      name: '',
-      category: 'Sedans',
-      price: '',
-      condition: 'Foreign Used',
-      location: 'Lagos',
-      image: '',
-      year: new Date().getFullYear(),
-      mileage: '',
-      transmission: 'Automatic',
-      fuelType: 'Petrol',
-      description: '',
-      features: ''
-    });
-  };
+  // YOUR ORIGINAL LOADING UI DESIGN
+  if (isLoading) return (
+    <div className="min-h-screen flex items-center justify-center">
+      <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">

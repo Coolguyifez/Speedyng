@@ -180,8 +180,8 @@ const RegisterPage = () => {
               size="lg"
               className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg"
             >
-              Create Account
-              <ArrowRight className="ml-2 w-5 h-5" />
+              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {!isLoading && <ArrowRight className="ml-2 w-5 h-5" />}
             </Button>
           </form>
 

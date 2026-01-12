@@ -60,7 +60,7 @@ def serialize_car(car):
         "fuel_type": getattr(car, 'fuel_type', 'Petrol'),
         "description": getattr(car, 'description', ''),
         "features": getattr(car, 'features', []) or [],
-        "verified": getattr(car, 'verified', True),
+        "verified": getattr(car, 'verified', False),
         "created_at": car.created_at.isoformat() if car.created_at else None,
         "updated_at": car.updated_at.isoformat() if car.updated_at else None
     }
@@ -112,6 +112,12 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
 # -------------------- Car Routes (Public) --------------------
 @api_router.get("/cars", response_model=List[CarResponse])
 async def get_cars(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+    new_car = Car(**car_data.dict(), verified=True) 
+    db.add(new_car)
+    await db.commit()
+    await db.refresh(new_car)
+    return serialize_car(new_car)
+    
     try:
         query = select(Car)
         if category:

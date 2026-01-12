@@ -60,7 +60,7 @@ def serialize_car(car):
         "fuel_type": getattr(car, 'fuel_type', 'Petrol'),
         "description": getattr(car, 'description', ''),
         "features": getattr(car, 'features', []) or [],
-        "verified": getattr(car, 'verified', False),
+        "verified": getattr(car, 'verified', True),
         "created_at": car.created_at.isoformat() if car.created_at else None,
         "updated_at": car.updated_at.isoformat() if car.updated_at else None
     }

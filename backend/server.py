@@ -34,14 +34,15 @@ api_router = APIRouter()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://speedyng.onrender.com", 
-        "http://localhost:3000"
+        "https://speedyng.onrender.com",
+        "https://speedyng.onrender.com/", 
+        "http://localhost:3000",
+        "http://localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Helper to serialize car data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
 def serialize_car(car):

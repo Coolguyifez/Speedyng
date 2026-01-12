@@ -36,6 +36,7 @@ const AdminPanel = () => {
     mileage: '',
     transmission: 'Automatic',
     fuelType: 'Petrol',
+    verified: true,
     description: '',
     features: ''
   });

@@ -9,7 +9,14 @@ import { toast } from 'sonner';
 // KEEPING YOUR DESIGN - BUT ADDING API CALLS
 import { carAPI } from '../services/api';
 
-const categories = ['Sedans', 'SUVs', 'Luxury', 'Trucks', 'Budget', 'Foreign Used'];
+const categories = [
+  { name: 'Sedans' },
+  { name: 'SUVs' },
+  { name: 'Luxury' },
+  { name: 'Trucks' },
+  { name: 'Budget' },
+  { name: 'Foreign Used' }
+];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 
 const AdminPanel = () => {

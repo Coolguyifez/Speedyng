@@ -4,6 +4,8 @@ import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
+// FIX: Import directly to prevent the "white screen" crash
+import { authAPI } from '../services/api';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ const RegisterPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,19 +32,24 @@ const RegisterPage = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      const { authAPI } = await import('../services/api');
+      // Logic for real database registration
       await authAPI.register({
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
         password: formData.password
       });
-      toast.success('Registration successful!');
-      navigate('/');
+      
+      toast.success('Account created successfully!');
+      navigate('/'); // Redirect to home/dashboard
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error(error.response?.data?.detail || 'Registration failed. Please try again.');
+      const message = error.response?.data?.detail || 'Registration failed. Try a different email.';
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 

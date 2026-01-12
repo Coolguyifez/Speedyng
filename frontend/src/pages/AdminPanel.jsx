@@ -49,6 +49,24 @@ const AdminPanel = () => {
       setIsLoading(false);
     }
   };
+
+  const resetForm = () => {
+    setEditingCar(null);
+    setFormData({
+      name: '',
+      category: 'Sedans',
+      price: '',
+      condition: 'Foreign Used',
+      location: 'Lagos',
+      image: '',
+      year: new Date().getFullYear(),
+      mileage: '',
+      transmission: 'Automatic',
+      fuelType: 'Petrol',
+      description: '',
+      features: []
+    });
+  };
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -67,10 +85,10 @@ const AdminPanel = () => {
     try {
       if (editingCar) {
         await carAPI.update(editingCar.id, processedData);
-        toast.success('Inventory updated successfully');
+        toast.success('Car updated successfully');
       } else {
         await carAPI.create(processedData);
-        toast.success('Car added to live database');
+        toast.success('Car added successfully');
       }
       setIsDialogOpen(false);
       setEditingCar(null);

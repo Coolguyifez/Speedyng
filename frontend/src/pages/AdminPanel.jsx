@@ -35,7 +35,7 @@ const AdminPanel = () => {
 
   // Fetch data from real database on load
   useEffect(() => {
-    loadInventory();
+    fetchInventory();
   }, []);
 
   const fetchInventory = async () => {

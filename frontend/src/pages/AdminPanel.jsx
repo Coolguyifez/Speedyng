@@ -9,11 +9,15 @@ import { toast } from 'sonner';
 // KEEPING YOUR DESIGN - BUT ADDING API CALLS
 import { carAPI } from '../services/api';
 
+const categories = ['Sedans', 'SUVs', 'Luxury', 'Trucks', 'Budget', 'Foreign Used'];
+const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
+
 const AdminPanel = () => {
   const [cars, setCars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCar, setEditingCar] = useState(null);
+  
   const [formData, setFormData] = useState({
     name: '',
     category: 'Sedans',
@@ -26,7 +30,7 @@ const AdminPanel = () => {
     transmission: 'Automatic',
     fuelType: 'Petrol',
     description: '',
-    features: ''
+    features: []
   });
 
   // Fetch data from real database on load
@@ -34,17 +38,17 @@ const AdminPanel = () => {
     loadInventory();
   }, []);
 
-  const loadInventory = async () => {
+  const fetchInventory = async () => {
     try {
       const response = await carAPI.getAll();
       setCars(response.data);
     } catch (error) {
-      toast.error("Failed to sync with live database");
+      console.error("Fetch error:", error);
+      toast.error("Database connection failed. Check backend logs.");
     } finally {
       setIsLoading(false);
     }
   };
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

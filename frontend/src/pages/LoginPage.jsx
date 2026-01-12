@@ -1,18 +1,17 @@
-import { authAPI } from '../services/api';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
+// IMPORT DIRECTLY TO PREVENT CRASH
+import { authAPI } from '../services/api'; 
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,22 +19,27 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Prevent double clicking
     try {
+      // Logic for real login
       const data = await authAPI.login(formData);
       toast.success('Login successful!');
       
       // Check if admin or user to redirect correctly
-      if (data.user.role === 'admin') {
+      if (data.user && data.user.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/');
       }
     } catch (error) {
       console.error('Login error:', error);
-      const message = error.response?.data?.detail || 'Login failed. Check your connection.';
-      toast.error(message);
+      toast.error(error.response?.data?.detail || 'Login failed. Check your connection.');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // ... (Your existing Return/JSX design code stays exactly the same)
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md border-none shadow-2xl">

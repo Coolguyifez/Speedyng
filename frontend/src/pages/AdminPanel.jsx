@@ -395,11 +395,11 @@ const AdminPanel = () => {
                         placeholder="https://example.com/image.jpg"
                       />
                     </div>
-                     <div>
+                    <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
                       <input
                         type="url"
-                        name="image"
+                        name="images"
                         value={formData.images}
                         onChange={handleChange}
                         required

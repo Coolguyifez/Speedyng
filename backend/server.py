@@ -112,12 +112,6 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
 # -------------------- Car Routes (Public) --------------------
 @api_router.get("/cars", response_model=List[CarResponse])
 async def get_cars(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
-    new_car = Car(**car_data.dict(), verified=True) 
-    db.add(new_car)
-    await db.commit()
-    await db.refresh(new_car)
-    return serialize_car(new_car)
-    
     try:
         query = select(Car)
         if category:
@@ -128,6 +122,20 @@ async def get_cars(category: Optional[str] = None, db: AsyncSession = Depends(ge
     except Exception as e:
         logger.error(f"Error fetching cars: {e}")
         raise HTTPException(status_code=500, detail="Database connection failed")
+        
+# Admin Car Creation (Verified = True) ---
+@api_router.post("/cars", response_model=CarResponse)
+async def create_car(
+    car_data: CarCreate, 
+    current_admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    # Manually forcing verified=True for all admin uploads
+    new_car = Car(**car_data.dict(), verified=True)
+    db.add(new_car)
+    await db.commit()
+    await db.refresh(new_car)
+    return serialize_car(new_car)        
 
 @api_router.get("/cars/{car_id}", response_model=CarResponse)
 async def get_car(car_id: int, db: AsyncSession = Depends(get_db)):

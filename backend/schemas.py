@@ -43,11 +43,12 @@ class CarBase(BaseModel):
     image: Optional[str] = None
     images: Optional[List[str]] = []
     year: Optional[int] = None
-    mileage: Optional[int] = None
+    mileage: Optional[str] = None
     transmission: Optional[str] = None
     fuel_type: Optional[str] = None
     description: Optional[str] = None
     features: Optional[List[str]] = []
+    verified: Optional[bool] = False
 
 class CarCreate(CarBase):
     pass
@@ -61,7 +62,7 @@ class CarUpdate(BaseModel):
     image: Optional[str]
     images: Optional[List[str]]
     year: Optional[int]
-    mileage: Optional[int]
+    mileage: Optional[str]
     transmission: Optional[str]
     fuel_type: Optional[str]
     description: Optional[str]

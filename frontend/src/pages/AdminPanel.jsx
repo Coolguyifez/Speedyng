@@ -32,11 +32,11 @@ const AdminPanel = () => {
     condition: 'Foreign Used',
     location: 'Lagos',
     image: '',
+    images: '',
     year: new Date().getFullYear(),
     mileage: '',
     transmission: 'Automatic',
     fuelType: 'Petrol',
-    verified: true,
     description: '',
     features: ''
   });
@@ -67,6 +67,7 @@ const AdminPanel = () => {
       condition: 'Foreign Used',
       location: 'Lagos',
       image: '',
+      images: '',
       year: new Date().getFullYear(),
       mileage: '',
       transmission: 'Automatic',
@@ -88,6 +89,9 @@ const AdminPanel = () => {
       price: parseFloat(formData.price),
       year: parseInt(formData.year),
       verified: true,
+      images: typeof formData.images === 'string' 
+        ? formData.images.split(',').map(img => img.trim()).filter(img => img !== "") 
+        : formData.images,
       // Ensure features is an array, as backend expects a list
       features: typeof formData.features === 'string' 
         ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 
@@ -391,6 +395,19 @@ const AdminPanel = () => {
                         placeholder="https://example.com/image.jpg"
                       />
                     </div>
+                     <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                      <input
+                        type="url"
+                        name="image"
+                        value={formData.images}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                        placeholder="https://example.com/image.jpg"
+                      />
+                    </div>
+                    
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>

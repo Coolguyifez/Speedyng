@@ -12,8 +12,19 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const currentUser = authAPI.getUser();
-    setUser(currentUser);
+    const fetchUser = () => {
+      try {
+        // Safe check to ensure authAPI exists before calling getUser
+        if (authAPI && typeof authAPI.getUser === 'function') {
+          const currentUser = authAPI.getUser();
+          setUser(currentUser);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user in Header:", error);
+      }
+    };
+
+    fetchUser();
   }, [location]);
 
   const isActive = (path) => location.pathname === path;

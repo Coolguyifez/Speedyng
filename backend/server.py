@@ -33,7 +33,11 @@ api_router = APIRouter()
 # Secure CORS configuration for Render deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://speedyng.onrender.com"], # Your frontend URL
+    allow_origins=[
+        "https://speedyng.onrender.com",
+        "http://localhost:3000", # Common for React local dev
+        "http://localhost:5173"  # Common for Vite local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

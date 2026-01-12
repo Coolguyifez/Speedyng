@@ -114,7 +114,8 @@ const AdminPanel = () => {
       console.error("Submission error details:", error.response?.data);
       toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
     }
-  };  
+  };
+  
   const handleDelete = async (id) => {
     if (window.confirm('Permanently delete this car?')) {
       try {

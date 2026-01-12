@@ -258,13 +258,18 @@ const AdminPanel = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                        <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
+                        <Select 
+                          value={formData.category} 
+                          onValueChange={(value) => setFormData({...formData, category: value})}
+                        >
                           <SelectTrigger>
-                            <SelectValue />
+                            <SelectValue placeholder="Select Category" />
                           </SelectTrigger>
                           <SelectContent>
                             {categories.map((cat, index) => (
-                              <SelectItem key={index} value={cat.name}>{cat.name}</SelectItem>
+                              <SelectItem key={index} value={cat.name}>
+                                {cat.name}
+                              </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>

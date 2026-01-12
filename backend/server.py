@@ -34,8 +34,7 @@ api_router = APIRouter()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://speedyng.onrender.com",
-        "https://speedyng.onrender.com/", 
+        "https://speedyng.onrender.com", 
         "http://localhost:3000",
         "http://localhost:5173"
     ],

@@ -191,7 +191,7 @@ export const categories = [
   { name: 'Trucks', icon: 'TruckIcon', count: 2 },
   { name: 'Luxury', icon: 'Crown', count: 2 },
   { name: 'Budget', icon: 'DollarSign', count: 2 },
-  { name: 'Foreign Used', icon: 'Ship', count: 0 },
+  { name: 'Foreign Used', icon: 'Ship', count: 6 },
 ];
 
 export const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
@@ -205,7 +205,7 @@ export const testimonials = [
     role: 'Business Owner',
     comment: 'Speedy made buying my Toyota Prado so easy! The AI assistant helped me choose the perfect car for my business. Highly recommended!',
     rating: 5,
-    image: 'https://instagram.fabb1-2.fna.fbcdn.net/v/t51.2885-15/565385675_18424313536110693_8858907754640770255_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InRocmVhZHMuQ0FST1VTRUxfSVRFTS5pbWFnZV91cmxnZW4uODU0eDk5Mi5zZHIuZjgyNzg3LmRlZmF1bHRfaW1hZ2UuYzIifQ&_nc_ht=instagram.fabb1-2.fna.fbcdn.net&_nc_cat=109&_nc_oc=Q6cZ2QHysrdpnEb8qXTshyxO-tbIRDiu819mxfphaxjdGdapCflijxGHvkYww5MhvBgEWz8&_nc_ohc=QkrtzWIH0sgQ7kNvwGj0YKd&_nc_gid=fX5ipviLl9XA-d5RZkEVNg&edm=AKr904kBAAAA&ccb=7-5&ig_cache_key=Mzc0MjM0Njg1NTYyMDI5MDI4Mw%3D%3D.3-ccb7-5&oh=00_AfquAVF4y2UClfS7jEtq7LvRoBW00hgFm9lvRsHXDJditA&oe=696C1112&_nc_sid=23467f'
+    image: 'https://scontent.fabb1-2.fna.fbcdn.net/v/t39.30808-6/590359726_122142706778950523_526010691452832416_n.jpg?_nc_cat=111&_nc_cb=99be929b-ad57045b&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFTw7f9vW9iFEdbrqDGUGswzSJ3kBNBkGDNIneQE0GQYHr-Lw_c4Gc-8VjUREqb4jRxq4Exo-xc1Wd5_23fxHrM&_nc_ohc=L2qM2wURL3kQ7kNvwFW3ABh&_nc_oc=Adnll1ccy6GEjwDyEXJrum-O8TBnW_qCTFIHPU0khRT9rRs91SHO2Gz-zgQE_JddEzw&_nc_zt=23&_nc_ht=scontent.fabb1-2.fna&_nc_gid=clk_N3RApGbQtNxfoVVXOA&oh=00_AfogTqXDHaP6Ug3pFv6YB7QtMRF9EZfWSPSgmJJotRQVbg&oe=696C2BA1'
   },
   {
     id: 2,

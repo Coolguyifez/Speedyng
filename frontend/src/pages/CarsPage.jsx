@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import { Link } from 'react-router-dom';
-import { Search, SlidersHorizontal, CheckCircle } from 'lucide-react';
+import { Search, SlidersHorizontal, CheckCircle, Loader2 } from 'lucide-react'; // Added Loader2
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
+import { carAPI } from '../services/api'; // Ensure this path is correct
 
 // Define these or import them from your constants/mock file
 const categories = [{ name: 'Sedan' }, { name: 'SUV' }, { name: 'Truck' }, { name: 'Luxury' }], { name: 'Budget' }], { name: 'Foriegn Used' }];

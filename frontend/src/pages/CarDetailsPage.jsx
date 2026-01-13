@@ -50,7 +50,7 @@ const CarDetailsPage = () => {
   };
 
   // 1. Loading State
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <Header />

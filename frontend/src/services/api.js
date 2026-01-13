@@ -60,7 +60,7 @@ export const authAPI = {
 // 4. Car API: Handles Inventory
 export const carAPI = {
   getAll: (category) => api.get('/cars', { params: { category } }),
-  getById: (id) => api.get(`/cars/${id}`), 
+  getOne: (id) => api.get(`/cars/${id}`), 
   create: (data) => api.post('/cars', data),
   update: (id, data) => api.put(`/cars/${id}`, data),
   delete: (id) => api.delete(`/cars/${id}`),

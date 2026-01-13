@@ -16,7 +16,7 @@ export const cars = [
     year: 2024,
     mileage: '15,000 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'Clean foreign used Toyota Camry with full options. Perfect condition, accident-free.',
     features: ['Leather Seats', 'Sunroof', 'Navigation System', 'Backup Camera', 'Bluetooth'],
     verified: true
@@ -36,7 +36,7 @@ export const cars = [
     year: 2023,
     mileage: '22,000 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'Excellent Honda Accord in pristine condition. Well maintained with service history.',
     features: ['Apple CarPlay', 'Lane Assist', 'Cruise Control', 'Keyless Entry'],
     verified: true
@@ -56,7 +56,7 @@ export const cars = [
     year: 2022,
     mileage: '0 km',
     transmission: 'Automatic',
-    fuelType: 'Diesel',
+    fuel_type: 'Diesel',
     description: 'Brand new Toyota Prado. Perfect for Nigerian roads with exceptional off-road capability.',
     features: ['4WD', 'Leather Interior', '7 Seats', 'Premium Sound System', 'Climate Control'],
     verified: true
@@ -76,7 +76,7 @@ export const cars = [
     year: 2023,
     mileage: '18,000 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'Luxury SUV in excellent condition. Smooth ride with premium features.',
     features: ['Panoramic Sunroof', 'Mark Levinson Sound', 'Adaptive Cruise', 'Heated Seats'],
     verified: true
@@ -93,7 +93,7 @@ export const cars = [
     year: 2023,
     mileage: '12,000 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'Sophisticated Mercedes-Benz with cutting-edge technology and luxury.',
     features: ['AMG Package', 'Burmester Sound', 'Massage Seats', 'Night Vision'],
     verified: true
@@ -110,7 +110,7 @@ export const cars = [
     year: 2022,
     mileage: '0 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'High-performance luxury sedan with incredible power and style.',
     features: ['M Sport Package', 'Carbon Fiber Trim', 'Performance Brakes', 'Track Mode'],
     verified: true
@@ -127,7 +127,7 @@ export const cars = [
     year: 2023,
     mileage: '0 km',
     transmission: 'Automatic',
-    fuelType: 'Diesel',
+    fuel_type: 'Diesel',
     description: 'Rugged and reliable pickup truck. Perfect for business and personal use.',
     features: ['4x4', 'Tow Package', 'Bed Liner', 'Heavy Duty Suspension'],
     verified: true
@@ -144,7 +144,7 @@ export const cars = [
     year: 2022,
     mileage: '25,000 km',
     transmission: 'Automatic',
-    fuelType: 'Diesel',
+    fuel_type: 'Diesel',
     description: 'Powerful Ford Ranger with excellent capabilities. Well maintained.',
     features: ['Crew Cab', 'Tonneau Cover', 'Off-Road Tires', 'Rear Diff Lock'],
     verified: true
@@ -161,7 +161,7 @@ export const cars = [
     year: 2024,
     mileage: '0 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'Affordable and reliable sedan. Perfect for first-time car buyers.',
     features: ['Fuel Efficient', 'Modern Design', 'Safety Features', 'Warranty'],
     verified: true
@@ -178,7 +178,7 @@ export const cars = [
     year: 2021,
     mileage: '32,000 km',
     transmission: 'Automatic',
-    fuelType: 'Petrol',
+    fuel_type: 'Petrol',
     description: 'Compact and economical car. Great for city driving.',
     features: ['Excellent Fuel Economy', 'Easy Parking', 'Low Maintenance'],
     verified: true

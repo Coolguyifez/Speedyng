@@ -10,10 +10,10 @@ import { toast } from 'sonner';
 import { carAPI } from '../services/api';
 
 const categories = [
-  { name: 'Sedans' },
-  { name: 'SUVs' },
+  { name: 'Sedan' },
+  { name: 'SUV' },
   { name: 'Luxury' },
-  { name: 'Trucks' },
+  { name: 'Truck' },
   { name: 'Budget' },
   { name: 'Foreign Used' }
 ];
@@ -27,7 +27,7 @@ const AdminPanel = () => {
   
   const [formData, setFormData] = useState({
     name: '',
-    category: 'Sedans',
+    category: 'Sedan',
     price: '',
     condition: 'Foreign Used',
     location: 'Lagos',
@@ -62,7 +62,7 @@ const AdminPanel = () => {
     setEditingCar(null);
     setFormData({
       name: '',
-      category: 'Sedans',
+      category: 'Sedan',
       price: '',
       condition: 'Foreign Used',
       location: 'Lagos',

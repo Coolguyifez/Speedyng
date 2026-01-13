@@ -17,6 +17,7 @@ const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Use
 const CarsPage = () => {
   const [cars, setCars] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
@@ -68,77 +69,93 @@ const CarsPage = () => {
       {/* Search and Filters */}
       <div className="bg-white border-b border-gray-200 sticky top-16 z-40 shadow-sm">
         <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+          <div className="flex flex-col gap-4">
             {/* Search */}
-            <div className="lg:col-span-2 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search cars..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
+            {/* Top Row: Search + Mobile Toggle Icon */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search cars..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+
+              {/* Mobile Toggle Button - Hidden on Desktop */}
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className={`md:hidden transition-colors ${isFilterVisible ? 'bg-red-50 border-red-200 text-red-600' : 'text-gray-600'}`}
+                onClick={() => setIsFilterVisible(!isFilterVisible)}
+              >
+                <SlidersHorizontal className="w-5 h-5" />
+              </Button>
             </div>
 
-            {/* Category Filter */}
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
-                <SelectValue placeholder="Category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map((cat, index) => (
-                  <SelectItem key={index} value={cat.name}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Filters Row: Hidden on mobile unless toggled, Always visible on desktop */}
+            <div className={`${isFilterVisible ? 'grid' : 'hidden'} md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-2 duration-200`}>
 
-            {/* Location Filter */}
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
-                <SelectValue placeholder="Location" />
-              </SelectTrigger>
-              <SelectContent>
-                {locations.map((location, index) => (
-                  <SelectItem key={index} value={location}>
-                    {location}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Condition Filter */}
-            <Select value={selectedCondition} onValueChange={setSelectedCondition}>
-              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
-                <SelectValue placeholder="Condition" />
-              </SelectTrigger>
-              <SelectContent>
-                {conditions.map((condition, index) => (
-                  <SelectItem key={index} value={condition}>
-                    {condition}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Price Range Filter */}
-            <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
-                <SelectValue placeholder="Price Range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Prices</SelectItem>
-                <SelectItem value="under10">Under ₦10M</SelectItem>
-                <SelectItem value="10to20">₦10M - ₦20M</SelectItem>
-                <SelectItem value="20to40">₦20M - ₦40M</SelectItem>
-                <SelectItem value="over40">Over ₦40M</SelectItem>
-              </SelectContent>
-            </Select>
+              {/* Category Filter */}
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
+                  <SelectValue placeholder="Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((cat, index) => (
+                    <SelectItem key={index} value={cat.name}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+  
+              {/* Location Filter */}
+              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
+                  <SelectValue placeholder="Location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations.map((location, index) => (
+                    <SelectItem key={index} value={location}>
+                      {location}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+  
+              {/* Condition Filter */}
+              <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+                <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
+                  <SelectValue placeholder="Condition" />
+                </SelectTrigger>
+                <SelectContent>
+                  {conditions.map((condition, index) => (
+                    <SelectItem key={index} value={condition}>
+                      {condition}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+  
+              {/* Price Range Filter */}
+              <Select value={priceRange} onValueChange={setPriceRange}>
+                <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
+                  <SelectValue placeholder="Price Range" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Prices</SelectItem>
+                  <SelectItem value="under10">Under ₦10M</SelectItem>
+                  <SelectItem value="10to20">₦10M - ₦20M</SelectItem>
+                  <SelectItem value="20to40">₦20M - ₦40M</SelectItem>
+                  <SelectItem value="over40">Over ₦40M</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          
 
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-gray-600">

@@ -167,7 +167,7 @@ const CarsPage = () => {
 
       {/* Cars Grid */}
      <div className="container mx-auto px-4 py-8">
-        {loading ? (
+        {isloading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-10 h-10 text-red-600 animate-spin mb-4" />
             <p className="text-gray-500">Loading inventory...</p>

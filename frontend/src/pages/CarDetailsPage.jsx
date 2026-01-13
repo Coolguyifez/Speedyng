@@ -21,19 +21,19 @@ const CarDetailsPage = () => {
 
   // Fetch real car data from backend
   useEffect(() => {
-    const fetchCarDetails = async () => {
-      try {
-        setLoading(true);
-        const response = await carAPI.getById(id);
-        setCar(response.data);
-      } catch (error) {
-        console.error("Error fetching car details:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCarDetails();
-  }, [id]);
+  const fetchCar = async () => {
+    try {
+      setIsLoading(true); 
+      const response = await carAPI.getOne(id);
+      setCar(response.data);
+    } catch (error) {
+      console.error("Error fetching car details:", error);
+    } finally {
+      setIsLoading(false); 
+    }
+  };
+  fetchCar();
+}, [id]);
 
   const handleFavorite = () => {
     setIsFavorite(!isFavorite);

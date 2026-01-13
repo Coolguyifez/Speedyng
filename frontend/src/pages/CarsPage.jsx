@@ -8,6 +8,10 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
 
+// Define these or import them from your constants/mock file
+const categories = [{ name: 'Sedan' }, { name: 'SUV' }, { name: 'Truck' }, { name: 'Luxury' }], { name: 'Budget' }], { name: 'Foriegn Used' }];
+const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
+const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
 
 const CarsPage = () => {
   const [cars, setCars] = useState([]);

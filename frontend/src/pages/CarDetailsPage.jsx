@@ -226,7 +226,7 @@ const CarDetailsPage = () => {
                   <a href="tel:08154675347" className="block">
                     <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg">
                       <Phone className="w-5 h-5 mr-2" />
-                      Call Now
+                      ☎ Call Agent
                     </Button>
                   </a>
                   <Button
@@ -236,7 +236,7 @@ const CarDetailsPage = () => {
                     className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
                   >
                     <Clock className="w-5 h-5 mr-2" />
-                    Book Inspection
+                    ⏱ Book Inspection
                   </Button>
                 </div>
 

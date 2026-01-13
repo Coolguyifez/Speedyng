@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 const CarDetailsPage = () => {
   const { id } = useParams();
   const [car, setCar] = useState(null);
-  const [loading, setLoading] = useState(true);
+ const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
 

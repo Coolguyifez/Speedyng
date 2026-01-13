@@ -7,20 +7,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
-import { cars, categories, locations, conditions } from '../mock';
+
 
 const CarsPage = () => {
+  const [cars, setCars] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [selectedCondition, setSelectedCondition] = useState('All Conditions');
   const [priceRange, setPriceRange] = useState('all');
 
-  const filteredCars = cars.filter((car) => {
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await carAPI.getAll();
+        setCars(response.data);
+      } catch (error) {
+        console.error("Fetch error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCars();
+  }, []);
+  
+
+ const filteredCars = cars.filter((car) => {
     const matchesSearch = car.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || car.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || car.location === selectedLocation;
     const matchesCondition = selectedCondition === 'All Conditions' || car.condition === selectedCondition;
+    return matchesSearch && matchesCategory && matchesLocation && matchesCondition;
+  });
     
     let matchesPrice = true;
     if (priceRange === 'under10') matchesPrice = car.price < 10000000;
@@ -116,6 +135,7 @@ const CarsPage = () => {
               </SelectContent>
             </Select>
           </div>
+          
 
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-gray-600">
@@ -141,8 +161,13 @@ const CarsPage = () => {
       </div>
 
       {/* Cars Grid */}
-      <div className="container mx-auto px-4 py-8">
-        {filteredCars.length === 0 ? (
+     <div className="container mx-auto px-4 py-8">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-10 h-10 text-red-600 animate-spin mb-4" />
+            <p className="text-gray-500">Loading inventory...</p>
+          </div>
+        ) : filteredCars.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-12 h-12 text-gray-400" />

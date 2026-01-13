@@ -205,7 +205,7 @@ export const testimonials = [
     role: 'Business Owner',
     comment: 'Speedy made buying my Toyota Prado so easy! The AI assistant helped me choose the perfect car for my business. Highly recommended!',
     rating: 5,
-    image: 'https://i.pravatar.cc/150?img=12'
+    image: 'https://instagram.fabb1-2.fna.fbcdn.net/v/t51.2885-15/565385675_18424313536110693_8858907754640770255_n.jpg?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InRocmVhZHMuQ0FST1VTRUxfSVRFTS5pbWFnZV91cmxnZW4uODU0eDk5Mi5zZHIuZjgyNzg3LmRlZmF1bHRfaW1hZ2UuYzIifQ&_nc_ht=instagram.fabb1-2.fna.fbcdn.net&_nc_cat=109&_nc_oc=Q6cZ2QHysrdpnEb8qXTshyxO-tbIRDiu819mxfphaxjdGdapCflijxGHvkYww5MhvBgEWz8&_nc_ohc=QkrtzWIH0sgQ7kNvwGj0YKd&_nc_gid=fX5ipviLl9XA-d5RZkEVNg&edm=AKr904kBAAAA&ccb=7-5&ig_cache_key=Mzc0MjM0Njg1NTYyMDI5MDI4Mw%3D%3D.3-ccb7-5&oh=00_AfquAVF4y2UClfS7jEtq7LvRoBW00hgFm9lvRsHXDJditA&oe=696C1112&_nc_sid=23467f'
   },
   {
     id: 2,
@@ -213,7 +213,7 @@ export const testimonials = [
     role: 'Professional',
     comment: 'Fast, reliable, and trustworthy. Got my Honda Accord within a week. The inspection was thorough and transparent.',
     rating: 5,
-    image: 'https://i.pravatar.cc/150?img=45'
+    image: 'https://www.thecable.ng/wp-content/uploads/2020/11/Activist.jpg'
   },
   {
     id: 3,
@@ -221,7 +221,7 @@ export const testimonials = [
     role: 'Entrepreneur',
     comment: 'Best car dealership in Nigeria! The team was professional and the prices are very competitive. Will definitely come back.',
     rating: 5,
-    image: 'https://i.pravatar.cc/150?img=33'
+    image: 'https://scontent.fabb1-2.fna.fbcdn.net/v/t39.30808-6/403999168_919636102854920_3699743085752886170_n.jpg?_nc_cat=106&_nc_cb=99be929b-ad57045b&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEgaDRJ_K9JZS_3NdUgGk5xe6Wz3l3Vxlh7pbPeXdXGWLjqMHs3fRLkskqVY0jaV0fPk9o0xCKNtwgaJGpOYf0v&_nc_ohc=ltp51E2UmGIQ7kNvwFMABBf&_nc_oc=AdlTSC3tTAgDQQOdtfL4FF7MyE58_kJCv7smrZ5w1_jPV5NKLvnwfJMYMzrfZgG12pw&_nc_zt=23&_nc_ht=scontent.fabb1-2.fna&_nc_gid=tY9sQ83ihxL3-uUATOX8dQ&oh=00_AfoA8iN6mBiTz0u7ygqbDv1S9On__n1h-DA9nZhBmjZmiA&oe=696C3B71'
   }
 ];
 

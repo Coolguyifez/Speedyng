@@ -139,9 +139,9 @@ const AdminPanel = () => {
 
   // YOUR ORIGINAL LOADING UI DESIGN
   if (isLoading) return (
-    <p className="text-gray-500 animate-pulse font-medium">Loading AdminPanel...</p>
     <div className="min-h-screen flex items-center justify-center">
       <Loader2 className="w-8 h-8 animate-spin text-red-600" />
+      <p className="text-gray-500 animate-pulse font-medium">Loading AdminPanel...</p>
     </div>
   );
 

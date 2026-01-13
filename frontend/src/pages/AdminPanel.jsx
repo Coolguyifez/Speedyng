@@ -15,7 +15,6 @@ const categories = [
   { name: 'Luxury' },
   { name: 'Truck' },
   { name: 'Budget' },
-  { name: 'Foreign Used' }
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 

@@ -220,6 +220,8 @@ const CarsPage = () => {
                       <span>•</span>
                       <span>{car.transmission}</span>
                       <span>•</span>
+                      <span>{car.fuel_type}</span>
+                      <span>•</span>
                       <span>{car.mileage}</span>
                     </div>
                   </CardContent>

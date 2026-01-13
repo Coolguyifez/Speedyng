@@ -132,6 +132,7 @@ const AdminPanel = () => {
     setEditingCar(car);
     setFormData({
       ...car,
+      fuel_type: car.fuel_type || 'Petrol', // Mapping to match state
       features: Array.isArray(car.features) ? car.features.join(', ') : car.features
     });
     setIsDialogOpen(true);

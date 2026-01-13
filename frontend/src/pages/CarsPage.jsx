@@ -10,7 +10,14 @@ import ChatWidget from '../components/ChatWidget';
 import { carAPI } from '../services/api'; // Ensure this path is correct
 
 // Define these or import them from your constants/mock file
-const categories = [{ name: 'Sedan' }, { name: 'SUV' }, { name: 'Truck' }, { name: 'Luxury' }], { name: 'Budget' }], { name: 'Foriegn Used' }];
+const categories = [
+  { name: 'Sedan' }, 
+  { name: 'SUV' }, 
+  { name: 'Truck' }, 
+  { name: 'Luxury' }, 
+  { name: 'Budget' }, 
+  { name: 'Foreign Used' }
+];
 const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
 
@@ -43,8 +50,6 @@ const CarsPage = () => {
     const matchesCategory = selectedCategory === 'all' || car.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || car.location === selectedLocation;
     const matchesCondition = selectedCondition === 'All Conditions' || car.condition === selectedCondition;
-    return matchesSearch && matchesCategory && matchesLocation && matchesCondition;
-  });
     
     let matchesPrice = true;
     if (priceRange === 'under10') matchesPrice = car.price < 10000000;

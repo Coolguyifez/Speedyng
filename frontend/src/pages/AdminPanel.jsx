@@ -36,7 +36,7 @@ const AdminPanel = () => {
     year: new Date().getFullYear(),
     mileage: '',
     transmission: 'Automatic',
-    fuel_type: 'Petrol',
+    fuelType: 'Petrol',
     description: '',
     features: ''
   });
@@ -71,7 +71,7 @@ const AdminPanel = () => {
       year: new Date().getFullYear(),
       mileage: '',
       transmission: 'Automatic',
-      fuel_type: 'Petrol',
+      fuelType: 'Petrol',
       description: '',
       features: ''
     });
@@ -372,7 +372,7 @@ const AdminPanel = () => {
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Fuel Type</label>
-                      <Select value={formData.fuelType} onValueChange={(value) => setFormData({...formData, fuel_type: value})}>
+                      <Select value={formData.fuelType} onValueChange={(value) => setFormData({...formData, fuelType: value})}>
                         <SelectTrigger>
                           <SelectValue />
                         </SelectTrigger>

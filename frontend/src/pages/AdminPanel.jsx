@@ -36,7 +36,7 @@ const AdminPanel = () => {
     year: new Date().getFullYear(),
     mileage: '',
     transmission: 'Automatic',
-    fuel_type: 'Petrol'
+    fuel_type: 'Petrol',
     description: '',
     features: ''
   });

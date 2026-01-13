@@ -6,10 +6,28 @@ import { Card, CardContent } from '../components/ui/card';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
-import { cars, categories, testimonials } from '../mock';
+import { categories, testimonials } from '../mock';
+import { carAPI } from '../services/api';
 
 const HomePage = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch real cars from the database
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await carAPI.getAll();
+        setCars(response.data);
+      } catch (err) {
+        console.error("Error fetching cars for homepage:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCars();
+  }, []);
 
   const getCategoryIcon = (iconName) => {
     const icons = {
@@ -23,7 +41,7 @@ const HomePage = () => {
     const Icon = icons[iconName] || Car;
     return <Icon className="w-8 h-8" />;
   };
-
+  // Only show the first 6 cars on the homepage
   const featuredCars = cars.slice(0, 6);
 
   return (
@@ -215,7 +233,7 @@ const HomePage = () => {
                     ))}
                   </div>
                 </div>
-                <p className="text-gray-700 text-lg italic mb-6">
+                <p className="text-gray-700 text-lg italic mb-6 leading-relaxed">
                   "{testimonials[currentTestimonial].comment}"
                 </p>
                 <div className="flex justify-center space-x-2">

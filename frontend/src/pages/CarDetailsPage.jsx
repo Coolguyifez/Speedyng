@@ -208,7 +208,7 @@ const CarDetailsPage = () => {
                     { icon: Calendar, label: 'Year', value: car.year },
                     { icon: Gauge, label: 'Mileage', value: car.mileage },
                     { icon: Settings, label: 'Transmission', value: car.transmission },
-                    { icon: Fuel, label: 'Fuel Type', value: car.fuelType },
+                    { icon: Fuel, label: 'Fuel Type', value: car.fuel_type },
                     { icon: MapPin, label: 'Location', value: car.location },
                   ].map((spec, i) => (
                     <div key={i} className="flex items-center justify-between">

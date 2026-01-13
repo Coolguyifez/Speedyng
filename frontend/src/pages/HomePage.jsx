@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, DollarSign, Ship, TruckIcon } from 'lucide-react';
 import { Button } from '../components/ui/button';

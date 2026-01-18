@@ -69,7 +69,7 @@ export const carAPI = {
   // --- Chat Functions ---
   // Matches the ChatMessageCreate schema (requires text and sender)
   saveChatMessage: (messageData) => api.post('/chat/save', {
-    text: messageData.text,
+    content: messageData.text,
     sender: messageData.sender,
     timestamp: messageData.timestamp
   }),

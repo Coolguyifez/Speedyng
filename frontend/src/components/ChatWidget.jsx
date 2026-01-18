@@ -124,13 +124,11 @@ useEffect(() => {
     // --- KEYWORD LOGIC ---
     if (input.includes('scam') || input.includes('legit') || input.includes('safe')) return "Speedy is a verified Car agent platform . We always inspect the car before making full payment!";
     if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments, Check back soon for the 'Pay Small Small' option!";
-    if (input.includes('location') || input.includes('where')) || input.includes('see')) return "Our office are in Benin and Warri check contact page for our address, but we are available nationwide! You can book an inspection via the Contact page or call us";
-    if (input.includes('inspect') || input.includes('see the car')) return "We do inspection before any full payment is made. But a comission fee is attached depending on your loacation and if you don't like the car there is always a 5%-10% returns. Just let me know which car you are interested in by booking an inspection and calling us ";
+    if (input.includes('location') || input.includes('where')) || input.includes('see')) return "Our office is at Benin city, Nigeria. Check our contact page for our address, but we are available nationwide! You can book an inspection via our Contact page or call us";
+    if (input.includes('inspect') || input.includes('see the car')) return "We do inspection before any full payment is made. But a comission fee is attached depending on your loacation and if you don't like the car there is always a 5%-10% returns. Just let me know which car you are interested in; By booking an inspection and calling us ";
     if (input.includes('sell') || input.includes('agent')) return "Speedy is a car agents app! we help people who wants to sell thier car faster by marketing them online and bringing only serious buyers. just call us or chat us on whatsapp with this number "08154675347", so we can start uploading your car(s) immediately.";
-    if (input.includes('foreign used') || input.includes('Nigeria used')) || input.includes('Brand new')) return "Yes we do have, but check our browse car page for such options where we have (Conditions) or call us if you seem confuse or lost via the contact page";
-
+    if (input.includes('foreign used') || input.includes('Nigeria used')) || input.includes('Brand new')) return "Yes we do have, but check our car page for such options where we have (Conditions) or call us if you seem confuse or lost via the contact page";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a car based on your budget. How much are you looking to spend?";
-   
 
     return "That sounds interesting! To give you the best advice, could you tell me your budget or the specific brand you are looking for?. or If there's no any other issue. then i want to say a big thank you for choosing Speedy!!";
   };

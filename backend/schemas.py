@@ -82,7 +82,7 @@ class CarResponse(CarBase):
 class ContactCreate(BaseModel):
     name: str
     email: EmailStr
-    subject: str
+    phone: str # Updated from 'subject' to match models.py
     message: str
 
 class ContactResponse(ContactCreate):
@@ -93,26 +93,23 @@ class ContactResponse(ContactCreate):
         from_attributes = True
 
 # -------------------- Chat Schemas --------------------
-class ChatMessage(BaseModel):
-    sender: str
-    content: str
-    timestamp: datetime
+# Updated to match the storage needs of Speedy Assist
+class ChatMessageCreate(BaseModel):
+    sender: str # 'user' or 'bot'
+    text: str   # Renamed from 'content' to match frontend logic
+    timestamp: Optional[datetime] = None
 
-class ChatSessionResponse(BaseModel):
+class ChatMessageResponse(BaseModel):
     id: int
-    user_id: int
-    messages: List[ChatMessage]
-    created_at: datetime
+    sender: str
+    text: str
+    timestamp: datetime
 
     class Config:
         from_attributes = True
 
-class ChatResponse(BaseModel):
-    session_id: int
-    message: ChatMessage
-
 class MessageHistory(BaseModel):
-    messages: List[ChatMessage]
+    messages: List[ChatMessageResponse]
 
 # -------------------- Stats & Category Schemas --------------------
 class StatsResponse(BaseModel):

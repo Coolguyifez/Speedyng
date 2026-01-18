@@ -64,7 +64,13 @@ export const carAPI = {
   create: (data) => api.post('/cars', data),
   update: (id, data) => api.put(`/cars/${id}`, data),
   delete: (id) => api.delete(`/cars/${id}`),
-  saveChatMessage: (messageData) => api.post('/chat/save', messageData),
+  saveChatMessage: (messageData) => api.post('/chat/save', {
+    text: messageData.text,
+    sender: messageData.sender,
+    timestamp: messageData.timestamp
+  }),
+
+  // Fetches the history list for the specific user
   getChatHistory: (userId) => api.get(`/chat/history/${userId}`),
 };
 

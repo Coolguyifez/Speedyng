@@ -64,6 +64,8 @@ export const carAPI = {
   create: (data) => api.post('/cars', data),
   update: (id, data) => api.put(`/cars/${id}`, data),
   delete: (id) => api.delete(`/cars/${id}`),
+  saveChatMessage: (messageData) => api.post('/chat/save', messageData),
+  getChatHistory: (userId) => api.get(`/chat/history/${userId}`),
 };
 
 // 5. Contact & Stats

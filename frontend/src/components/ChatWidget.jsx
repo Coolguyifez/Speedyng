@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { Button } from './ui/button';
-import { carAPI } from '../services/api'; // Import your API to see the cars
+import { carAPI } from '../services/api';
+
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
@@ -16,22 +17,21 @@ const ChatWidget = () => {
   const [inputValue, setInputValue] = useState('');
   const messagesEndRef = useRef(null);
   
-  // Get logged-in user info
+  // Get logged-in user info safely
   const user = JSON.parse(localStorage.getItem('user'));
-
 
   // 1. Fetch real cars and Load Chat History on mount
   useEffect(() => {
     const initData = async () => {
       try {
-        const carsData = await carAPI.getCars();
-        setAvailableCars(carsData);
+        const response = await carAPI.getCars();
+        // Ensure we handle the axios response structure correctly
+        setAvailableCars(response.data || []);
 
         if (user) {
-          // Fetch previous messages from database if user is logged in
-          const history = await carAPI.getChatHistory(user.id);
-          if (history && history.length > 0) {
-            setMessages(history);
+          const historyResponse = await carAPI.getChatHistory(user.id);
+          if (historyResponse.data && historyResponse.data.length > 0) {
+            setMessages(historyResponse.data);
           }
         }
       } catch (error) {
@@ -41,13 +41,12 @@ const ChatWidget = () => {
     initData();
   }, [user?.id]);
 
-  
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-//--- Listen for the signal from Contact Page ---
-useEffect(() => {
+  // Listen for signal from Contact Page
+  useEffect(() => {
     const handleExternalOpen = () => {
       setIsOpen(true);
       setTimeout(scrollToBottom, 500);
@@ -56,18 +55,16 @@ useEffect(() => {
     window.addEventListener('open-speedy-chat', handleExternalOpen);
     return () => window.removeEventListener('open-speedy-chat', handleExternalOpen);
   }, []);
-  
 
   useEffect(() => {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen]);
 
-
-  // 3. THE "LEGIT" AI ENGINE (Keywords + Budget Search)
+  // 2. THE AI ENGINE (Keywords + Budget Search)
   const getLegitResponse = (text) => {
     const input = text.toLowerCase();
 
-    // 1. DYNAMIC BRAND SEARCH
+    // DYNAMIC BRAND SEARCH
     const brandMatch = availableCars.find(car => 
       input.includes(car.name.split(' ')[0].toLowerCase())
     );
@@ -79,62 +76,57 @@ useEffect(() => {
       );
 
       if (brandCars.length > 0) {
-        // We take the first match and provide a direct link
         const topMatch = brandCars[0];
         return (
           <span>
             Yes! We have {brandCars.length} {brandName} models. The best one right now is the 
-            <a href={`/car/${topMatch.id}`} className="text-blue-200 underline ml-1 font-bold">
+            <a href={`/car/${topMatch.id}`} className="text-blue-600 underline ml-1 font-bold">
               {topMatch.name}
-            }
             </a>. Would you like to see its full details?
           </span>
         );
       }
     }
 
-    // --- BUDGET SEARCH LOGIC ---
-    // Detects numbers like "10", "10m", "10 million"
+    // BUDGET SEARCH LOGIC
     const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
     if (moneyMatch) {
       const rawNumber = parseInt(moneyMatch[1]);
       const budgetAmount = rawNumber < 1000 ? rawNumber * 1000000 : rawNumber;
       
-      // Look for cars in your state 'availableCars'
       const affordableCars = availableCars
         .filter(car => car.price <= budgetAmount)
-        .sort((a, b) => b.price - a.price); // Get the best car closest to their budget
+        .sort((a, b) => b.price - a.price);
 
       if (affordableCars.length > 0) {
         const match = affordableCars[0];
         return (
           <span>
             I found a great match! The 
-            <a href={`/car/${match.id}`} className="text-blue-200 underline mx-1 font-bold">
+            <a href={`/car/${match.id}`} className="text-blue-600 underline mx-1 font-bold">
               {match.name}
             </a> 
-            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see photos and specs!
+            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see photos!
           </span>
         );
       } else {
-        return `I don't have any cars under ₦${(budgetAmount/1000000).toFixed(1)}M right now. Check our 'Cars' page for the latest arrivals!`;
+        return `I don't have any cars under ₦${(budgetAmount/1000000).toFixed(1)}M right now. Check our 'Cars' page for more!`;
       }
     }
 
-    // --- KEYWORD LOGIC ---
-    if (input.includes('scam') || input.includes('legit') || input.includes('safe')) return "Speedy is a verified Car agent platform . We always inspect the car before making full payment!";
-    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments, Check back soon for the 'Pay Small Small' option!";
-    if (input.includes('location') || input.includes('where')) || input.includes('see')) return "Our office is at Benin city, Nigeria. Check our contact page for our address, but we are available nationwide! You can book an inspection via our Contact page or call us";
-    if (input.includes('inspect') || input.includes('see the car')) return "We do inspection before any full payment is made. But a comission fee is attached depending on your loacation and if you don't like the car there is always a 5%-10% returns. Just let me know which car you are interested in; By booking an inspection and calling us ";
-    if (input.includes('sell') || input.includes('agent')) return "Speedy is a car agents app! we help people who wants to sell thier car faster by marketing them online and bringing only serious buyers. just call us or chat us on whatsapp with this number "08154675347", so we can start uploading your car(s) immediately.";
-    if (input.includes('foreign used') || input.includes('Nigeria used')) || input.includes('Brand new')) return "Yes we do have, but check our car page for such options where we have (Conditions) or call us if you seem confuse or lost via the contact page";
+    // KEYWORD LOGIC
+    if (input.includes('scam') || input.includes('legit') || input.includes('safe')) return "Speedy is a verified agent platform. We inspect every car before recommending it!";
+    if (input.includes('installment') || input.includes('payment plan')) return "Currently, we mostly accept full payments. Check back soon for 'Pay Small Small' options!";
+    if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our offices are in Benin and Warri, but we serve clients nationwide!";
+    if (input.includes('inspect')) return "We arrange inspections before payment. A small logistic fee may apply based on your location.";
+    if (input.includes('sell') || input.includes('agent')) return "We help you sell faster! Contact us at 08154675347 to list your car.";
+    if (input.includes('foreign') || input.includes('nigeria used') || input.includes('brand new')) return "We have all options! Check the 'Condition' filter on our browse page.";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a car based on your budget. How much are you looking to spend?";
 
-    return "That sounds interesting! To give you the best advice, could you tell me your budget or the specific brand you are looking for?. or If there's no any other issue. then i want to say a big thank you for choosing Speedy!!";
+    return "That sounds interesting! Tell me your budget or a brand you like, and I'll find the best deal for you.";
   };
-  
-  
-  // 3. HANDLE SEND & SAVE TO DB
+
+  // 3. HANDLE SEND & SAVE
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
 

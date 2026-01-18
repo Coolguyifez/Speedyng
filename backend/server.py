@@ -18,10 +18,9 @@ from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse,
     CarCreate, CarUpdate, CarResponse,
     ContactCreate, ContactResponse,
-    ChatMessage, ChatResponse, ChatSessionResponse, MessageHistory,
+    ChatMessageCreate, ChatMessageResponse, MessageHistory, # <--- Updated names
     StatsResponse, CategoryResponse
 )
-
 # -------------------- Logging Setup --------------------
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -211,7 +210,7 @@ async def delete_car(
 
 @api_router.post("/chat/save")
 async def save_chat_message(
-    message_data: ChatMessageSchema, # Use the schema from schemas.py
+    message_data: ChatMessageCreate, # Use the schema from schemas.py
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):

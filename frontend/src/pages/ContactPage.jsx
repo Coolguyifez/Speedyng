@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send,} from 'lucide-react';
+import { FaWhatsapp } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import Header from '../components/Header';
@@ -194,21 +195,24 @@ const ContactPage = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Quick Actions</h3>
                 <div className="space-y-3">
-                  <a href="tel:08154675347" className="block">
+                  <a href="https://wa.me/2348154675347" className="block">
                     <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg">
-                      <Phone className="w-5 h-5 mr-2" />
-                      Call Now
+                      <FaWhatsapp className="w-5 h-5 mr-2" />
+                      Chat With Us
                     </Button>
                   </a>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
-                    onClick={() => toast.info('Opening chat assistant...')}
-                  >
-                    <Send className="w-5 h-5 mr-2" />
-                    Chat with AI
-                  </Button>
+                  <p>Or</p>
+                  <Link to="/ChatWidget">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
+                      onClick={() => toast.info('Opening chat assistant...')}
+                    >
+                      <Send className="w-5 h-5 mr-2" />
+                      Chat with Our Smart AI
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>

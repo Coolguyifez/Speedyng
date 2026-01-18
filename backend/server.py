@@ -158,17 +158,6 @@ async def get_car(car_id: int, db: AsyncSession = Depends(get_db)):
     return serialize_car(car)
 
 # -------------------- Car Management (Admin Only) --------------------
-@api_router.post("/cars", response_model=CarResponse)
-async def create_car(
-    car_data: CarCreate, 
-    current_admin: User = Depends(get_current_admin),
-    db: AsyncSession = Depends(get_db)
-):
-    new_car = Car(**car_data.dict())
-    db.add(new_car)
-    await db.commit()
-    await db.refresh(new_car)
-    return serialize_car(new_car)
 
 @api_router.put("/cars/{car_id}", response_model=CarResponse)
 async def update_car(

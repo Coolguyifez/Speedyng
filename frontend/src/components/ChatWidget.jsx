@@ -25,13 +25,17 @@ const ChatWidget = () => {
     const initData = async () => {
       try {
         const response = await carAPI.getCars();
-        // Ensure we handle the axios response structure correctly
         setAvailableCars(response.data || []);
-
+  
         if (user) {
           const historyResponse = await carAPI.getChatHistory(user.id);
           if (historyResponse.data && historyResponse.data.length > 0) {
-            setMessages(historyResponse.data);
+            // Map 'content' from database back to 'text' for display
+            const formattedHistory = historyResponse.data.map(msg => ({
+              ...msg,
+              text: msg.content // Ensure the UI sees the 'text' property
+            }));
+            setMessages(formattedHistory);
           }
         }
       } catch (error) {

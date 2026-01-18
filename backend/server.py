@@ -205,6 +205,48 @@ async def delete_car(
     await db.delete(car)
     await db.commit()
     return {"message": "Car deleted successfully"}
+    
+
+# -------------------- Chat Routes --------------------
+
+@api_router.post("/chat/save")
+async def save_chat_message(
+    message_data: ChatMessageSchema, # Use the schema from schemas.py
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        new_msg = ChatMessage(
+            user_id=current_user.id,
+            text=message_data.content,
+            sender=message_data.sender,
+            timestamp=message_data.timestamp or datetime.utcnow()
+        )
+        db.add(new_msg)
+        await db.commit()
+        return {"status": "saved"}
+    except Exception as e:
+        logger.error(f"Chat save error: {e}")
+        raise HTTPException(status_code=500, detail="Could not save message")
+
+@api_router.get("/chat/history/{user_id}")
+async def get_chat_history(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    # Security check: Users can only see their own history unless admin
+    if current_user.id != user_id and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden")
+
+    result = await db.execute(
+        select(ChatMessage)
+        .filter(ChatMessage.user_id == user_id)
+        .order_by(ChatMessage.timestamp.asc())
+    )
+    messages = result.scalars().all()
+    return messages
+    
 
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")

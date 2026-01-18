@@ -9,7 +9,7 @@ import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
-import ChatWidget from "./components/ChatWidget";
+
 
 function App() {
   return (
@@ -23,7 +23,6 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/ai" element={<ChatWidget/>} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors />

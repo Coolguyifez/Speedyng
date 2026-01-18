@@ -57,10 +57,13 @@ class Contact(Base):
 
 
 # ================== Chat Session Model ==================
-class ChatSession(Base):
-    __tablename__ = "chat_sessions"
+# ================== Chat Message Model ==================
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    session_id = Column(String(100), unique=True, nullable=False)
-    messages = Column(ARRAY(Text), default=[])  # store messages as JSON strings: {"role": "user", "content": "..."}
-    created_at = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    text = Column(Text, nullable=False)
+    sender = Column(String(20), nullable=False)  # 'user' or 'bot'
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    user = relationship("User", backref="chat_messages")

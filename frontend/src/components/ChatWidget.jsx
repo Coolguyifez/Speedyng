@@ -143,48 +143,34 @@ useEffect(() => {
     const userMessage = {
       text: inputValue,
       sender: 'user',
-     timestamp: new Date().toISOString(
+      timestamp: new Date().toISOString() // Fixed parentheses
     };
 
     setMessages(prev => [...prev, userMessage]);
     const currentInput = inputValue;
     setInputValue('');
 
-    // Save User message to DB if logged in
     if (user) {
-    try {
-      // carAPI.saveChatMessage calls your POST /api/chat/save
-      await carAPI.saveChatMessage({
-        text: userMessage.text,
-        sender: userMessage.sender,
-        timestamp: userMessage.timestamp
-      });
-    } catch (err) {
-      console.error("Failed to save user message:", err);
+      try {
+        await carAPI.saveChatMessage(userMessage);
+      } catch (err) {
+        console.error("Failed to save user message:", err);
+      }
     }
-  }
-    
 
-    // 4. Generate AI Response
     setTimeout(async () => {
       const botReplyContent = getLegitResponse(currentInput);
-      
-      // Check if reply is JSX (a link) or just a string
-      // We convert it to a string for the database, but keep it as JSX for the UI
       const botResponse = {
         text: botReplyContent,
         sender: 'bot',
         timestamp: new Date().toISOString()
       };
-  
-      // Update UI with the bot reply
+
       setMessages((prev) => [...prev, botResponse]);
       
-      // 5. Save Bot reply to Database
       if (user) {
         try {
           await carAPI.saveChatMessage({
-            // If botReplyContent is JSX, we extract text or send a placeholder
             text: typeof botReplyContent === 'string' ? botReplyContent : "Recommended a car link",
             sender: 'bot',
             timestamp: botResponse.timestamp
@@ -194,7 +180,7 @@ useEffect(() => {
         }
       }
     }, 1000);
-  };;
+  };
 
   return (
     <div className="fixed bottom-6 right-6 z-50">

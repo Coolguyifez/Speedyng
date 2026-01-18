@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Phone, Mail, MapPin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Phone, Mail, MapPin,} from 'lucide-react';
+import { FaXTwitter } from "react-icons/fa6";
+import { PiWhatsappLogo } from "react-icons/pi";
 
 const Footer = () => {
   return (
@@ -22,12 +24,16 @@ const Footer = () => {
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
+               <a href="https://wa.me/2348154675347" className="text-gray-400 hover:text-red-500 transition-colors">
+                < PiWhatsappLogo className="w-5 h-5" />
+              </a>
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
-                <Twitter className="w-5 h-5" />
+                <FaXTwitter className="w-5 h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
+              
                
               
              

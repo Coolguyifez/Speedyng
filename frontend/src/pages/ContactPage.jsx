@@ -210,11 +210,11 @@ const ContactPage = () => {
                       window.dispatchEvent(new Event('open-speedy-chat'));
                       
                       // 2. Change the toast to something more helpful
-                      toast.success(' opening speedy assit .....');
+                      toast.success(' opening Speedy Assit .....');
                     }}
                   >
                     <MessageCircle className="w-5 h-5 mr-2" />
-                    Chat with speedy assit
+                    Chat with Speedy Assit
                   </Button>
                 </div>
               </CardContent>

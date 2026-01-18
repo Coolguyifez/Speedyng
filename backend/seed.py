@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 # Import your shared project components
 from database import AsyncSessionLocal, engine, Base
-from models import User, Car
+from models import User, Car, ChatMessage
 from auth import get_password_hash
 
 # Setup basic logging for the seed process

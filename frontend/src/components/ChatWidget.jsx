@@ -20,9 +20,21 @@ const ChatWidget = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+//--- Listen for the signal from Contact Page ---
+useEffect(() => {
+    const handleExternalOpen = () => {
+      setIsOpen(true);
+      setTimeout(scrollToBottom, 100);
+    };
+
+    window.addEventListener('open-speedy-chat', handleExternalOpen);
+    return () => window.removeEventListener('open-speedy-chat', handleExternalOpen);
+  }, []);
+  
+
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isOpen]);
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;

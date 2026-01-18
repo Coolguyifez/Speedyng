@@ -22,6 +22,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/ai assitant" element={<ChatWidget/>} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors />

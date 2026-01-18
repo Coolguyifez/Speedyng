@@ -202,7 +202,7 @@ const ContactPage = () => {
                     </Button>
                   </a>
                   <p>Or</p>
-                  <Link to="/ChatWidget">
+                  <Link to="/ai assitant">
                     <Button
                       size="lg"
                       variant="outline"

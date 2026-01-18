@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send,} from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, MessageCircle} from 'lucide-react';
 import { FaWhatsapp } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -201,18 +201,21 @@ const ContactPage = () => {
                       Chat With Us
                     </Button>
                   </a>
-                  <p>Or</p>
-                  <Link to="/ai">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
-                      onClick={() => toast.info('Opening chat assistant...')}
-                    >
-                      <Send className="w-5 h-5 mr-2" />
-                      Chat with Our Smart AI
-                    </Button>
-                  </Link>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
+                    onClick={() => {
+                      // 1. Dispatch the custom event to open the widget
+                      window.dispatchEvent(new Event('open-speedy-chat'));
+                      
+                      // 2. Change the toast to something more helpful
+                      toast.success(' opening speedy assit .....');
+                    }}
+                  >
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Chat with speedy assit
+                  </Button>
                 </div>
               </CardContent>
             </Card>

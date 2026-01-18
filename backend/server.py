@@ -233,7 +233,7 @@ async def get_chat_history(
         .order_by(ChatMessage.timestamp.asc())
     )
     messages = result.scalars().all()
-    return messages
+    return [{"sender": m.sender, "content": m.text, "timestamp": m.timestamp} for m in messages]
     
 
 # -------------------- Final Setup --------------------

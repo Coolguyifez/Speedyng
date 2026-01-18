@@ -102,8 +102,8 @@ class ChatMessageCreate(BaseModel):
 class ChatMessageResponse(BaseModel):
     id: int
     sender: str
-    text: str
-    timestamp: datetime
+    content: str
+    timestamp: Optional[datetime] = None
 
     class Config:
         from_attributes = True

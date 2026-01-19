@@ -24,12 +24,11 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/cars" element={<ProtectedRoute><CarsPage /> </ProtectedRoute>} />
           <Route path="/car/:id" element={<ProtectedRoute><CarDetailsPage /> </ProtectedRoute>} />
-          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/contact" element={<ProtectedRoute><ContactPage /> </ProtectedRoute>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
-        //SPEEDY ASSISTANT - Only renders if user exists 
         {user && <ChatWidget />}
       </BrowserRouter>
       <Toaster position="top-right" richColors />

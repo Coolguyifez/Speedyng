@@ -117,7 +117,7 @@ const LoginPage = () => {
             </div>
 
             <Button
-              disabled={isloading}
+              disabled={isLoading}
               type="submit"
               size="lg"
               className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg"

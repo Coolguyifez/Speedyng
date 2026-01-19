@@ -110,7 +110,7 @@ const ChatWidget = () => {
             <a href={`/car/${match.id}`} className="text-blue-600 underline mx-1 font-bold">
               {match.name}
             </a> 
-            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see photos!
+            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see the Car features!
           </span>
         );
       } else {
@@ -119,12 +119,12 @@ const ChatWidget = () => {
     }
 
     // KEYWORD LOGIC
-    if (input.includes('scam') || input.includes('legit') || input.includes('safe')) return "Speedy is a verified agent platform. We inspect every car before recommending it!";
-    if (input.includes('installment') || input.includes('payment plan')) return "Currently, we mostly accept full payments. Check back soon for 'Pay Small Small' options!";
-    if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our offices are in Benin and Warri, but we serve clients nationwide!";
-    if (input.includes('inspect')) return "We arrange inspections before payment. A small logistic fee may apply based on your location.";
-    if (input.includes('sell') || input.includes('agent')) return "We help you sell faster! Contact us at 08154675347 to list your car.";
-    if (input.includes('foreign') || input.includes('nigeria used') || input.includes('brand new')) return "We have all options! Check the 'Condition' filter on our browse page.";
+    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified agent platform. We inspect every car before recommending it!";
+    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments. Check back soon for 'Pay on credit' options!";
+    if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we available nationwide! and check our contact page for more information";
+    if (input.includes('inspect') || (input.includes('see the car')) return "We arrange inspections before payment. A small Commission fee may apply based on your location, but note that 5%-10% of what you paid as commission will refunded to you if you don't like the car after inspection";
+    if (input.includes('sell') || input.includes('agent')) return "Yes We help you sell faster! and bring the right buyer to you. Contact us now at 08154675347 to list your car and make arramgements.";
+    if (input.includes('foreign') || input.includes('nigeria used') || input.includes('brand new')) return " I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our Car page to see everything from brand new to Nigeria used."";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a car based on your budget. How much are you looking to spend?";
 
     return "That sounds interesting! Tell me your budget or a brand you like, and I'll find the best deal for you.";

@@ -13,7 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import ChatWidget from './components/ChatWidget';
 
 function App() {
-  / Check if user is logged in to show/hide the Speedy Assistant globally
+  // Check if user is logged in to show/hide the Speedy Assistant globally
   const user = JSON.parse(localStorage.getItem('user'));
 
   

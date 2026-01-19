@@ -208,7 +208,7 @@ async def save_chat_message(
             user_id=current_user.id,
             text=message_data.content,
             sender=message_data.sender,
-            timestamp=message_data.timestamp or datetime.utcnow()
+            timestamp=message_data.timestamp 
         )
         db.add(new_msg)
         await db.commit()

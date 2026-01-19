@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -9,6 +9,7 @@ import { authAPI } from '../services/api';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -19,6 +20,10 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  //Get the "from" path (where the user came from)
+  // If they just clicked "Login" normally, this defaults to "/"
+  const from = location.state?.from?.pathname || "/";
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +48,7 @@ const RegisterPage = () => {
       });
       
       toast.success('Account created successfully!');
-      navigate('/'); // Redirect to home/dashboard
+      navigate(from, { replace: true }); // Redirect to home/dashboard
     } catch (error) {
       console.error('Registration error:', error);
       const message = error.response?.data?.detail || 'Registration failed. Try a different email.';
@@ -188,7 +193,10 @@ const RegisterPage = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-red-600 hover:text-red-700 font-medium transition-colors">
+              <Link 
+                to="/login" 
+                state={{ from: location.state?.from }} // Passes the original destination back to Login
+                className="text-red-600 hover:text-red-700 font-medium transition-colors">
                 Sign in
               </Link>
             </p>

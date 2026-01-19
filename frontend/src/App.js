@@ -9,7 +9,7 @@ import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
-
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -23,6 +23,23 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route 
+            path="/cars" 
+            element={
+              <ProtectedRoute>
+                <CarsPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/car/:id" 
+            element={
+              <ProtectedRoute>
+                <CarDetailsPage />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors />

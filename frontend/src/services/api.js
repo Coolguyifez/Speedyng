@@ -71,7 +71,7 @@ export const carAPI = {
   saveChatMessage: (messageData) => api.post('/chat/save', {
     content: messageData.text,
     sender: messageData.sender,
-    timestamp: messageData.timestamp
+    
   }),
 
   // Fetches the history list for the specific user

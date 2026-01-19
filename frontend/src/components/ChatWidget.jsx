@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { carAPI } from '../services/api';
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [availableCars, setAvailableCars] = useState([]);
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -124,7 +126,7 @@ const ChatWidget = () => {
     if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we available nationwide! and check our contact page for more information";
     if (input.includes('inspect') || (input.includes('see the car')) return "We arrange inspections before payment. A small Commission fee may apply based on your location, but note that 5%-10% of what you paid as commission will refunded to you if you don't like the car after inspection";
     if (input.includes('sell') || input.includes('agent')) return "Yes We help you sell faster! and bring the right buyer to you. Contact us now at 08154675347 to list your car and make arramgements.";
-    if (input.includes('foreign') || input.includes('nigeria used') || input.includes('brand new')) return " I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our Car page to see everything from brand new to Nigeria used."";
+    if (input.includes('foreign') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our Car page to see everything from brand new to Nigeria used."";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a car based on your budget. How much are you looking to spend?";
 
     return "That sounds interesting! Tell me your budget or a brand you like, and I'll find the best deal for you.";
@@ -181,7 +183,7 @@ const ChatWidget = () => {
       {/* Chat Button */}
       {!isOpen && (
         <Button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {handleToggleChat}
           className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
         >
           <MessageCircle className="w-6 h-6" />

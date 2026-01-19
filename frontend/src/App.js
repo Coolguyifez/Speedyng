@@ -17,29 +17,12 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/cars" element={<CarsPage />} />
-          <Route path="/car/:id" element={<CarDetailsPage />} />
+          <Route path="/cars" element={<CarsPage /> </ProtectedRoute>} />
+          <Route path="/car/:id" element={<CarDetailsPage /> </ProtectedRoute>} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
-          <Route 
-            path="/cars" 
-            element={
-              <ProtectedRoute>
-                <CarsPage />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/car/:id" 
-            element={
-              <ProtectedRoute>
-                <CarDetailsPage />
-              </ProtectedRoute>
-            } 
-          />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" richColors />

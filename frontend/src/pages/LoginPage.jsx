@@ -34,11 +34,11 @@ const LoginPage = () => {
       if (data.user && data.user.role === 'admin') {
         navigate('/admin');
       } else {
-        navigate('/');
+        navigate(from, { replace: true });
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error(error.response?.data?.detail || 'Login failed. Check your connection.');
+      toast.error(error.response?.data?.detail || 'Login failed.');
     } finally {
       setIsLoading(false);
     }
@@ -117,11 +117,12 @@ const LoginPage = () => {
             </div>
 
             <Button
+              disabled={isloading}
               type="submit"
               size="lg"
               className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg"
             >
-              Sign In
+              {isLoading ? 'Signing In...' : 'Sign In'}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </form>
@@ -129,7 +130,11 @@ const LoginPage = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-red-600 hover:text-red-700 font-medium transition-colors">
+              <Link 
+                to="/register" 
+                state={{ from: location.state?.from }} 
+                className="text-red-600 hover:text-red-700 font-medium transition-colors"
+              >
                 Sign up
               </Link>
             </p>

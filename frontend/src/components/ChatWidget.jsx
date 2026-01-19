@@ -22,8 +22,7 @@ const ChatWidget = () => {
   // Get logged-in user info safely
   const user = JSON.parse(localStorage.getItem('user'));
   
-  // IF NO USER, DO NOT RENDER ANYTHING
-  if (!user) return null;
+ 
 
   // 1. Fetch real cars and Load Chat History on mount
   useEffect(() => {
@@ -189,6 +188,11 @@ const ChatWidget = () => {
     }
   };
 
+   // IF NO USER, DO NOT RENDER ANYTHING
+ if (!user) {
+    return null;
+  }
+  
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {/* Chat Button */}

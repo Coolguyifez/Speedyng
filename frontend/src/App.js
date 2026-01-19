@@ -10,8 +10,13 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from './components/ProtectedRoute';
+import ChatWidget from './components/ChatWidget';
 
 function App() {
+  / Check if user is logged in to show/hide the Speedy Assistant globally
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  
   return (
     <div className="App">
       <BrowserRouter>
@@ -24,6 +29,8 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
+        {/* SPEEDY ASSISTANT - Only renders if user exists */}
+        {user && <ChatWidget />}
       </BrowserRouter>
       <Toaster position="top-right" richColors />
     </div>

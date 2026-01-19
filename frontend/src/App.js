@@ -29,7 +29,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
-        {/* SPEEDY ASSISTANT - Only renders if user exists */}
+        //SPEEDY ASSISTANT - Only renders if user exists 
         {user && <ChatWidget />}
       </BrowserRouter>
       <Toaster position="top-right" richColors />

@@ -96,7 +96,7 @@ class ContactResponse(ContactCreate):
 # Updated to match the storage needs of Speedy Assist
 class ChatMessageCreate(BaseModel):
     sender: str # 'user' or 'bot'
-    text: str   # Renamed from 'content' to match frontend logic
+    content: str   # Renamed from 'content' to match frontend logic
     timestamp: Optional[datetime] = None
 
 class ChatMessageResponse(BaseModel):

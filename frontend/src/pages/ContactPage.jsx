@@ -150,8 +150,8 @@ const ContactPage = () => {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Our Benin Location</h4>
                       <p className="text-gray-600 text-sm">
-                        Km8, Edebiri Complex Ugbowo,<br />
-                        Lagos Rd. Benin, Nigeria
+                        Km8, Edebiri Complex Obayuwana Str.,<br />
+                        Lagos Rd. Ugbowo-Benin, Nigeria
                       </p>
                     </div>
                   </div>
@@ -254,7 +254,7 @@ const ContactPage = () => {
         <Card className="mt-8 border-none shadow-lg overflow-hidden">
           <div className="h-96 bg-gray-200 relative">
             <iframe
-              src="https://www.google.com/maps/d/embed?mid=1-eFykVV1fcQ9eBzZRJHACDT0VlDI1mM&ehbc=2E312F"
+              src="https://www.google.com/maps/d/embed?mid=14zBH6R06JXE1s4XH9hD2_hvbyYnvjmk&ehbc=2E312F"
               width="100%"
               height="100%"
               style={{ border: 0 }}

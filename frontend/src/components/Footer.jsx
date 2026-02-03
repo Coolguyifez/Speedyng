@@ -73,8 +73,14 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Sedans</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">SUVs</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Trucks & Pickups</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Luxury Cars</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Luxury</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Trucks</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Pickup Trucks</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Hatchbacks</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Buses</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Convertibles</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">MPV</li>
+               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Vans</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Budget Cars</li>
             </ul>
           </div>
@@ -85,21 +91,34 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start space-x-3 text-sm">
                 <MapPin className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <h4>Warri</h4>
                 <span>
-                  No. 18 Admiralty Way, Lekki Phase 1,<br />
-                  Lagos State, Nigeria
+                  Suite 13, Goodluck Shopping Centre, adjacent to the Old Effurn Garden park, Effurun/Sapele Rd. Warri, Nigeria
                 </span>
+                
+              </li>
+              <li className="flex items-start space-x-3 text-sm">
+                <MapPin className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <h4>Benin</h4>
+                <span>
+                  Km8, Edebiri Complex Ugbowo, Lagos Rd. Benin, Nigeria
+                </span>
+                
               </li>
               <li className="flex items-center space-x-3 text-sm">
                 <Phone className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <a href="tel:08154675347" className="hover:text-red-500 transition-colors">
-                  08154675347
+                <a href="tel:09019254080" className="hover:text-red-500 transition-colors">
+                  09019254080
+                </a>
+                <p className= "text-red-500">or</p>
+                <a href="tel:07056117175" className="hover:text-red-500 transition-colors">
+                  07056117175
                 </a>
               </li>
               <li className="flex items-center space-x-3 text-sm">
                 <Mail className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <a href="mailto:info@speedy.ng" className="hover:text-red-500 transition-colors">
-                  info@speedy.ng
+                <a href="infospeedyng360@gmail.com" className="hover:text-red-500 transition-colors">
+                  infospeedyng360@gmail.com
                 </a>
               </li>
             </ul>

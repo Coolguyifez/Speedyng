@@ -128,7 +128,7 @@ const ChatWidget = () => {
     if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments. Check back soon for 'Pay on credit' options!";
     if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.";
     if (input.includes('inspect') || input.includes('see the car')) return "We arrange inspections before payment. A small commission fee may apply based on your location, but note that 5%-10% of that commission will be refunded to you if you don't like the car after inspection.";
-    if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 08154675347 to list your car and make arrangements.";
+    if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
     if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our Car page to see everything from brand new to Nigeria used.";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a car based on your budget. How much are you looking to spend?";
     
@@ -213,7 +213,7 @@ const ChatWidget = () => {
           <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 rounded-t-lg flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <MessageCircle className="w-5 h-5" />
+                <LuMessageCircleMore className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="font-semibold">Speedy Assist</h3>

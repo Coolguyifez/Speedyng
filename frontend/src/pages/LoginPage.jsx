@@ -54,6 +54,9 @@ const LoginPage = () => {
             <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-2xl">S</span>
             </div>
+            <div className="absolute -right-1 -bottom-1 w-4 h-4 bg-black rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
             <span className="text-3xl font-bold text-black">Speedy</span>
           </Link>
 

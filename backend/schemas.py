@@ -40,9 +40,9 @@ class CarBase(BaseModel):
     price: int
     condition: str
     location: str
+    owner_name: Optional[str] = None
     address: Optional[str] = None       
     phone_number: Optional[str] = None
-    owner_name: Optional[str] = None
     image: Optional[str] = None
     images: Optional[List[str]] = []
     year: Optional[int] = None
@@ -62,9 +62,9 @@ class CarUpdate(BaseModel):
     price: Optional[int]
     condition: Optional[str]
     location: Optional[str]
+    owner_name: Optional[str]
     address: Optional[str]      
     phone_number: Optional[str]
-    owner_name: Optional[str]
     image: Optional[str]
     images: Optional[List[str]]
     year: Optional[int]

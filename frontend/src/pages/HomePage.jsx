@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, DollarSign, Ship, TruckIcon } from 'lucide-react';
+import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import Header from '../components/Header';
@@ -69,12 +70,13 @@ const HomePage = () => {
             <Link to="/cars">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
                 Browse Cars
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-1 w-5 h-5" />
               </Button>
             </Link>
             <a href="tel:09019254080">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                ☎ Call us 
+                <FaPhoneAlt className="mr-1 w-5 h-5"/>
+                Call us 
               </Button>
             </a>
           </div>

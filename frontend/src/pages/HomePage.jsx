@@ -72,9 +72,9 @@ const HomePage = () => {
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-            <a href="tel:08154675347">
+            <a href="tel:09019254080">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                ☎ Call now
+                ☎ Call us 
               </Button>
             </a>
           </div>
@@ -266,11 +266,6 @@ const HomePage = () => {
                 Browse All Cars
               </Button>
             </Link>
-            <a href="tel:08154675347">
-              <Button size="lg" variant="outline" className="border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-               ☎ Call Agent
-              </Button>
-            </a>
           </div>
         </div>
       </section>

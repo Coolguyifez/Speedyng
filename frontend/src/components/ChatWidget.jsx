@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send } from 'lucide-react';
+import { LuMessageCircleMore } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { carAPI } from '../services/api';
@@ -201,7 +202,7 @@ const ChatWidget = () => {
           onClick={handleToggleChat}
           className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
         >
-          <MessageCircle className="w-6 h-6" />
+          <LuMessageCircleMore className="w-6 h-6" />
         </Button>
       )}
 

@@ -355,9 +355,21 @@ const AdminPanel = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Address</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Owner's/Company's Name</label>
+                        <input
+                          type="text"
+                          name="owner_name"
+                          value={formData.owner_name}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="Enter owner's full name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Owners Address</label>
                         <input
                           type="text"
                           name="address"
@@ -367,9 +379,9 @@ const AdminPanel = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                           placeholder="e.g. 123 Lekki Phase 1, Lagos"
                         />
-                      </div>
+                      </div>  
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Phone Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Owners Phone Number</label>
                         <input
                           type="text"
                           name="phone_number"
@@ -378,29 +390,6 @@ const AdminPanel = () => {
                           required
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                           placeholder="09012345678"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Phone Number</label>
-                        <input
-                          type="text"
-                          name="phone_number"
-                          value={formData.phone_number}
-                          onChange={handleChange}
-                          required
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                          placeholder="09012345678"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Owner Name</label>
-                        <input
-                          type="text"
-                          name="owner_name"
-                          value={formData.owner_name}
-                          onChange={handleChange}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                          placeholder="Enter owner's full name"
                         />
                       </div>
                     </div>

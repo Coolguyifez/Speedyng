@@ -73,13 +73,13 @@ const Footer = () => {
             <ul className="space-y-2">
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Sedans</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">SUVs</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Luxury</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Luxury cars</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Trucks</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Pickup Trucks</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Hatchbacks</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Buses</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Convertibles</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">MPV</li>
+              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">MPVs</li>
                <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Vans</li>
               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Budget Cars</li>
             </ul>

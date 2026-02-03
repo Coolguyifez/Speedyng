@@ -85,10 +85,15 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <a href="tel:08154675347" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
+            <a href="tel:09019254080" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
               <Phone className="w-4 h-4" />
-              <span className="text-sm font-medium">08154675347</span>
+              <span className="text-sm font-medium">09019254080</span>
             </a>
+            <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
+              <Phone className="w-4 h-4" />
+              <span className="text-sm font-medium">07056117175</span>
+            </a>
+            
             
             {user ? (
               <>

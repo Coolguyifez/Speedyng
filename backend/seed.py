@@ -39,7 +39,7 @@ async def seed_database():
         users_to_create = [
             {
                 "name": "Admin User",
-                "email": "admin@speedy.ng",
+                "email": "admin@speedyng.com",
                 "phone": "09019254080",
                 "password": "admin123",
                 "role": "admin"

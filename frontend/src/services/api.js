@@ -3,7 +3,7 @@ import axios from 'axios';
 // 1. Create the base axios instance
 const api = axios.create({
   // Ensure this matches your live Render backend URL
-  baseURL: 'https://speedy-backend-7lq3.onrender.com/api',
+  baseURL: 'https://speedy-backend-fb9s.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },

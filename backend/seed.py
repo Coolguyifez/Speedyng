@@ -29,7 +29,7 @@ async def seed_database():
             {
                 "name": "Admin User",
                 "email": "admin@speedy.ng",
-                "phone": "08154675347",
+                "phone": "09019254080",
                 "password": "admin123",
                 "role": "admin"
             },

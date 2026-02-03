@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle} from 'lucide-react';
 import { FaWhatsapp } from "react-icons/fa";
+import { LuMessageCircleMore } from "react-icons/lu";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import Header from '../components/Header';
@@ -175,7 +176,7 @@ const ContactPage = () => {
                       <Phone className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Phone Number 1</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1">Phone Number 2</h4>
                       <a
                         href="tel:07056117175"
                         className="text-red-600 hover:text-red-700 font-medium transition-colors"
@@ -222,9 +223,9 @@ const ContactPage = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Quick Actions</h3>
                 <div className="space-y-3">
-                  <a href="https://wa.me/2348154675347" className="block">
+                  <a href="https://wa.me/234901254080" className="block">
                     <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg">
-                      <FaWhatsapp className="w-5 h-5 mr-2" />
+                      <FaWhatsapp className="w-5 h-5 mr-1" />
                       Chat With Us
                     </Button>
                   </a>
@@ -240,7 +241,7 @@ const ContactPage = () => {
                       toast.success(' opening Speedy Assit .....');
                     }}
                   >
-                    <MessageCircle className="w-5 h-5 mr-2" />
+                    <LuMessageCircleMore className="w-5 h-5 mr-1" />
                     Chat with Speedy Assit
                   </Button>
                 </div>

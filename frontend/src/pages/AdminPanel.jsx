@@ -19,7 +19,7 @@ const categories = [
   { name: 'Bus' },
   { name: 'Convertible' },
   { name: 'MPV' },
-  
+  {name: 'Van' },
   { name: 'Budget' },
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];

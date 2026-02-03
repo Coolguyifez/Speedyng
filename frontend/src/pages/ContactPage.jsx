@@ -254,14 +254,14 @@ const ContactPage = () => {
         <Card className="mt-8 border-none shadow-lg overflow-hidden">
           <div className="h-96 bg-gray-200 relative">
             <iframe
-              src="<iframe src="https://www.google.com/maps/d/embed?mid=1-eFykVV1fcQ9eBzZRJHACDT0VlDI1mM&ehbc=2E312F"
+              src="https://www.google.com/maps/d/embed?mid=1-eFykVV1fcQ9eBzZRJHACDT0VlDI1mM&ehbc=2E312F"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Speedy Auto Hub Location"
+              title="Speedy Agent Hub Location"
             ></iframe>
           </div>
         </Card>

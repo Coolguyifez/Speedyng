@@ -223,9 +223,10 @@ const CarDetailsPage = () => {
                 
                 {/* CTA Buttons */}
                 <div className="space-y-3">
-                  <a href="tel:08154675347" className="block">
+                  <a href="tel:09019254080" className="block">
                     <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg">
-                      ☎ Call Agent
+                    <Phone ClassName="w-4 h-4 mr-1" />
+                      Call Agent
                     </Button>
                   </a>
                   <Button
@@ -234,7 +235,8 @@ const CarDetailsPage = () => {
                     onClick={handleBookInspection}
                     className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
                   >
-                    ⏱ Book Inspection
+                  <Clock className="w-4 h-4 mr-1"/>
+                  Book Inspection
                   </Button>
                 </div>
 
@@ -243,8 +245,13 @@ const CarDetailsPage = () => {
                   <p className="text-sm text-gray-600 mb-2">Need help? Chat with our AI assistant</p>
                   <p className="text-sm text-gray-500">
                     <MapPin className="w-4 h-4 inline mr-1" />
-                    No. 18 Admiralty Way, Lekki Phase 1, Lagos
+                    Suite 13, Goodluck Shopping Centre, adjacent to the Old Effurn Garden park, Effurun/Sapele Rd.Warri, Nigeria
                   </p>
+                  <p className="text-sm text-gray-500">
+                    <MapPin className="w-4 h-4 inline mr-1" />
+                    Km8, Edebiri Complex Ugbowo, Lagos Rd. Benin, Nigeria
+                  </p>
+                  
                 </div>
               </CardContent>
             </Card>

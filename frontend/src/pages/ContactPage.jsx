@@ -90,7 +90,7 @@ const ContactPage = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
-                      placeholder="08154675347"
+                      placeholder="0901254080"
                     />
                   </div>
 
@@ -134,12 +134,39 @@ const ContactPage = () => {
                       <MapPin className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Our Location</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1">Our Warri Location</h4>
                       <p className="text-gray-600 text-sm">
-                        No. 18 Admiralty Way,<br />
-                        Lekki Phase 1,<br />
-                        Lagos State, Nigeria
+                        Suite 13, Goodluck Shopping Centre,<br />
+                        adjacent to the Old Effurn Garden park,<br />
+                        Effurun/Sapele Rd. Warri, Nigeria
                       </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-red-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Our Benin Location</h4>
+                      <p className="text-gray-600 text-sm">
+                        Km8, Edebiri Complex Ugbowo,<br />
+                        Lagos Rd. Benin, Nigeria
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-6 h-6 text-red-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-1">Phone Number 1</h4>
+                      <a
+                        href="tel:0901254080"
+                        className="text-red-600 hover:text-red-700 font-medium transition-colors"
+                      >
+                        0901254080
+                      </a>
                     </div>
                   </div>
 
@@ -148,12 +175,12 @@ const ContactPage = () => {
                       <Phone className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Phone Number</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1">Phone Number 1</h4>
                       <a
-                        href="tel:08154675347"
+                        href="tel:07056117175"
                         className="text-red-600 hover:text-red-700 font-medium transition-colors"
                       >
-                        08154675347
+                        07056117175
                       </a>
                     </div>
                   </div>
@@ -165,10 +192,10 @@ const ContactPage = () => {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Email Address</h4>
                       <a
-                        href="mailto:info@speedy.ng"
+                        href="mailto:infospeedyng360@gmail.com"
                         className="text-red-600 hover:text-red-700 font-medium transition-colors"
                       >
-                        info@speedy.ng
+                        infospeedyng360@gmail.com
                       </a>
                     </div>
                   </div>

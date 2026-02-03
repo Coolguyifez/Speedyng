@@ -33,7 +33,7 @@ api_router = APIRouter()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://speedyng.onrender.com",
+        "https://speedyng-c5gq.onrender.com",
         "http://localhost:3000", # Common for React local dev
         "http://localhost:5173"  # Common for Vite local dev
     ],

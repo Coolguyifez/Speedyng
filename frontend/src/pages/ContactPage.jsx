@@ -91,7 +91,7 @@ const ContactPage = () => {
                       onChange={handleChange}
                       required
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
-                      placeholder="0901254080"
+                      placeholder="09019254080"
                     />
                   </div>
 
@@ -163,10 +163,10 @@ const ContactPage = () => {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Phone Number 1</h4>
                       <a
-                        href="tel:0901254080"
+                        href="tel:09019254080"
                         className="text-red-600 hover:text-red-700 font-medium transition-colors"
                       >
-                        0901254080
+                        09019254080
                       </a>
                     </div>
                   </div>
@@ -254,7 +254,7 @@ const ContactPage = () => {
         <Card className="mt-8 border-none shadow-lg overflow-hidden">
           <div className="h-96 bg-gray-200 relative">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.6455844193644!2d3.4256!3d6.4367!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMjYnMTIuMSJOIDPCsDI1JzMyLjIiRQ!5e0!3m2!1sen!2sng!4v1234567890"
+              src="<iframe src="https://www.google.com/maps/d/embed?mid=1-eFykVV1fcQ9eBzZRJHACDT0VlDI1mM&ehbc=2E312F"
               width="100%"
               height="100%"
               style={{ border: 0 }}

@@ -118,7 +118,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3 text-sm">
                 <Mail className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <a href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJlGVGMWsnBldDcfHswNbDbwwkkmcNGjDBVqDmtjpRcJclTQqDXhcVJPwsGjvSNGTVbtBtg" className="hover:text-red-500 transition-colors">
+                <a href="mailto:infospeedyng360@gmail.com" className="hover:text-red-500 transition-colors">
                   infospeedyng360@gmail.com
                 </a>
               </li>

@@ -14,6 +14,12 @@ const categories = [
   { name: 'SUV' },
   { name: 'Luxury' },
   { name: 'Truck' },
+  { name: 'Pickup Truck' },
+  { name: 'Hatchbacks' },
+  { name: 'Bus' },
+  { name: 'Convertible' },
+  { name: 'MPV' },
+  
   { name: 'Budget' },
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
@@ -30,6 +36,9 @@ const AdminPanel = () => {
     price: '',
     condition: 'Foreign Used',
     location: 'Lagos',
+    address: '',       
+    phone_number: '',
+    owner_name: '',
     image: '',
     images: '',
     year: new Date().getFullYear(),
@@ -65,6 +74,8 @@ const AdminPanel = () => {
       price: '',
       condition: 'Foreign Used',
       location: 'Lagos',
+      phone_number: '',
+      owner_name: '',
       image: '',
       images: '',
       year: new Date().getFullYear(),
@@ -131,6 +142,8 @@ const AdminPanel = () => {
     setEditingCar(car);
     setFormData({
       ...car,
+      address: car.address || '',           // Ensure value is captured
+      phone_number: car.phone_number || '', // Ensure value is captured
       fuel_type: car.fuel_type || 'Petrol', // Mapping to match state
       features: Array.isArray(car.features) ? car.features.join(', ') : car.features
     });
@@ -341,8 +354,56 @@ const AdminPanel = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                         />
                       </div>
+                      <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Detailed Address</label>
+                        <input
+                          type="text"
+                          name="address"
+                          value={formData.address}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="e.g. 123 Lekki Phase 1, Lagos"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Phone Number</label>
+                        <input
+                          type="text"
+                          name="phone_number"
+                          value={formData.phone_number}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="09012345678"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Contact Phone Number</label>
+                        <input
+                          type="text"
+                          name="phone_number"
+                          value={formData.phone_number}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="09012345678"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Owner Name</label>
+                        <input
+                          type="text"
+                          name="owner_name"
+                          value={formData.owner_name}
+                          onChange={handleChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="Enter owner's full name"
+                        />
+                      </div>
                     </div>
-
+                      
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Mileage</label>

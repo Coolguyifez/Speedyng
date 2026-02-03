@@ -24,6 +24,17 @@ async def seed_database():
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
+        # ----------------- INITIALIZATION CHECK -----------------
+        # We check for the Admin. If the Admin exists, it means the 
+        # system has been seeded before. We will NOT add cars again.
+        admin_email = "admin@speedy.ng"
+        admin_check = await session.execute(select(User).where(User.email == admin_email))
+        is_already_initialized = admin_check.scalars().first() is not None
+
+        if is_already_initialized:
+            logger.info("✓ System already initialized. Respecting Admin modifications. Skipping car seed.")
+            return # Exit early so no cars are added
+
         # ----------------- Admin & Test Users -----------------
         users_to_create = [
             {

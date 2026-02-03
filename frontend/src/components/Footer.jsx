@@ -24,7 +24,7 @@ const Footer = () => {
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-               <a href="https://wa.me/2348154675347" className="text-gray-400 hover:text-red-500 transition-colors">
+               <a href="https://wa.me/234815467" className="text-gray-400 hover:text-red-500 transition-colors">
                 < PiWhatsappLogo className="w-5 h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
@@ -91,7 +91,6 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start space-x-3 text-sm">
                 <MapPin className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <h4>Warri</h4>
                 <span>
                   Suite 13, Goodluck Shopping Centre, adjacent to the Old Effurn Garden park, Effurun/Sapele Rd. Warri, Nigeria
                 </span>
@@ -99,7 +98,6 @@ const Footer = () => {
               </li>
               <li className="flex items-start space-x-3 text-sm">
                 <MapPin className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <h4>Benin</h4>
                 <span>
                   Km8, Edebiri Complex Ugbowo, Lagos Rd. Benin, Nigeria
                 </span>
@@ -117,7 +115,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3 text-sm">
                 <Mail className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <a href="infospeedyng360@gmail.com" className="hover:text-red-500 transition-colors">
+                <a href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJlGVGMWsnBldDcfHswNbDbwwkkmcNGjDBVqDmtjpRcJclTQqDXhcVJPwsGjvSNGTVbtBtg" className="hover:text-red-500 transition-colors">
                   infospeedyng360@gmail.com
                 </a>
               </li>

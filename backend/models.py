@@ -30,6 +30,9 @@ class Car(Base):
     price = Column(Integer, nullable=False)
     condition = Column(String(50), nullable=False)  # Brand New / Foreign Used / Nigerian Used
     location = Column(String(50), nullable=False)
+    owner_name = Column(String(100), nullable=True)
+    address = Column(String(255), nullable=True)     
+    phone_number = Column(String(20), nullable=True)
     image = Column(String(255), nullable=False)
     images = Column(ARRAY(String), default=[])
     year = Column(Integer, nullable=False)
@@ -55,9 +58,7 @@ class Contact(Base):
     status = Column(String(20), default="pending")  # pending, resolved
     created_at = Column(DateTime, default=datetime.utcnow)
 
-
-# ================== Chat Session Model ==================
-# ================== Chat Message Model ==================
+# ================== AI Chat Message Model ==================
 class ChatMessage(Base):
     __tablename__ = "chat_messages"
 

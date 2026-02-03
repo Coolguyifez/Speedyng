@@ -24,7 +24,7 @@ const Footer = () => {
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-               <a href="https://wa.me/234815467" className="text-gray-400 hover:text-red-500 transition-colors">
+               <a href="https://wa.me/2349019254080" className="text-gray-400 hover:text-red-500 transition-colors">
                 < PiWhatsappLogo className="w-5 h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">

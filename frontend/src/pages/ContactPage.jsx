@@ -223,7 +223,7 @@ const ContactPage = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Quick Actions</h3>
                 <div className="space-y-3">
-                  <a href="https://wa.me/234901254080" className="block">
+                  <a href="https://wa.me/2349019254080" className="block">
                     <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg">
                       <FaWhatsapp className="w-5 h-5 mr-1" />
                       Chat With Us

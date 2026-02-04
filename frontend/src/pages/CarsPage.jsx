@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Added useEffect
-import { Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Search, SlidersHorizontal, CheckCircle, Loader2 } from 'lucide-react'; // Added Loader2
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -16,6 +16,7 @@ const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Use
 
 const CarsPage = () => {
   const [cars, setCars] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,6 +24,15 @@ const CarsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [selectedCondition, setSelectedCondition] = useState('All Conditions');
   const [priceRange, setPriceRange] = useState('all');
+
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category');
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    } else {
+      setSelectedCategory('all');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -37,7 +47,16 @@ const CarsPage = () => {
     };
     fetchCars();
   }, []);
-  
+
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+    if (value === 'all') {
+      searchParams.delete('category');
+    } else {
+      searchParams.set('category', value);
+    }
+    setSearchParams(searchParams);
+  };
 
  const filteredCars = cars.filter((car) => {
     const matchesSearch = car.name.toLowerCase().includes(searchQuery.toLowerCase());
@@ -99,7 +118,7 @@ const CarsPage = () => {
             <div className={`${isFilterVisible ? 'grid' : 'hidden'} md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-2 duration-200`}>
 
               {/* Category Filter */}
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <Select value={selectedCategory} onValueChange={handleCategoryChange}>
                 <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>

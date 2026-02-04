@@ -5,6 +5,11 @@ import { FaXTwitter } from "react-icons/fa6";
 import { PiWhatsappLogo } from "react-icons/pi";
 
 const Footer = () => {
+  const footerCategories = [
+    "Sedan", "SUV", "Luxury car", "Truck", "Pickup Truck",
+    "Hatchback", "Bus", "Convertible", "MPV", "Van", "Budget"
+  ];
+  
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="container mx-auto px-4 py-12">

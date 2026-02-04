@@ -104,7 +104,7 @@ const Footer = () => {
               <li className="flex items-start space-x-3 text-sm">
                 <MapPin className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
                 <span>
-                  Km8, Edebiri Complex Ugbowo, Lagos Rd. Benin, Nigeria
+                  Km8, Edebiri Complex Obayuwana Str., Lagos Rd. Ugbowo-Benin, Nigeria
                 </span>
                 
               </li>

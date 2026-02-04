@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { Facebook, Twitter, Instagram, Phone, Mail, MapPin} from 'lucide-react';
 import { FaXTwitter } from "react-icons/fa6";
 import { PiWhatsappLogo } from "react-icons/pi";
-
+import { PiTiktokLogo } from "react-icons/pi";
+import { TbBrandLinkedin } from "react-icons/tb";
 const Footer = () => {
   const footerCategories = [
     "Sedan", "SUV", "Luxury car", "Truck", "Pickup Truck",
@@ -43,10 +44,12 @@ const Footer = () => {
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              
-               
-              
-             
+              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+                <PiTiktokLogo className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+                <TbBrandLinkedin className="w-5 h-5" />
+              </a>
             </div>
           </div>
 

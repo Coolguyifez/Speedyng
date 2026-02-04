@@ -168,7 +168,7 @@ const ContactPage = () => {
                       <MapPin className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Our Warri Location</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1"> Warri Location</h4>
                       <p className="text-gray-600 text-sm">
                         Suite 13, Goodluck Shopping Centre,<br />
                         adjacent to the Old Effurn Garden park,<br />
@@ -181,7 +181,7 @@ const ContactPage = () => {
                       <MapPin className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Our Benin Location</h4>
+                      <h4 className="font-semibold text-gray-900 mb-1">Benin Location</h4>
                       <p className="text-gray-600 text-sm">
                         Km8, Edebiri Complex Obayuwana Str.,<br />
                         Lagos Rd. Ugbowo-Benin, Nigeria

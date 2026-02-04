@@ -47,7 +47,12 @@ const CarDetailsPage = () => {
   };
 
   const handleBookInspection = () => {
-    toast.success('Inspection booking request sent! We\'ll call you shortly.');
+    toast.success('Redirecting to inspection booking form...');
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+      window.open("https://forms.gle/e9ERKFpi3AZA5biG7", "_blank");
+    }, 1000);
   };
 
   // 1. Loading State

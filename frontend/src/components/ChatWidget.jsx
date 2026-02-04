@@ -124,7 +124,7 @@ const ChatWidget = () => {
     }
 
     // KEYWORD LOGIC
-    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified agent platform. We inspect every car before recommending it!";
+    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified car broker platform. We inspect every vehicle before recommending it!";
     if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments. Check back soon for 'Pay on credit' options!";
     if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.";
     if (input.includes('inspect') || input.includes('see the car')) return "We arrange inspections before payment. A small commission fee may apply based on your location, but note that 5%-10% of that commission will be refunded to you if you don't like the car after inspection.";

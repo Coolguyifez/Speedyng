@@ -12,16 +12,18 @@ const Footer = () => {
           {/* Company Info */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
-              <div className="absolute -right-1 -bottom-1 w-4 h-4 bg-black rounded-full flex items-center justify-center">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
-              </div>
-              <span className="text-2xl font-bold text-white">Speedy</span>
+              <div className="relative">
+                  <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <span className="text-white font-bold text-xl">S</span>
+                  </div>
+                  <div className="absolute -right-1 -bottom-1 w-4 h-4 bg-black rounded-full flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full"></div>
+                  </div>
+                </div>
+                <span className="text-2xl font-bold text-white">Speedy</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
-              Fast, reliable, and customer-focused car marketplace in Nigeria. Your trusted partner for quality vehicles.
+              Fast, reliable, and customer-focused car marketplace in Nigeria. Your trusted broker for quality vehicles.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">

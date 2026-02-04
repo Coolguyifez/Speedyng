@@ -10,6 +10,7 @@ import ChatWidget from '../components/ChatWidget';
 import { toast } from 'sonner';
 
 const ContactPage = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,10 +22,41 @@ const ContactPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success('Message sent! We\'ll get back to you soon.');
-    setFormData({ name: '', email: '', phone: '', message: '' });
+    setIsSubmitting(true);
+
+    // Prepare data for Web3Forms
+    const submissionData = {
+      ...formData,
+      access_key: "0447b582-799c-4790-a398-1e9173b7598a", 
+      subject: `New Lead for Speedy: ${formData.name}`,
+      from_name: "Speedy Car Agent Platform"
+    };
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(submissionData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success('Message sent! we will be in touch!!.');
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      } else {
+        toast.error('Message not sent! Please try again.');
+      }
+    } catch (error) {
+      toast.error('Network error. Please check your connection.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -113,10 +145,11 @@ const ContactPage = () => {
                   <Button
                     type="submit"
                     size="lg"
+                    disabled={isSubmitting}
                     className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white px-8 transition-all duration-300 hover:shadow-lg"
                   >
                     <Send className="w-5 h-5 mr-2" />
-                    Send Message
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>
                 </form>
               </CardContent>

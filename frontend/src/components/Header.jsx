@@ -200,7 +200,7 @@ const Header = () => {
                     }}
                     className="w-full"
                   >
-                    <LogOut className="w-4 h-4 mr-2" />
+                    <LogOut className="w-4 h-4 mr-1" />
                     Logout
                   </Button>
                 </>

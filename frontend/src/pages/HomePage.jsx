@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Van, Bus,  DollarSign, Ship, Zap, Users, Layers } from 'lucide-react';
+import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Van, Bus,  DollarSign, Ship, TruckElectric } from 'lucide-react';
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -38,10 +38,8 @@ const HomePage = () => {
       DollarSign: DollarSign,
       Ship: Ship,
       Bus: Bus,
-      Zap: Zap,
+      TruckElectric: TruckElectric,
       Van: Van,
-      Users: Users,
-      Layers: Layers
     };
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);
     return <Icon className="w-8 h-8" />;
@@ -140,21 +138,28 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Browse by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((category, index) => (
-              <Link key={index} to="/cars">
-                <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group">
-                  <CardContent className="p-6 text-center">
-                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-red-100 transition-colors duration-300">
-                      <div className="text-gray-700 group-hover:text-red-600 transition-colors duration-300">
-                        {getCategoryIcon(category.icon)}
+            {categories.map((category, index) => {
+              // CALCULATE LIVE COUNT:
+              // This filters the cars already fetched from your database
+              const actualCount = cars.filter(car => car.category === category.name).length;
+      
+              return (
+                <Link key={index} to="/cars">
+                  <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group">
+                    <CardContent className="p-6 text-center">
+                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-red-100 transition-colors duration-300">
+                        <div className="text-gray-700 group-hover:text-red-600 transition-colors duration-300">
+                          {getCategoryIcon(category.icon)}
+                        </div>
                       </div>
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
-                    <p className="text-sm text-gray-500">{category.count} cars</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+                      <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
+                      {/* Displaying the real number from your database */}
+                      <p className="text-sm text-gray-500">{actualCount} cars</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

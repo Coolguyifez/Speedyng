@@ -76,17 +76,16 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold mb-4">Categories</h3>
             <ul className="space-y-2">
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Sedans</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">SUVs</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Luxury cars</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Trucks</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Pickup Trucks</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Hatchbacks</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Buses</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Convertibles</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">MPVs</li>
-               <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Vans</li>
-              <li className="text-sm hover:text-red-500 transition-colors cursor-pointer">Budget Cars</li>
+              {footerCategories.map((cat) => (
+                <li key={cat}>
+                  <Link 
+                    to={`/cars?category=${encodeURIComponent(cat)}`} 
+                    className="text-sm text-gray-400 hover:text-red-500 transition-colors duration-200 block w-full"
+                  >
+                    {cat}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 

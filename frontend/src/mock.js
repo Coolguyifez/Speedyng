@@ -191,7 +191,7 @@ export const categories = [
   { name: 'Luxury', icon: 'Crown' },
   { name: 'Truck', icon: 'Truck' },
   { name: 'Pickup Truck', icon: 'FaTruckPickup' },
-  { name: 'Hatchbacks', icon: 'Car' },
+  { name: 'Hatchback', icon: 'Car' },
   { name: 'Bus', icon: 'Bus' },
   { name: 'Convertible', icon: 'Crown' },
   { name: 'MPV', icon: 'PiVanBold' },

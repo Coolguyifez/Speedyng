@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Van, Bus,  DollarSign, Ship, TruckElectric } from 'lucide-react';
+import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric } from 'lucide-react';
 import { FaTruckPickup  } from "react-icons/fa";
 import { PiVanBold } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";

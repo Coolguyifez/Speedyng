@@ -30,8 +30,8 @@ const ContactPage = () => {
     const submissionData = {
       ...formData,
       access_key: "0447b582-799c-4790-a398-1e9173b7598a", 
-      subject: `New Lead for Speedy: ${formData.name}`,
-      from_name: "Speedy Car Agent Platform"
+      subject: `Customer Inquiry: ${formData.name}`,
+      from_name: "Speedy Car Broker Platform"
     };
 
     try {

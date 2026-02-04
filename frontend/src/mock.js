@@ -190,12 +190,12 @@ export const categories = [
   { name: 'SUV', icon: 'TruckElectric' },
   { name: 'Luxury', icon: 'Crown' },
   { name: 'Truck', icon: 'Truck' },
-  { name: 'Pickup Truck', icon: 'TruckElectric' },
+  { name: 'Pickup Truck', icon: 'FaTruckPickup' },
   { name: 'Hatchbeacks', icon: 'Car' },
   { name: 'Bus', icon: 'Bus' },
   { name: 'Convertible', icon: 'Crown' },
-  { name: 'MPV', icon: 'Van' },
-  { name: 'Van', icon: 'Van' },
+  { name: 'MPV', icon: 'PiVanBold' },
+  { name: 'Van', icon: 'PiVanBold' },
   { name: 'Budget', icon: 'DollarSign' },
 ];
 

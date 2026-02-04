@@ -250,7 +250,8 @@ const CarDetailsPage = () => {
                   </p>
                   <p className="text-sm text-gray-500">
                     <MapPin className="w-4 h-4 inline mr-1" />
-                    Km8, Edebiri Complex Ugbowo, Lagos Rd. Benin, Nigeria
+                    Km8, Edebiri Complex Obayuwana Str.,
+                    Lagos Rd. Ugbowo-Benin, Nigeria
                   </p>
                   
                 </div>

@@ -111,7 +111,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className="text-gray-700 hover:text-red-600 hover:bg-red-50"
                 >
-                  <LogOut className="w-4 h-4 mr-2" />
+                  <LogOut className="w-4 h-4 mr-1" />
                   Logout
                 </Button>
               </>

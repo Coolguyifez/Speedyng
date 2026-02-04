@@ -7,7 +7,7 @@ import { PiTiktokLogo } from "react-icons/pi";
 import { TbBrandLinkedin } from "react-icons/tb";
 const Footer = () => {
   const footerCategories = [
-    "Sedan", "SUV", "Luxury car", "Truck", "Pickup Truck",
+    "Sedan", "SUV", "Luxury", "Truck", "Pickup Truck",
     "Hatchback", "Bus", "Convertible", "MPV", "Van", "Budget"
   ];
   

@@ -148,7 +148,7 @@ const HomePage = () => {
               const actualCount = cars.filter(car => car.category === category.name).length;
       
               return (
-                <Link key={index} to={`/cars?category=${category.name}`}>
+                <Link key={index} to={`/cars?category=${encodeURIComponent(category.name)}`}>
                   <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group">
                     <CardContent className="p-6 text-center">
                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-red-100 transition-colors duration-300">

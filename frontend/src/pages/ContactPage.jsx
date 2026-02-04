@@ -271,7 +271,7 @@ const ContactPage = () => {
                       window.dispatchEvent(new Event('open-speedy-chat'));
                       
                       // 2. Change the toast to something more helpful
-                      toast.success(' opening Speedy Assit .....');
+                      toast.success(' opening Speedy Assist .....');
                     }}
                   >
                     <LuMessageCircleMore className="w-5 h-5 mr-1" />

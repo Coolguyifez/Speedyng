@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, DollarSign, Ship, TruckIcon } from 'lucide-react';
+import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Van, Bus,  DollarSign, Ship, Zap, Users, Layers } from 'lucide-react';
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -34,12 +34,16 @@ const HomePage = () => {
     const icons = {
       Car: Car,
       Truck: Truck,
-      TruckIcon: TruckIcon,
       Crown: Crown,
       DollarSign: DollarSign,
-      Ship: Ship
+      Ship: Ship,
+      Bus: Bus,
+      Zap: Zap,
+      Van: Van,
+      Users: Users,
+      Layers: Layers
     };
-    const Icon = icons[iconName] || Car;
+    const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);
     return <Icon className="w-8 h-8" />;
   };
   // Only show the first 6 cars on the homepage
@@ -64,7 +68,7 @@ const HomePage = () => {
             <span className="block text-red-500 mt-2">Drive with Confidence</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
-            Fast, reliable, and trustworthy car marketplace in Nigeria
+            Fast, reliable, and trustworthy car broker platform connecting buyers and dealers across Nigeria
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
             <Link to="/cars">
@@ -94,7 +98,7 @@ const HomePage = () => {
                   <Shield className="w-8 h-8 text-red-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">Verified Cars</h3>
-                <p className="text-gray-600">All vehicles thoroughly inspected and certified</p>
+                <p className="text-gray-600">All vehicles carefully inspected and verified</p>
               </CardContent>
             </Card>
 
@@ -104,7 +108,7 @@ const HomePage = () => {
                   <Clock className="w-8 h-8 text-red-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">Fast Delivery</h3>
-                <p className="text-gray-600">Quick processing and delivery nationwide</p>
+                <p className="text-gray-600">Quick processing with reliable delivery across the country</p>
               </CardContent>
             </Card>
 
@@ -114,7 +118,7 @@ const HomePage = () => {
                   <Star className="w-8 h-8 text-red-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">Best Prices</h3>
-                <p className="text-gray-600">Competitive pricing with flexible payment options</p>
+                <p className="text-gray-600">Competitive pricing with premium service included</p>
               </CardContent>
             </Card>
 

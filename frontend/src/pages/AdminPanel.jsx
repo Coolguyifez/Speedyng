@@ -30,7 +30,6 @@ const categories = [
   { name: 'Hatchback' },
   { name: 'Exotic' },
   { name: 'Bus' },
-  { name: 'Convertible' },
   { name: 'Small Van' },
   { name: 'Mini MPV' },
   { name: 'Motorcycle' },

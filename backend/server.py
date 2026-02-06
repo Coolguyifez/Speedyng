@@ -251,4 +251,4 @@ async def startup():
 
 @app.get("/")
 async def root():
-    return {"message": "Speedy Car Dealership API", "status": "running"}
+    return {"message": "Speedy Vehicle Dealership API", "status": "running"}

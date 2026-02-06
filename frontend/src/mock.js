@@ -191,7 +191,7 @@ export const categories = [
   { name: 'Mid-size Sedan', icon: 'PiCarProfileLight' },
   { name: 'Full-Size Sedan', icon: 'Car' },
   { name: 'Luxury Sedan', icon: 'Crown' },
-  { name: 'Sports Sedan', icon: 'Zap' },
+  { name: 'Sport Sedan', icon: 'Zap' },
   { name: 'Subcompact SUV', icon: 'TbCarSuv' },
   { name: 'Compact SUV', icon: 'TbCarSuv' },
   { name: 'Coupe SUV', icon: 'Car' },

@@ -58,7 +58,7 @@ export const authAPI = {
 };
 
 // 4. Car API: Handles Inventory
-export const carAPI = {
+export const vehicleAPI = {
   getVehicles: () => api.get('/vehicles'),
   getAll: (category) => api.get('/vehicles', { params: { category } }),
   getOne: (id) => api.get(`/vehicles/${id}`), 

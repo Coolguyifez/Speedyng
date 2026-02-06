@@ -3,7 +3,7 @@ import { MessageCircle, X, Send } from 'lucide-react';
 import { LuMessageCircleMore } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
-import { carAPI } from '../services/api';
+import { vehicleAPI } from '../services/api';
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +33,7 @@ const ChatWidget = () => {
         setAvailableCars(response.data || []);
   
         if (user) {
-          const historyResponse = await carAPI.getChatHistory(user.id);
+          const historyResponse = await vehicleAPI.getChatHistory(user.id);
           if (historyResponse.data && historyResponse.data.length > 0) {
             // Map 'content' from database back to 'text' for display
             const formattedHistory = historyResponse.data.map(msg => ({
@@ -74,22 +74,22 @@ const ChatWidget = () => {
     const input = text.toLowerCase();
 
     // DYNAMIC BRAND SEARCH
-    const brandMatch = availableCars.find(car => 
-      input.includes(car.name.split(' ')[0].toLowerCase())
+    const brandMatch = availableVehicles.find(v => 
+      input.includes(v.name.split(' ')[0].toLowerCase())
     );
 
     if (brandMatch && !input.match(/(\d+)/)) {
       const brandName = brandMatch.name.split(' ')[0];
-      const brandCars = availableCars.filter(car => 
-        car.name.toLowerCase().includes(brandName.toLowerCase())
+      const brandVehicles = availableVehicles.filter(v => 
+        v.name.toLowerCase().includes(brandName.toLowerCase())
       );
 
-      if (brandCars.length > 0) {
+      if (brandVehicles.length > 0) {
         const topMatch = brandCars[0];
         return (
           <span>
-            Yes! We have {brandCars.length} {brandName} models. The best one right now is the 
-            <a href={`/car/${topMatch.id}`} className="text-blue-600 underline ml-1 font-bold">
+            Yes! We have {brandVehicles.length} {brandName} models. The best one right now is the 
+            <a href={`/vehicle/${topMatch.id}`} className="text-blue-600 underline ml-1 font-bold">
               {topMatch.name}
             </a>. Would you like to see its full details?
           </span>
@@ -103,23 +103,23 @@ const ChatWidget = () => {
       const rawNumber = parseInt(moneyMatch[1]);
       const budgetAmount = rawNumber < 1000 ? rawNumber * 1000000 : rawNumber;
       
-      const affordableCars = availableCars
-        .filter(car => car.price <= budgetAmount)
+      const affordableCars = availableVehicles
+        .filter(v => v.price <= budgetAmount)
         .sort((a, b) => b.price - a.price);
 
-      if (affordableCars.length > 0) {
-        const match = affordableCars[0];
+      if (affordableVehicles.length > 0) {
+        const match = affordableVehicles[0];
         return (
           <span>
             I found a great match! The 
-            <a href={`/car/${match.id}`} className="text-blue-600 underline mx-1 font-bold">
+            <a href={`/vehicle/${match.id}`} className="text-blue-600 underline mx-1 font-bold">
               {match.name}
             </a> 
-            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see the Car features!
+            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see the vehicle features!
           </span>
         );
       } else {
-        return `I don't have any cars under ₦${(budgetAmount/1000000).toFixed(1)}M right now. Check our 'Cars' page for more!`;
+        return `I don't have any vehicle under ₦${(budgetAmount/1000000).toFixed(1)}M right now. Check our vehicle page for more!`;
       }
     }
 
@@ -127,9 +127,9 @@ const ChatWidget = () => {
     if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified Automotive broker platform. We inspect every vehicle before recommending it!";
     if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments. Check back soon for 'Pay on credit' options!";
     if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.";
-    if (input.includes('inspect') || input.includes('see the car')) return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
+    if (input.includes('inspect') || input.includes('see the car')) || input.includes('see the vehicle')) || input.includes('see the truck')) || input.includes('see the bus')) || input.includes('see the tricycle')) || input.includes('see the pick up truck')) || input.includes('see the van')) || input.includes('see the motorcycle')) || input.includes('see the bike')) || input.includes('see the toyota')) || input.includes('see the lexus')) return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
     if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
-    if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our Car page to see everything from brand new to Nigeria used.";
+    if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a Vehicle based on your budget and brand name. How much are you looking to spend?";
     
     return "That sounds interesting! Tell me your budget or a brand you like, and I'll find the best deal for you.";
@@ -267,7 +267,7 @@ const ChatWidget = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask about cars, prices, features or budget..."
+                placeholder="Ask about vehicles, prices, features or budget..."
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
               />
               <Button

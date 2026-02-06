@@ -6,6 +6,7 @@ import { PiVanBold } from "react-icons/pi";
 import { FaMotorcycle } from "react-icons/fa";
 import { TbCarSuv } from "react-icons/tb";
 import { PiCarProfileLight } from "react-icons/pi";
+import { PiMotorcycleLight } from "react-icons/pi";
 import { PiVan } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
@@ -51,6 +52,7 @@ const HomePage = () => {
       TbCarSuv: TbCarSuv,
       Zap: Zap,
       PiCarProfileLight: PiCarProfileLight,
+      PiMotorcycleLight: PiMotorcycleLight;
       PiVan: PiVan,
     };
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);

@@ -30,7 +30,7 @@ const ChatWidget = () => {
     const initData = async () => {
       try {
         const response = await vehicleAPI.getVehicles();
-        setAvailableCars(response.data || []);
+        setAvailableVehicles(response.data || []);
   
         if (user) {
           const historyResponse = await vehicleAPI.getChatHistory(user.id);

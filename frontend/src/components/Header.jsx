@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Phone, User, LogOut } from 'lucide-react';
+import { FiUserCheck } from "react-icons/fi";
 import { Button } from './ui/button';
 import { authAPI } from '../services/api';
 import { toast } from 'sonner';
@@ -66,9 +67,9 @@ const Header = () => {
               Home
             </Link>
             <Link
-              to="/cars"
+              to="/vehicles"
               className={`text-sm font-medium transition-colors hover:text-red-600 ${
-                isActive('/cars') ? 'text-red-600' : 'text-gray-700'
+                isActive('/vehicles') ? 'text-red-600' : 'text-gray-700'
               }`}
             >
               Browse Vehicles
@@ -85,12 +86,12 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <a href="tel:09019254080" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-              <Phone className="w-4 h-4" />
-              <span className="text-sm font-medium">09019254080</span>
+            <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
+              <Phone className="w-4 h-4 ml-1" />
+              <span className="text-sm font-medium">08135877104</span>
             </a>
             <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-              <Phone className="w-4 h-4" />
+              <Phone className="w-4 h-4 ml-1" />
               <span className="text-sm font-medium">07056117175</span>
             </a>
             
@@ -111,7 +112,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className="text-gray-700 hover:text-red-600 hover:bg-red-50"
                 >
-                  <LogOut className="w-4 h-4 mr-1" />
+                  <LogOut className="w-4 h-4" />
                   Logout
                 </Button>
               </>
@@ -119,12 +120,13 @@ const Header = () => {
               <>
                 <Link to="/login">
                   <Button variant="ghost" size="sm" className="text-gray-700 hover:text-red-600 hover:bg-red-50">
-                    <User className="w-4 h-4 mr-2" />
+                    <FiUserCheck className="w-4 h-4 mr-1" />
                     Login
                   </Button>
                 </Link>
                 <Link to="/register">
                   <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
+                    <User className="w-4 h-4 mr-1" />
                     Sign Up
                   </Button>
                 </Link>
@@ -155,10 +157,10 @@ const Header = () => {
                 Home
               </Link>
               <Link
-                to="/cars"
+                to="/vehicles"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`text-sm font-medium transition-colors hover:text-red-600 ${
-                  isActive('/cars') ? 'text-red-600' : 'text-gray-700'
+                  isActive('/vehicles') ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
                 Browse Cars
@@ -172,9 +174,9 @@ const Header = () => {
               >
                 Contact
               </Link>
-              <a href="tel:09019254080" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
+              <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4" />
-                <span className="text-sm font-medium">09019254080</span>
+                <span className="text-sm font-medium">08135877104</span>
               </a>
               <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4" />
@@ -208,12 +210,13 @@ const Header = () => {
                 <>
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full">
-                      <User className="w-4 h-4 mr-2" />
+                      <FiUserCheck className="w-4 h-4 mr-1" />
                       Login
                     </Button>
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
                     <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                      <User className="w-4 h-4 mr-1" />
                       Sign Up
                     </Button>
                   </Link>

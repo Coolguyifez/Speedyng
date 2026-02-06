@@ -84,7 +84,7 @@ const CarsPage = () => {
     setSearchParams(searchParams);
   };
 
- const filteredVehicles = v.filter((v) => {
+ const filteredVehicles = vehicles.filter((v) => {
     const matchesSearch = v.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || v.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || v.location === selectedLocation;

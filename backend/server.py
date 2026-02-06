@@ -43,28 +43,30 @@ app.add_middleware(
 )
 # Helper to serialize car data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
-def serialize_car(car):
+def serialize_vehicle(vehicle):
     return {
-        "id": getattr(car, 'id', None),
-        "name": getattr(car, 'name', 'Unknown'),
-        "category": getattr(car, 'category', 'Uncategorized'),
-        "price": getattr(car, 'price', 0),
-        "condition": getattr(car, 'condition', 'Used'),
-        "location": getattr(car, 'location', 'Unknown'),
-        "owner_name": getattr(car, 'owner_name', ''),
-        "address": getattr(car, 'address', ''),          
-        "phone_number": getattr(car, 'phone_number', ''),
-        "image": getattr(car, 'image', ''),
-        "images": getattr(car, 'images', []) or [],
-        "year": getattr(car, 'year', None),
-        "mileage": getattr(car, 'mileage', '0'),
-        "transmission": getattr(car, 'transmission', 'Automatic'),
-        "fuel_type": getattr(car, 'fuel_type', 'Petrol'),
-        "description": getattr(car, 'description', ''),
-        "features": getattr(car, 'features', []) or [],
-        "verified": getattr(car, 'verified', False),
-        "created_at": car.created_at.isoformat() if car.created_at else None,
-        "updated_at": car.updated_at.isoformat() if car.updated_at else None
+        "id": getattr(vehicle, 'id', None),
+        "name": getattr(vehicle, 'name', 'Unknown'),
+        "category": getattr(vehicle, 'category', 'Uncategorized'),
+        "price": getattr(vehicle, 'price', 0),
+        "condition": getattr(vehicle, 'condition', 'Used'),
+        "location": getattr(vehicle, 'location', 'Unknown'),
+        "owner_name": getattr(vehicle, 'owner_name', ''),
+        "address": getattr(vehicle, 'address', ''),          
+        "phone_number": getattr(vehicle, 'phone_number', ''),
+        "image": getattr(vehicle, 'image', ''),
+        # Ensures these return [] if None to prevent .map() errors in React
+        "images": getattr(vehicle, 'images', []) or [],
+        "features": getattr(vehicle, 'features', []) or [],
+        "year": getattr(vehicle, 'year', None),
+        "mileage": getattr(vehicle, 'mileage', '0'),
+        "transmission": getattr(vehicle, 'transmission', 'Automatic'),
+        "fuel_type": getattr(vehicle, 'fuel_type', 'Petrol'),
+        "description": getattr(vehicle, 'description', ''),
+        "verified": getattr(vehicle, 'verified', False),
+        # Convert datetime to ISO string for JSON compatibility
+        "created_at": vehicle.created_at.isoformat() if hasattr(vehicle, 'created_at') and vehicle.created_at else None,
+        "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None
     }
     
 # -------------------- Auth Routes --------------------

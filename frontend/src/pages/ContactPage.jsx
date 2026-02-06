@@ -31,7 +31,7 @@ const ContactPage = () => {
       ...formData,
       access_key: "0447b582-799c-4790-a398-1e9173b7598a", 
       subject: `Customer Inquiry: ${formData.name}`,
-      from_name: "Speedy Car Broker Platform"
+      from_name: "Speedy Vehicle Broker Platform"
     };
 
     try {
@@ -196,10 +196,10 @@ const ContactPage = () => {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Phone Number 1</h4>
                       <a
-                        href="tel:09019254080"
+                        href="tel:08135877104"
                         className="text-red-600 hover:text-red-700 font-medium transition-colors"
                       >
-                        09019254080
+                        08135877104
                       </a>
                     </div>
                   </div>
@@ -256,7 +256,7 @@ const ContactPage = () => {
               <CardContent className="p-6">
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Quick Actions</h3>
                 <div className="space-y-3">
-                  <a href="https://wa.me/2349019254080" className="block">
+                  <a href="https://wa.me/2348135877104" className="block">
                     <Button size="lg" className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg">
                       <FaWhatsapp className="w-5 h-5 mr-1" />
                       Chat With Us

@@ -10,25 +10,25 @@ import { Card, CardContent } from '../components/ui/card';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
-import { carAPI } from '../services/api'; // Integrated with your backend
+import { vehicleAPI } from '../services/api'; // Integrated with your backend
 import { toast } from 'sonner';
 
 const CarDetailsPage = () => {
   const { id } = useParams();
-  const [car, setCar] = useState(null);
+  const [vehicle, setVehicle] = useState(null);
  const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // Fetch real car data from backend
+  // Fetch real vehicle data from backend
   useEffect(() => {
-  const fetchCar = async () => {
+  const fetchVehicle = async () => {
     try {
       setIsLoading(true); 
-      const response = await carAPI.getOne(id);
+      const response = await vehicleAPI.getOne(id);
       setCar(response.data);
     } catch (error) {
-      console.error("Error fetching car details:", error);
+      console.error("Error fetching vehicle details:", error);
     } finally {
       setIsLoading(false); 
     }
@@ -66,7 +66,7 @@ const CarDetailsPage = () => {
   }
 
   // 2. Not Found State
-  if (!car) {
+  if (!vehicle) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -75,12 +75,12 @@ const CarDetailsPage = () => {
             <div className="bg-red-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-4xl text-red-600 font-bold">!</span>
             </div>
-            <h2 className="text-3xl font-bold mb-4 text-gray-900">Car Not Found</h2>
+            <h2 className="text-3xl font-bold mb-4 text-gray-900">Vehicle Not Found</h2>
             <p className="text-gray-600 mb-8">
               The vehicle you're looking for might have been sold or removed. 
               Check out our other available Vehicles!
             </p>
-            <Link to="/cars">
+            <Link to="/vehicles">
               <Button className="bg-red-600 hover:bg-red-700 px-8 py-6 text-lg">
                 <ArrowLeft className="w-5 h-5 mr-2" />
                 Browse Available Vehicles
@@ -102,9 +102,9 @@ const CarDetailsPage = () => {
         <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
           <Link to="/" className="hover:text-red-600">Home</Link>
           <span>/</span>
-          <Link to="/cars" className="hover:text-red-600">Vehicles</Link>
+          <Link to="/vehicles" className="hover:text-red-600">Vehicles</Link>
           <span>/</span>
-          <span className="text-gray-900 font-medium">{car.name}</span>
+          <span className="text-gray-900 font-medium">{v.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -113,8 +113,8 @@ const CarDetailsPage = () => {
             <div className="mb-4">
               <div className="relative h-96 md:h-[500px] rounded-lg overflow-hidden bg-gray-200">
                 <img
-                  src={car.images[selectedImage]}
-                  alt={car.name}
+                  src={v.images[selectedImage]}
+                  alt={v.name}
                   className="w-full h-full object-cover"
                 />
                 {car.verified && (
@@ -129,7 +129,7 @@ const CarDetailsPage = () => {
             {/* Thumbnail Images */}
             {car.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
-                {car.images.map((image, index) => (
+                {v.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -139,7 +139,7 @@ const CarDetailsPage = () => {
                   >
                     <img
                       src={image}
-                      alt={`${car.name} ${index + 1}`}
+                      alt={`${v.name} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -151,7 +151,7 @@ const CarDetailsPage = () => {
             <Card className="mt-6 border-none shadow-sm">
               <CardContent className="p-6">
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">Description</h2>
-                <p className="text-gray-700 leading-relaxed mb-6">{car.description}</p>
+                <p className="text-gray-700 leading-relaxed mb-6">{v.description}</p>
 
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Key Features</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -172,7 +172,7 @@ const CarDetailsPage = () => {
             <Card className="border-none shadow-lg sticky top-24">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h1 className="text-2xl font-bold text-gray-900">{car.name}</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">{v.name}</h1>
                   <div className="flex space-x-2">
                     <Button
                       variant="ghost"
@@ -197,21 +197,21 @@ const CarDetailsPage = () => {
 
                 <div className="mb-6">
                   <div className="text-4xl font-bold text-red-600 mb-2">
-                    ₦{Number(car.price).toLocaleString()}
+                    ₦{Number(v.price).toLocaleString()}
                   </div>
                   <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                    {car.condition}
+                    {v.condition}
                   </div>
                 </div>
 
                 {/* Specifications */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   {[
-                    { icon: Calendar, label: 'Year', value: car.year },
-                    { icon: Gauge, label: 'Mileage', value: car.mileage },
-                    { icon: Settings, label: 'Transmission', value: car.transmission },
-                    { icon: Fuel, label: 'Fuel Type', value: car.fuel_type },
-                    { icon: MapPin, label: 'Location', value: car.location },
+                    { icon: Calendar, label: 'Year', value: v.year },
+                    { icon: Gauge, label: 'Mileage', value: v.mileage },
+                    { icon: Settings, label: 'Transmission', value: v.transmission },
+                    { icon: Fuel, label: 'Fuel Type', value: v.fuel_type },
+                    { icon: MapPin, label: 'Location', value: v.location },
                   ].map((spec, i) => (
                     <div key={i} className="flex items-center justify-between">
                       <div className="flex items-center space-x-2 text-gray-600">

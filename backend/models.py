@@ -21,9 +21,9 @@ class User(Base):
 
 
 # ================== Car Model ==================
-class Car(Base):
-    __tablename__ = "cars"
-
+class Vehicle(Base):
+    __tablename__ = "vehicles"
+    
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False)
     category = Column(String(50), nullable=False)

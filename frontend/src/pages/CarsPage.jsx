@@ -16,7 +16,7 @@ const categories = [
   { name: 'Mid-size Sedan' },
   { name: 'Full-Size Sedan' },
   { name: 'Luxury Sedan' },
-  { name: 'Sports Sedan' },
+  { name: 'Sport Sedan' },
   { name: 'Subcompact SUV' },
   { name: 'Compact SUV' },
   { name: 'Coupe SUV' },

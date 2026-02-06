@@ -34,7 +34,7 @@ const HomePage = () => {
         setLoading(false);
       }
     };
-    fetchCars();
+    fetchVehicles();
   }, []);
 
   const getCategoryIcon = (iconName) => {

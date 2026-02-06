@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric, ShieldCheck } from 'lucide-react';
+import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric, ShieldCheck, Zap } from 'lucide-react';
 import { FaTruckPickup  } from "react-icons/fa";
 import { PiVanBold } from "react-icons/pi";
+import { FaMotorcycle } from "react-icons/fa";
+import { TbCarSuv } from "react-icons/tb";
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -43,6 +45,9 @@ const HomePage = () => {
       TruckElectric: TruckElectric,
       FaTruckPickup: FaTruckPickup,
       PiVanBold: PiVanBold,
+      FaMotorcycle: FaMotorcycle,
+      TbCarSuv: TbCarSuv,
+      Zap: Zap,
       
     };
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);

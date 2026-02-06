@@ -59,12 +59,12 @@ export const authAPI = {
 
 // 4. Car API: Handles Inventory
 export const carAPI = {
-  getCars: () => api.get('/cars'),
-  getAll: (category) => api.get('/cars', { params: { category } }),
-  getOne: (id) => api.get(`/cars/${id}`), 
-  create: (data) => api.post('/cars', data),
-  update: (id, data) => api.put(`/cars/${id}`, data),
-  delete: (id) => api.delete(`/cars/${id}`),
+  getVehicles: () => api.get('/vehicles'),
+  getAll: (category) => api.get('/vehicles', { params: { category } }),
+  getOne: (id) => api.get(`/vehicles/${id}`), 
+  create: (data) => api.post('/vehicles', data),
+  update: (id, data) => api.put(`/vehicles/${id}`, data),
+  delete: (id) => api.delete(`/vehicles/${id}`),
 
   // --- Chat Functions ---
   // Matches the ChatMessageCreate schema (requires text and sender)

@@ -26,14 +26,15 @@ const CarDetailsPage = () => {
     try {
       setIsLoading(true); 
       const response = await vehicleAPI.getOne(id);
-      setCar(response.data);
+      setVehicle(response.data);
     } catch (error) {
       console.error("Error fetching vehicle details:", error);
+      toast.error("Could not load vehicle details");
     } finally {
       setIsLoading(false); 
     }
   };
-  fetchCar();
+  fetchVehicle();
 }, [id]);
 
   const handleFavorite = () => {
@@ -117,7 +118,7 @@ const CarDetailsPage = () => {
                   alt={v.name}
                   className="w-full h-full object-cover"
                 />
-                {car.verified && (
+                {v.verified && (
                   <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full flex items-center space-x-2">
                     <CheckCircle className="w-5 h-5 text-green-600" />
                     <span className="text-sm font-medium text-gray-900">Verified</span>

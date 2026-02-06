@@ -49,11 +49,6 @@ const CarDetailsPage = () => {
   const handleBookInspection = () => {
     toast.success('Redirecting to inspection booking form...');
     
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.open("https://forms.gle/e9ERKFpi3AZA5biG7", "_blank");
-    }, 1000);
-  };
 
   // 1. Loading State
   if (isLoading) {
@@ -82,12 +77,12 @@ const CarDetailsPage = () => {
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Car Not Found</h2>
             <p className="text-gray-600 mb-8">
               The vehicle you're looking for might have been sold or removed. 
-              Check out our other available cars!
+              Check out our other available Vehicles!
             </p>
             <Link to="/cars">
               <Button className="bg-red-600 hover:bg-red-700 px-8 py-6 text-lg">
                 <ArrowLeft className="w-5 h-5 mr-2" />
-                Browse Available Cars
+                Browse Available Vehicles
               </Button>
             </Link>
           </div>
@@ -235,15 +230,21 @@ const CarDetailsPage = () => {
                       Call Agent
                     </Button>
                   </a>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    onClick={handleBookInspection}
-                    className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
+                  <a 
+                    href="https://forms.gle/e9ERKFpi3AZA5biG7" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="block"
                   >
-                  <Clock className="w-4 h-4 mr-1"/>
-                  Book Inspection
-                  </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
+                    >
+                    <Clock className="w-4 h-4 mr-1"/>
+                    Book Inspection
+                    </Button>
+                  </a>
                 </div>
 
                 {/* Contact Info */}

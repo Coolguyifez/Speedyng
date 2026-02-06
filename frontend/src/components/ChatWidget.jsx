@@ -29,7 +29,7 @@ const ChatWidget = () => {
   useEffect(() => {
     const initData = async () => {
       try {
-        const response = await carAPI.getCars();
+        const response = await vehicleAPI.getVehicles();
         setAvailableCars(response.data || []);
   
         if (user) {

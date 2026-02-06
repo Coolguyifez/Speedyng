@@ -19,7 +19,6 @@ const categories = [
   { name: 'Sport Sedan' },
   { name: 'Subcompact SUV' },
   { name: 'Compact SUV' },
-  { name: 'Coupe SUV' },
   { name: 'Mid-size SUV' },
   { name: 'Full-size SUV' },
   { name: 'Coupe SUV' },
@@ -123,7 +122,7 @@ const CarsPage = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Search cars..."
+                  placeholder="Search Vehicles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -205,7 +204,7 @@ const CarsPage = () => {
 
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold text-gray-900">{filteredCars.length}</span> cars
+              Showing <span className="font-semibold text-gray-900">{filteredCars.length}</span> Vehicles
             </p>
             <Button
               variant="ghost"

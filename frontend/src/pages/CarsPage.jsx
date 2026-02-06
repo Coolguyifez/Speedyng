@@ -10,7 +10,33 @@ import ChatWidget from '../components/ChatWidget';
 import { carAPI } from '../services/api'; // Ensure this path is correct
 
 // Define these or import them from your constants/mock file
-const categories = [{name: 'Sedan'}, {name: 'SUV'}, {name: 'Truck'}, {name: 'Luxury'}, {name: 'Pickup Truck'}, {name: 'Hatchbacks'}, {name: 'Bus'}, {name: 'Convertible'}, {name: 'MPV'}, {name: 'Van'},  {name: 'Budget'}];
+const categories = [
+  { name: 'Subcompact Sedan' },
+  { name: 'Compact Sedan' },
+  { name: 'Mid-size Sedan' },
+  { name: 'Full-Size Sedan' },
+  { name: 'Luxury Sedan' },
+  { name: 'Sports Sedan' },
+  { name: 'Subcompact SUV' },
+  { name: 'Compact SUV' },
+  { name: 'Coupe SUV' },
+  { name: 'Mid-size SUV' },
+  { name: 'Full-size SUV' },
+  { name: 'Coupe SUV' },
+  { name: 'CUV' },
+  { name: 'Luxury SUV' },
+  { name: 'Sport Compact' },
+  { name: 'Truck' },
+  { name: 'Pickup Truck' },
+  { name: 'Hatchback' },
+  { name: 'Exotic' },
+  { name: 'Bus' },
+  { name: 'Small Van' },
+  { name: 'Mini MPV' },
+  { name: 'Motorcycle' },
+  { name: 'Tricycle' },
+  { name: 'Rent' },
+];
 const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
 

@@ -238,16 +238,16 @@ export const testimonials = [
     id: 3,
     name: 'Ibrahim Mohammed',
     role: 'Entrepreneur',
-    comment: 'Best Vehicle broker in Nigeria! The team was professional and the prices are very competitive. Will definitely come back.',
+    comment: 'Best Vehicle broker company in Nigeria! The team was professional and the prices are very competitive. Will definitely come back.',
     rating: 5,
     image: 'https://i.pinimg.com/736x/ff/a9/58/ffa958b6f3bc4b491df9b02a24870bd2.jpg'
   }
   id: 4,
     name: 'Okon John',
     role: 'Tech Expert',
-    comment: 'Best car broker in Nigeria! I can tell you for a fact, The team was professional and the prices are very competitive. I Will definitely tell my friends.',
+    comment: 'Best automotive broker company in Nigeria! I can tell you for a fact, The team was professional and the prices are very competitive. I Will definitely tell my friends.',
     rating: 5,
-    image: 'https://i.pinimg.com/736x/ff/a9/58/ffa958b6f3bc4b491df9b02a24870bd2.jpg'
+    image: 'https://i.pinimg.com/1200x/81/21/31/812131362953fec9132d44ee359d9c79.jpg'
   }
 ];
 

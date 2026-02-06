@@ -1,6 +1,6 @@
 // Mock data for Speedy Car Dealership
 
-export const cars = [
+export const vehicles = [
   {
     id: '1',
     name: 'Toyota Camry 2024',
@@ -213,7 +213,7 @@ export const categories = [
   { name: 'Budget', icon: 'DollarSign' },
 ];
 
-export const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
+export const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 
 export const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
 
@@ -223,8 +223,8 @@ export const testimonials = [
     name: 'Oluwaseun Adebayo',
     role: 'Business Owner',
     comment: 'Speedy made buying my Toyota Prado so easy! The AI assistant helped me choose the perfect car for my business. Highly recommended!',
-    rating: 5,
-    image: 'https://scontent.fabb1-2.fna.fbcdn.net/v/t39.30808-6/590359726_122142706778950523_526010691452832416_n.jpg?_nc_cat=111&_nc_cb=99be929b-ad57045b&ccb=1-7&_nc_sid=aa7b47&_nc_eui2=AeFTw7f9vW9iFEdbrqDGUGswzSJ3kBNBkGDNIneQE0GQYHr-Lw_c4Gc-8VjUREqb4jRxq4Exo-xc1Wd5_23fxHrM&_nc_ohc=L2qM2wURL3kQ7kNvwFW3ABh&_nc_oc=Adnll1ccy6GEjwDyEXJrum-O8TBnW_qCTFIHPU0khRT9rRs91SHO2Gz-zgQE_JddEzw&_nc_zt=23&_nc_ht=scontent.fabb1-2.fna&_nc_gid=clk_N3RApGbQtNxfoVVXOA&oh=00_AfogTqXDHaP6Ug3pFv6YB7QtMRF9EZfWSPSgmJJotRQVbg&oe=696C2BA1'
+    rating: 4,
+    image: 'https://i.pinimg.com/736x/1a/6a/9c/1a6a9cc33689d5ec9c23b532b6fdfc91.jpg'
   },
   {
     id: 2,
@@ -238,9 +238,16 @@ export const testimonials = [
     id: 3,
     name: 'Ibrahim Mohammed',
     role: 'Entrepreneur',
-    comment: 'Best car dealership in Nigeria! The team was professional and the prices are very competitive. Will definitely come back.',
+    comment: 'Best Vehicle broker in Nigeria! The team was professional and the prices are very competitive. Will definitely come back.',
     rating: 5,
-    image: 'https://scontent.fabb1-2.fna.fbcdn.net/v/t39.30808-6/403999168_919636102854920_3699743085752886170_n.jpg?_nc_cat=106&_nc_cb=99be929b-ad57045b&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEgaDRJ_K9JZS_3NdUgGk5xe6Wz3l3Vxlh7pbPeXdXGWLjqMHs3fRLkskqVY0jaV0fPk9o0xCKNtwgaJGpOYf0v&_nc_ohc=ltp51E2UmGIQ7kNvwFMABBf&_nc_oc=AdlTSC3tTAgDQQOdtfL4FF7MyE58_kJCv7smrZ5w1_jPV5NKLvnwfJMYMzrfZgG12pw&_nc_zt=23&_nc_ht=scontent.fabb1-2.fna&_nc_gid=tY9sQ83ihxL3-uUATOX8dQ&oh=00_AfoA8iN6mBiTz0u7ygqbDv1S9On__n1h-DA9nZhBmjZmiA&oe=696C3B71'
+    image: 'https://i.pinimg.com/736x/ff/a9/58/ffa958b6f3bc4b491df9b02a24870bd2.jpg'
+  }
+  id: 4,
+    name: 'Okon John',
+    role: 'Tech Expert',
+    comment: 'Best car broker in Nigeria! I can tell you for a fact, The team was professional and the prices are very competitive. I Will definitely tell my friends.',
+    rating: 5,
+    image: 'https://i.pinimg.com/736x/ff/a9/58/ffa958b6f3bc4b491df9b02a24870bd2.jpg'
   }
 ];
 

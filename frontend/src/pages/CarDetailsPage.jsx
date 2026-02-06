@@ -48,6 +48,7 @@ const CarDetailsPage = () => {
 
   const handleBookInspection = () => {
     toast.success('Redirecting to inspection booking form...');
+  };
     
 
   // 1. Loading State

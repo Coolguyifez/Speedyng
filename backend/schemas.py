@@ -33,8 +33,8 @@ class TokenResponse(BaseModel):
     token_type: str
     user: UserResponse
 
-# -------------------- Car Schemas --------------------
-class CarBase(BaseModel):
+# -------------------- Vehicle Schemas --------------------
+class VehicleBase(BaseModel):
     name: str
     category: str
     price: int
@@ -53,10 +53,10 @@ class CarBase(BaseModel):
     features: Optional[List[str]] = []
     verified: Optional[bool] = False
 
-class CarCreate(CarBase):
+class VehicleCreate(VehicleBase):
     pass
 
-class CarUpdate(BaseModel):
+class VehicleUpdate(BaseModel):
     name: Optional[str]
     category: Optional[str]
     price: Optional[int]
@@ -75,7 +75,7 @@ class CarUpdate(BaseModel):
     features: Optional[List[str]]
     verified: Optional[bool]
 
-class CarResponse(CarBase):
+class VehicleResponse(VehicleBase):
     id: int
     verified: bool = False
     created_at: datetime
@@ -120,7 +120,7 @@ class MessageHistory(BaseModel):
 # -------------------- Stats & Category Schemas --------------------
 class StatsResponse(BaseModel):
     total_users: int
-    total_cars: int
+    total_vechicles: int
     total_sales: int
 
 class CategoryResponse(BaseModel):

@@ -35,6 +35,7 @@ const categories = [
   { name: 'Motorcycle' },
   { name: 'Tricycle' },
   { name: 'Rent' },
+  { name: 'Budget' },
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 

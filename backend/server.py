@@ -16,9 +16,9 @@ from auth import (
 )
 from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse,
-    CarCreate, CarUpdate, CarResponse,
+    VehicleCreate, VehicleUpdate, VehicleResponse,  
     ContactCreate, ContactResponse,
-    ChatMessageCreate, ChatMessageResponse, MessageHistory, # <--- Updated names
+    ChatMessageCreate, ChatMessageResponse, MessageHistory,
     StatsResponse, CategoryResponse
 )
 # -------------------- Logging Setup --------------------

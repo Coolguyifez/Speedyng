@@ -121,7 +121,7 @@ async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depend
         if category:
             query = query.filter(Vehicle.category == category)
         result = await db.execute(query)
-        cars = result.scalars().all()
+        vehicles = result.scalars().all()
         return [serialize_vehicle(v) for v in vehicles]
     except Exception as e:
         logger.error(f"Error fetching cars: {e}")

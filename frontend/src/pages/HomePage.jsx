@@ -120,7 +120,7 @@ const HomePage = () => {
                   <ShieldCheck className="w-8 h-8 text-red-600" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">Verified Vehicle Dealers</h3>
-                <p className="text-gray-600">Bring you to only the verified vehicle dealers</p>
+                <p className="text-gray-600">Connecting you to only the verified vehicle dealers</p>
               </CardContent>
             </Card>
             

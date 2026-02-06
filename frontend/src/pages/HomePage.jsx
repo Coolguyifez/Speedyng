@@ -5,6 +5,7 @@ import { FaTruckPickup  } from "react-icons/fa";
 import { PiVanBold } from "react-icons/pi";
 import { FaMotorcycle } from "react-icons/fa";
 import { TbCarSuv } from "react-icons/tb";
+import { PiCarProfileLight } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -48,7 +49,7 @@ const HomePage = () => {
       FaMotorcycle: FaMotorcycle,
       TbCarSuv: TbCarSuv,
       Zap: Zap,
-      
+      PiCarProfileLight;
     };
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);
     return <Icon className="w-8 h-8" />;

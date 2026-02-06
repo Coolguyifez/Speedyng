@@ -102,7 +102,7 @@ const CarDetailsPage = () => {
         <div className="flex items-center space-x-2 text-sm text-gray-600 mb-6">
           <Link to="/" className="hover:text-red-600">Home</Link>
           <span>/</span>
-          <Link to="/cars" className="hover:text-red-600">Cars</Link>
+          <Link to="/cars" className="hover:text-red-600">Vehicles</Link>
           <span>/</span>
           <span className="text-gray-900 font-medium">{car.name}</span>
         </div>

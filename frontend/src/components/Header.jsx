@@ -71,7 +71,7 @@ const Header = () => {
                 isActive('/cars') ? 'text-red-600' : 'text-gray-700'
               }`}
             >
-              Browse Cars
+              Browse Vehicles
             </Link>
             <Link
               to="/contact"

@@ -146,7 +146,7 @@ const AdminPanel = () => {
       try {
         await vehicleAPI.delete(id);
         toast.success('Vehicle removed from database');
-        setCars(vehicles.filter(v => v.id !== id));
+        setVehicles(vehicles.filter(v => v.id !== id));
       } catch (error) {
         toast.error("Delete failed");
       }

@@ -10,17 +10,32 @@ import { toast } from 'sonner';
 import { carAPI } from '../services/api';
 
 const categories = [
-  { name: 'Sedan' },
-  { name: 'SUV' },
-  { name: 'Luxury' },
+  { name: 'Subcompact Sedan' },
+  { name: 'Compact Sedan' },
+  { name: 'Mid-size Sedan' },
+  { name: 'Full-Size Sedan' },
+  { name: 'Luxury Sedan' },
+  { name: 'Sports Sedan' },
+  { name: 'Subcompact SUV' },
+  { name: 'Compact SUV' },
+  { name: 'Coupe SUV' },
+  { name: 'Mid-size SUV' },
+  { name: 'Full-size SUV' },
+  { name: 'Coupe SUV' },
+  { name: 'CUV' },
+  { name: 'Luxury SUV' },
+  { name: 'Sport Compact' },
   { name: 'Truck' },
   { name: 'Pickup Truck' },
-  { name: 'Hatchbacks' },
+  { name: 'Hatchback' },
+  { name: 'Exotic' },
   { name: 'Bus' },
   { name: 'Convertible' },
-  { name: 'MPV' },
-  { name: 'Van' },
-  { name: 'Budget' },
+  { name: 'Small Van' },
+  { name: 'Mini MPV' },
+  { name: 'Motorcycle' },
+  { name: 'Tricycle' },
+  { name: 'Rent' },
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 
@@ -112,10 +127,10 @@ const AdminPanel = () => {
     try {
       if (editingCar) {
         await carAPI.update(editingCar.id, processedData);
-        toast.success('Update successful!');
+        toast.success('Vehicle Updated successful!');
       } else {
         await carAPI.create(processedData);
-        toast.success('Car added to inventory!');
+        toast.success('Vehicle added to inventory!');
       }
       setIsDialogOpen(false);
       fetchInventory(); // Refreshes your table
@@ -194,7 +209,7 @@ const AdminPanel = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Total Cars</p>
+                  <p className="text-sm text-gray-600 mb-1">Total Vehicle</p>
                   <p className="text-3xl font-bold text-gray-900">{cars.length}</p>
                 </div>
                 <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
@@ -235,6 +250,22 @@ const AdminPanel = () => {
               </div>
             </CardContent>
           </Card>
+          
+          <Card className="border-none shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Nigerian Used</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {cars.filter(c => c.condition === 'Nigerian Used').length}
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           <Card className="border-none shadow-lg">
             <CardContent className="p-6">
@@ -255,7 +286,7 @@ const AdminPanel = () => {
         <Card className="border-none shadow-lg">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Manage Cars</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Manage Vehicles</h2>
               <Dialog open={isDialogOpen} onOpenChange={(open) => {
                 setIsDialogOpen(open);
                 if (!open) resetForm();
@@ -263,12 +294,12 @@ const AdminPanel = () => {
                 <DialogTrigger asChild>
                   <Button className="bg-red-600 hover:bg-red-700 text-white transition-all duration-300">
                     <Plus className="w-4 h-4 mr-2" />
-                    Add New Car
+                    Add New Vehicle
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{editingCar ? 'Edit Car' : 'Add New Car'}</DialogTitle>
+                    <DialogTitle>{editingCar ? 'Edit Vehiicle' : 'Add New Vehicle'}</DialogTitle>
                     <DialogDescription>
                       Fill out the details below to update the inventory.
                     </DialogDescription>
@@ -276,7 +307,7 @@ const AdminPanel = () => {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Car Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Make/model</label>
                         <input
                           type="text"
                           name="name"
@@ -498,7 +529,7 @@ const AdminPanel = () => {
                         Cancel
                       </Button>
                       <Button type="submit" className="bg-red-600 hover:bg-red-700 text-white">
-                        {editingCar ? 'Update Car' : 'Add Car'}
+                        {editingCar ? 'Update Vehicle' : 'Add Vehicle'}
                       </Button>
                     </div>
                   </form>
@@ -511,7 +542,7 @@ const AdminPanel = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Car</th>
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Vehicle</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Category</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Price</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Condition</th>

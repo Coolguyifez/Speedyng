@@ -36,7 +36,7 @@ const categories = [
   { name: 'Rent' },
   { name: 'Budget' },
 ];
-const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
+const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 
 const AdminPanel = () => {
   const [vehicles, setVehicles] = useState([]);

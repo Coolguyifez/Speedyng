@@ -27,7 +27,7 @@ async def seed_database():
         # ----------------- INITIALIZATION CHECK -----------------
         # We check for the Admin. If the Admin exists, it means the 
         # system has been seeded before. We will NOT add cars again.
-        admin_email = "admin@speedy.ng"
+        admin_email = "admin@speedyng.com"
         admin_check = await session.execute(select(User).where(User.email == admin_email))
         is_already_initialized = admin_check.scalars().first() is not None
 
@@ -70,11 +70,11 @@ async def seed_database():
         await session.commit()
 
         # ----------------- Cars -----------------
-        result = await session.execute(select(Car))
-        car_count = len(result.scalars().all())
-        if car_count == 0:
-            cars = [
-                Car(
+        result = await session.execute(select(Vehicle))
+        vehicle_count = len(result.scalars().all())
+        if vehicle_count == 0:
+            vehicles = [
+                Vehicle(
                     name="Toyota Camry 2024",
                     category="Sedans",
                     price=18500000,
@@ -93,7 +93,7 @@ async def seed_database():
                     features=["Leather Seats", "Sunroof", "Navigation System", "Backup Camera", "Bluetooth"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Honda Accord 2023",
                     category="Sedans",
                     price=16800000,
@@ -112,7 +112,7 @@ async def seed_database():
                     features=["Apple CarPlay", "Lane Assist", "Cruise Control", "Keyless Entry"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Toyota Prado 2022",
                     category="SUVs",
                     price=42000000,
@@ -131,7 +131,7 @@ async def seed_database():
                     features=["4WD", "Leather Interior", "7 Seats", "Premium Sound System", "Climate Control"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Lexus RX 350 2023",
                     category="SUVs",
                     price=38500000,
@@ -150,7 +150,7 @@ async def seed_database():
                     features=["Panoramic Sunroof", "Mark Levinson Sound", "Adaptive Cruise", "Heated Seats"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Mercedes-Benz C300 2023",
                     category="Luxury",
                     price=45000000,
@@ -166,7 +166,7 @@ async def seed_database():
                     features=["AMG Package", "Burmester Sound", "Massage Seats", "Night Vision"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="BMW M3 2022",
                     category="Luxury",
                     price=52000000,
@@ -182,7 +182,7 @@ async def seed_database():
                     features=["M Sport Package", "Carbon Fiber Trim", "Performance Brakes", "Track Mode"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Toyota Hilux 2023",
                     category="Trucks",
                     price=28000000,
@@ -198,7 +198,7 @@ async def seed_database():
                     features=["4x4", "Tow Package", "Bed Liner", "Heavy Duty Suspension"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Ford Ranger 2022",
                     category="Trucks",
                     price=24500000,
@@ -214,7 +214,7 @@ async def seed_database():
                     features=["Crew Cab", "Tonneau Cover", "Off-Road Tires", "Rear Diff Lock"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Hyundai Elantra 2024",
                     category="Budget",
                     price=8500000,
@@ -230,7 +230,7 @@ async def seed_database():
                     features=["Fuel Efficient", "Modern Design", "Safety Features", "Warranty"],
                     verified=True
                 ),
-                Car(
+                Vehicle(
                     name="Fiat 500 2021",
                     category="Budget",
                     price=6200000,
@@ -247,11 +247,11 @@ async def seed_database():
                     verified=True
                 )
             ]
-            session.add_all(cars)
+            session.add_all(vehicles)
             await session.commit()
-            logger.info(f"✓ {len(cars)} sample cars added.")
+            logger.info(f"✓ {len(vehicles)} sample vehicles added.")
         else:
-            logger.info("✓ Cars already exist in database.")
+            logger.info("✓ Vehicles already exist in database.")
 
         logger.info("✅ Seeding complete!")
 

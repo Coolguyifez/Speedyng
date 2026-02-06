@@ -80,7 +80,7 @@ const CarsPage = () => {
       {/* Page Header */}
       <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Browse Our Cars</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Browse Our Vehicles</h1>
           <p className="text-xl text-gray-300">Find your perfect vehicle from our extensive collection</p>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 // KEEPING YOUR DESIGN - BUT ADDING API CALLS
-import { carAPI } from '../services/api';
+import { vehicleAPI } from '../services/api';
 
 const categories = [
   { name: 'Subcompact Sedan' },
@@ -39,10 +39,10 @@ const categories = [
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
 
 const AdminPanel = () => {
-  const [cars, setCars] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingCar, setEditingCar] = useState(null);
+  const [editingVehicle, setEditingVehicle] = useState(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -70,8 +70,8 @@ const AdminPanel = () => {
 
   const fetchInventory = async () => {
     try {
-      const response = await carAPI.getAll();
-      setCars(response.data);
+      const response = await vehicleAPI.getAll();
+      setVehicles(response.data);
     } catch (error) {
       console.error("Fetch error:", error);
       toast.error("Database connection failed. Check backend logs.");
@@ -81,7 +81,7 @@ const AdminPanel = () => {
   };
 
   const resetForm = () => {
-    setEditingCar(null);
+    setEditingVehicle(null);
     setFormData({
       name: '',
       category: 'Sedan',
@@ -124,11 +124,11 @@ const AdminPanel = () => {
     };
   
     try {
-      if (editingCar) {
-        await carAPI.update(editingCar.id, processedData);
+      if (editingVehicle) {
+        await vehicleAPI.update(editingVehicle.id, processedData);
         toast.success('Vehicle Updated successful!');
       } else {
-        await carAPI.create(processedData);
+        await vehicleAPI.create(processedData);
         toast.success('Vehicle added to inventory!');
       }
       setIsDialogOpen(false);
@@ -142,25 +142,25 @@ const AdminPanel = () => {
   };
   
   const handleDelete = async (id) => {
-    if (window.confirm('Permanently delete this car?')) {
+    if (window.confirm('Permanently delete this vehicle?')) {
       try {
-        await carAPI.delete(id);
-        toast.success('Car removed from database');
-        setCars(cars.filter(car => car.id !== id));
+        await vehicleAPI.delete(id);
+        toast.success('Vehicle removed from database');
+        setCars(vehicles.filter(v => v.id !== id));
       } catch (error) {
         toast.error("Delete failed");
       }
     }
   };
 
-  const handleEdit = (car) => {
-    setEditingCar(car);
+  const handleEdit = (vehicle) => {
+    setEditingVehicle(vehicle);
     setFormData({
-      ...car,
-      address: car.address || '',           // Ensure value is captured
-      phone_number: car.phone_number || '', // Ensure value is captured
-      fuel_type: car.fuel_type || 'Petrol', // Mapping to match state
-      features: Array.isArray(car.features) ? car.features.join(', ') : car.features
+      ...vehicle,
+      address: vehicle.address || '',           // Ensure value is captured
+      phone_number: vehicle.phone_number || '', // Ensure value is captured
+      fuel_type: vehicle.fuel_type || 'Petrol', // Mapping to match state
+      features: Array.isArray(vehicle.features) ? vehicle.features.join(', ') : vehicle.features
     });
     setIsDialogOpen(true);
   };
@@ -209,7 +209,7 @@ const AdminPanel = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Total Vehicle</p>
-                  <p className="text-3xl font-bold text-gray-900">{cars.length}</p>
+                  <p className="text-3xl font-bold text-gray-900">{vehicles.length}</p>
                 </div>
                 <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
                   <Car className="w-6 h-6 text-red-600" />
@@ -224,7 +224,7 @@ const AdminPanel = () => {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Brand New</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {cars.filter(c => c.condition === 'Brand New').length}
+                    {vehicles.filter(v => v.condition === 'Brand New').length}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -240,7 +240,7 @@ const AdminPanel = () => {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Foreign Used</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {cars.filter(c => c.condition === 'Foreign Used').length}
+                    {vehicles.filter(v => v.condition === 'Foreign Used').length}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -256,7 +256,7 @@ const AdminPanel = () => {
                 <div>
                   <p className="text-sm text-gray-600 mb-1">Nigerian Used</p>
                   <p className="text-3xl font-bold text-gray-900">
-                    {cars.filter(c => c.condition === 'Nigerian Used').length}
+                    {vehicles.filter(v => v.condition === 'Nigerian Used').length}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -281,7 +281,7 @@ const AdminPanel = () => {
           </Card>
         </div>
 
-        {/* Cars Management */}
+        {/* Vehicles Management */}
         <Card className="border-none shadow-lg">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-6">
@@ -298,7 +298,7 @@ const AdminPanel = () => {
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{editingCar ? 'Edit Vehiicle' : 'Add New Vehicle'}</DialogTitle>
+                    <DialogTitle>{editingVehicle ? 'Edit Vehiicle' : 'Add New Vehicle'}</DialogTitle>
                     <DialogDescription>
                       Fill out the details below to update the inventory.
                     </DialogDescription>
@@ -546,32 +546,38 @@ const AdminPanel = () => {
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Price</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Condition</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Location</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Dealer/Seller Name</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Address</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Phone Number</th>
                     <th className="text-right py-3 px-4 font-semibold text-gray-700">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {cars.map((car) => (
-                    <tr key={car.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                  {vehicles.map((v) => (
+                    <tr key={v.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                       <td className="py-3 px-4">
                         <div className="flex items-center space-x-3">
-                          <img src={car.image} alt={car.name} className="w-12 h-12 rounded object-cover" />
-                          <span className="font-medium text-gray-900">{car.name}</span>
+                          <img src={v.image} alt={v.name} className="w-12 h-12 rounded object-cover" />
+                          <span className="font-medium text-gray-900">{v.name}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-gray-700">{car.category}</td>
-                      <td className="py-3 px-4 text-gray-900 font-semibold">₦{(car.price / 1000000).toFixed(1)}M</td>
+                      <td className="py-3 px-4 text-gray-700">{v.category}</td>
+                      <td className="py-3 px-4 text-gray-900 font-semibold">₦{(v.price / 1000000).toFixed(1)}M</td>
                       <td className="py-3 px-4">
                         <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">
-                          {car.condition}
+                          {v.condition}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-gray-700">{car.location}</td>
+                      <td className="py-3 px-4 text-gray-700">{v.location}</td>
+                      <td className="py-3 px-4 text-gray-700">{v.owner_name}</td>
+                      <td className="py-3 px-4 text-gray-700">{v.address}</td>
+                      <td className="py-3 px-4 text-gray-700">{v.phone_number}</td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex justify-end space-x-2">
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleEdit(car)}
+                            onClick={() => handleEdit(v)}
                             className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                           >
                             <Edit className="w-4 h-4" />
@@ -579,7 +585,7 @@ const AdminPanel = () => {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => handleDelete(car.id)}
+                            onClick={() => handleDelete(v.id)}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
                           >
                             <Trash2 className="w-4 h-4" />

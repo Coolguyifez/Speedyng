@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
-import { carAPI } from '../services/api'; // Ensure this path is correct
+import { vehicleAPI } from '../services/api'; // Ensure this path is correct
 
 // Define these or import them from your constants/mock file
 const categories = [
@@ -37,11 +37,11 @@ const categories = [
   { name: 'Rent' },
   { name: 'Budget' },
 ];
-const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin'];
+const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
 
 const CarsPage = () => {
-  const [cars, setCars] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
@@ -61,17 +61,17 @@ const CarsPage = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    const fetchCars = async () => {
+    const fetchVehicles = async () => {
       try {
-        const response = await carAPI.getAll();
-        setCars(response.data);
+        const response = await vehicleAPI.getAll();
+        setVehicles(response.data);
       } catch (error) {
         console.error("Fetch error:", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchCars();
+    fetchVehicles();
   }, []);
 
   const handleCategoryChange = (value) => {
@@ -84,17 +84,17 @@ const CarsPage = () => {
     setSearchParams(searchParams);
   };
 
- const filteredCars = cars.filter((car) => {
-    const matchesSearch = car.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || car.category === selectedCategory;
-    const matchesLocation = selectedLocation === 'All Locations' || car.location === selectedLocation;
-    const matchesCondition = selectedCondition === 'All Conditions' || car.condition === selectedCondition;
+ const filteredVehicles = v.filter((v) => {
+    const matchesSearch = v.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || v.category === selectedCategory;
+    const matchesLocation = selectedLocation === 'All Locations' || v.location === selectedLocation;
+    const matchesCondition = selectedCondition === 'All Conditions' || v.condition === selectedCondition;
     
     let matchesPrice = true;
-    if (priceRange === 'under10') matchesPrice = car.price < 10000000;
-    else if (priceRange === '10to20') matchesPrice = car.price >= 10000000 && car.price < 20000000;
-    else if (priceRange === '20to40') matchesPrice = car.price >= 20000000 && car.price < 40000000;
-    else if (priceRange === 'over40') matchesPrice = car.price >= 40000000;
+    if (priceRange === 'under10') matchesPrice = v.price < 10000000;
+    else if (priceRange === '10to20') matchesPrice = v.price >= 10000000 && v.price < 20000000;
+    else if (priceRange === '20to40') matchesPrice = v.price >= 20000000 && v.price < 40000000;
+    else if (priceRange === 'over40') matchesPrice = v.price >= 40000000;
 
     return matchesSearch && matchesCategory && matchesLocation && matchesCondition && matchesPrice;
   });
@@ -225,66 +225,66 @@ const CarsPage = () => {
         </div>
       </div>
 
-      {/* Cars Grid */}
+      {/* Vehicle Grid */}
      <div className="container mx-auto px-4 py-8">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="w-10 h-10 text-red-600 animate-spin mb-4" />
             <p className="text-gray-500">Loading inventory...</p>
           </div>
-        ) : filteredCars.length === 0 ? (
+        ) : filteredVehicles.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-12 h-12 text-gray-400" />
             </div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-2">No cars found</h3>
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">No Vehicles found</h3>
             <p className="text-gray-600">Try adjusting your filters to see more results</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCars.map((car) => (
-              <Link key={car.id} to={`/car/${car.id}`}>
+            {filteredVechicles.map((v) => (
+              <Link key={v.id} to={`/vehicle/${v.id}`}>
                 <Card className="overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                   <div className="relative h-52 overflow-hidden bg-gray-200">
                     <img
-                      src={car.image}
-                      alt={car.name}
+                      src={v.image}
+                      alt={v.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    {car.verified && (
+                    {v.verified && (
                       <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-1">
                         <CheckCircle className="w-4 h-4 text-green-600" />
                         <span className="text-xs font-medium text-gray-900">Verified</span>
                       </div>
                     )}
                     <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      {car.condition}
+                      {v.condition}
                     </div>
                   </div>
                   <CardContent className="p-5">
                     <div className="mb-2">
-                      <span className="text-xs font-medium text-gray-500 uppercase">{car.category}</span>
+                      <span className="text-xs font-medium text-gray-500 uppercase">{v.category}</span>
                     </div>
                     <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-red-600 transition-colors">
-                      {car.name}
+                      {v.name}
                     </h3>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-red-600">
-                        ₦{(car.price / 1000000).toFixed(1)}M
+                        ₦{(v.price / 1000000).toFixed(1)}M
                       </span>
                       <span className="text-sm text-gray-500 flex items-center">
                         <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                        {car.location}
+                        {v.location}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm text-gray-600 pt-3 border-t border-gray-100">
-                      <span>{car.year}</span>
+                      <span>{v.year}</span>
                       <span>•</span>
-                      <span>{car.transmission}</span>
+                      <span>{v.transmission}</span>
                       <span>•</span>
-                      <span>{car.fuel_type}</span>
+                      <span>{v.fuel_type}</span>
                       <span>•</span>
-                      <span>{car.mileage}</span>
+                      <span>{v.mileage}</span>
                     </div>
                   </CardContent>
                 </Card>

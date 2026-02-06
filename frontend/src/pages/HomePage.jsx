@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric } from 'lucide-react';
+import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric, ShieldCheck } from 'lucide-react';
 import { FaTruckPickup  } from "react-icons/fa";
 import { PiVanBold } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";
@@ -66,16 +66,16 @@ const HomePage = () => {
         </div>
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            Find Your Perfect Car
+            Find Your Perfect Vehicle
             <span className="block text-red-500 mt-2">Drive with Confidence</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
-            Fast, reliable, and trustworthy car broker platform connecting buyers and dealers across Nigeria
+            Fast, reliable, and trustworthy Automotive broker platform connecting buyers and dealers across Nigeria
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
             <Link to="/cars">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                Browse Cars
+                Browse Vehicles
                 <ArrowRight className="ml-1 w-5 h-5" />
               </Button>
             </Link>
@@ -99,7 +99,7 @@ const HomePage = () => {
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-red-600" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-900">Verified Cars</h3>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900">Verified Vehicles</h3>
                 <p className="text-gray-600">All vehicles carefully inspected and verified</p>
               </CardContent>
             </Card>
@@ -113,6 +113,17 @@ const HomePage = () => {
                 <p className="text-gray-600">Quick processing with reliable delivery across the country</p>
               </CardContent>
             </Card>
+
+            <Card className="border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <ShieldCheck className="w-8 h-8 text-red-600" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-gray-900">Verified Vehicle Dealers</h3>
+                <p className="text-gray-600">Bring you to only the verified vehicle dealers</p>
+              </CardContent>
+            </Card>
+            
 
             <Card className="border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
               <CardContent className="p-6 text-center">
@@ -168,11 +179,11 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Featured Cars */}
+      {/* Featured Vehicles */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900">Featured Cars</h2>
+            <h2 className="text-4xl font-bold text-gray-900">Featured Vehicles</h2>
             <Link to="/cars">
               <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300">
                 View All
@@ -271,14 +282,14 @@ const HomePage = () => {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-red-50 to-orange-50">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4 text-gray-900">Ready to Find Your Dream Car?</h2>
+          <h2 className="text-4xl font-bold mb-4 text-gray-900">Ready to Find Your Dream Vehicle?</h2>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Browse our extensive collection or chat with our AI assistant for personalized recommendations
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/cars">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                Browse All Cars
+                Browse All Vehicles
               </Button>
             </Link>
           </div>

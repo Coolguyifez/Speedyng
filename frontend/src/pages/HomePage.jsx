@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric, ShieldCheck, Zap } from 'lucide-react';
 import { FaTruckPickup  } from "react-icons/fa";
-import { PiVanBold } from "react-icons/pi";
 import { FaMotorcycle } from "react-icons/fa";
 import { TbCarSuv } from "react-icons/tb";
 import { PiCarProfileLight } from "react-icons/pi";
+import { MdOutlineCarRental } from "react-icons/md";
 import { PiMotorcycleLight } from "react-icons/pi";
 import { PiVan } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";
@@ -47,13 +47,13 @@ const HomePage = () => {
       Bus: Bus,
       TruckElectric: TruckElectric,
       FaTruckPickup: FaTruckPickup,
-      PiVanBold: PiVanBold,
       FaMotorcycle: FaMotorcycle,
       TbCarSuv: TbCarSuv,
       Zap: Zap,
       PiCarProfileLight: PiCarProfileLight,
-      PiMotorcycleLight: PiMotorcycleLight;
+      PiMotorcycleLight: PiMotorcycleLight,
       PiVan: PiVan,
+      MdOutlineCarRental: MdOutlineCarRental,
     };
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);
     return <Icon className="w-8 h-8" />;

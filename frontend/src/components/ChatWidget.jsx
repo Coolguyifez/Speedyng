@@ -7,7 +7,7 @@ import { vehicleAPI } from '../services/api';
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [availableVehicles, setAvailableVehices] = useState([]);
+  const [availableVehicles, setAvailableVehicles] = useState([]);
   const navigate = useNavigate();
   const [messages, setMessages] = useState([
     {

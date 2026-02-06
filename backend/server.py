@@ -112,90 +112,89 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
     return current_user
 
 # -------------------- Car Routes (Public) --------------------
-@api_router.get("/cars", response_model=List[CarResponse])
-async def get_cars(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+@api_router.get("/vehicles", response_model=List[VehicleResponse])
+async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
-        query = select(Car)
+        query = select(Vehicle)
         if category:
-            query = query.filter(Car.category == category)
+            query = query.filter(Vehicle.category == category)
         result = await db.execute(query)
         cars = result.scalars().all()
-        return [serialize_car(car) for car in cars]
+        return [serialize_vehicle(v) for v in vehicles]
     except Exception as e:
         logger.error(f"Error fetching cars: {e}")
         raise HTTPException(status_code=500, detail="Database connection failed")
 
 # .......SINGLE Admin Car Creation Route.................
-# --- server.py ---
 
-@api_router.post("/cars", response_model=CarResponse)
-async def create_car(
-    car_data: CarCreate, 
+@api_router.post("/vehicles", response_model=CarResponse)
+async def create_Vehicle(
+    Vehicle_data: VehicleCreate, 
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     try:
         # 1. Convert the incoming schema to a dictionary
-        car_dict = car_data.dict()
+        vehicle_dict = vehicle_data.dict()
         
         # 2. Remove 'verified' if it exists in the incoming data to avoid conflicts
-        car_dict.pop('verified', None)
+        vehicle_dict.pop('verified', None)
         
         # 3. Create the car with the dictionary and explicitly set verified=True
-        new_car = Car(**car_dict, verified=True)
+        new_vehicle = Car(**vehicle_dict, verified=True)
         
-        db.add(new_car)
+        db.add(new_vehicle)
         await db.commit()
-        await db.refresh(new_car)
-        return serialize_car(new_car)
+        await db.refresh(new_vehicle)
+        return serialize_vehicle(new_vehicle)
     except Exception as e:
         logger.error(f"Creation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))        
 
-@api_router.get("/cars/{car_id}", response_model=CarResponse)
-async def get_car(car_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Car).filter(Car.id == car_id))
-    car = result.scalar_one_or_none()
-    if not car:
-        raise HTTPException(status_code=404, detail="Car not found")
-    return serialize_car(car)
+@api_router.get("/vehicles/{vehicle_id}", response_model=VehicleResponse)
+async def get_vehicle(vehicle_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    return serialize_vehicle(vehicle)
 
 # -------------------- Car Management (Admin Only) --------------------
 
-@api_router.put("/cars/{car_id}", response_model=CarResponse)
-async def update_car(
-    car_id: int, 
-    car_data: CarUpdate, 
+@api_router.put("/vehicles/{vehicle_id}", response_model=VehicleResponse)
+async def update_vehicle(
+    vehicle_id: int, 
+    vehicle_data: VehicleUpdate, 
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
-    result = await db.execute(select(Car).filter(Car.id == car_id))
-    car = result.scalar_one_or_none()
-    if not car:
-        raise HTTPException(status_code=404, detail="Car not found")
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    for key, value in car_data.dict(exclude_unset=True).items():
-        setattr(car, key, value)
+    for key, value in vehicle_data.dict(exclude_unset=True).items():
+        setattr(vehicle, key, value)
     
-    car.updated_at = datetime.utcnow()
+    vehicle.updated_at = datetime.utcnow()
     await db.commit()
-    await db.refresh(car)
-    return serialize_car(car)
+    await db.refresh(vehicle)
+    return serialize_vehicle(vehicle)
 
-@api_router.delete("/cars/{car_id}")
-async def delete_car(
-    car_id: int, 
+@api_router.delete("/vehicles/{vehicle_id}")
+async def delete_vehicle(
+    vehicle_id: int, 
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
-    result = await db.execute(select(Car).filter(Car.id == car_id))
-    car = result.scalar_one_or_none()
-    if not car:
-        raise HTTPException(status_code=404, detail="Car not found")
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
     
-    await db.delete(car)
+    await db.delete(vehicle)
     await db.commit()
-    return {"message": "Car deleted successfully"}
+    return {"message": "Vehicle deleted successfully"}
     
 
 # -------------------- Chat Routes --------------------

@@ -7,8 +7,10 @@ import { PiTiktokLogo } from "react-icons/pi";
 import { TbBrandLinkedin } from "react-icons/tb";
 const Footer = () => {
   const footerCategories = [
-    "Sedan", "SUV", "Luxury", "Truck", "Pickup Truck",
-    "Hatchback", "Bus", "Convertible", "MPV", "Van", "Budget"
+    "Subcompact Sedan", "Compact Sedan", "Mid-size Sedan", "Full-Size Sedan", "Luxury Sedan",
+    "Sport Sedan", "Subcompact SUV", "Compact SUV", "Mid-size SUV", "Full-size SUV",
+    "Coupe SUV", "CUV", "Luxury SUV", "Sport Compact", "Truck", "Pickup Truck",
+    "Hatchback", "Exotic", "Bus", "Small Van", "Mini MPV", "Motorcycle", "Tricycle", "Rent", "Budget"
   ];
   
   return (

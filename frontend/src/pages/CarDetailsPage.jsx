@@ -47,9 +47,6 @@ const CarDetailsPage = () => {
     toast.success('Link copied to clipboard!');
   };
 
-  const handleBookInspection = () => {
-    toast.success('Redirecting to inspection booking form...');
-  };
     
 
   // 1. Loading State
@@ -128,7 +125,7 @@ const CarDetailsPage = () => {
             </div>
 
             {/* Thumbnail Images */}
-            {car.images.length > 1 && (
+            {v.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {v.images.map((image, index) => (
                   <button
@@ -148,7 +145,7 @@ const CarDetailsPage = () => {
               </div>
             )}
 
-            {/* Car Details */}
+            {/* Vehicle Details */}
             <Card className="mt-6 border-none shadow-sm">
               <CardContent className="p-6">
                 <h2 className="text-2xl font-bold mb-4 text-gray-900">Description</h2>
@@ -156,7 +153,7 @@ const CarDetailsPage = () => {
 
                 <h3 className="text-xl font-bold mb-4 text-gray-900">Key Features</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {car.features.map((feature, index) => (
+                  {v.features.map((feature, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                       <span className="text-gray-700">{feature}</span>
@@ -241,7 +238,6 @@ const CarDetailsPage = () => {
                     <Button
                       size="lg"
                       variant="outline"
-                       onClick={handleBookInspection}
                       className="w-full border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
                     >
                     <Clock className="w-4 h-4 mr-1"/>

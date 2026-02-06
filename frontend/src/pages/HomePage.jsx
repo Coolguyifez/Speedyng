@@ -15,19 +15,19 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
 import { categories, testimonials } from '../mock';
-import { carAPI } from '../services/api';
+import { vehicleAPI } from '../services/api';
 
 const HomePage = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [cars, setCars] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch real cars from the database
   useEffect(() => {
-    const fetchCars = async () => {
+    const fetchVehicles = async () => {
       try {
-        const response = await carAPI.getAll();
-        setCars(response.data);
+        const response = await vehicleAPI.getAll();
+        setVehicles(response.data);
       } catch (err) {
         console.error("Error fetching cars for homepage:", err);
       } finally {
@@ -59,7 +59,7 @@ const HomePage = () => {
     return <Icon className="w-8 h-8" />;
   };
   // Only show the first 6 cars on the homepage
-  const featuredCars = cars.slice(0, 6);
+  const featuredVehicles = vehicles.slice(0, 6);
 
   return (
     <div className="min-h-screen bg-white">
@@ -83,13 +83,13 @@ const HomePage = () => {
             Fast, reliable, and trustworthy Automotive broker platform connecting buyers and dealers across Nigeria
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-            <Link to="/cars">
+            <Link to="/vehicles">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
                 Browse Vehicles
                 <ArrowRight className="ml-1 w-5 h-5" />
               </Button>
             </Link>
-            <a href="tel:09019254080">
+            <a href="tel:08135877104">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
                 <FaPhoneAlt className="mr-1 w-5 h-5"/>
                 Call us 
@@ -165,11 +165,11 @@ const HomePage = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {categories.map((category, index) => {
               // CALCULATE LIVE COUNT:
-              // This filters the cars already fetched from your database
-              const actualCount = cars.filter(car => car.category === category.name).length;
+              // This filters the vehicles already fetched from your database
+              const actualCount = vehicles.filter(car => car.category === category.name).length;
       
               return (
-                <Link key={index} to={`/cars?category=${encodeURIComponent(category.name)}`}>
+                <Link key={index} to={`/vehicles?category=${encodeURIComponent(category.name)}`}>
                   <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group">
                     <CardContent className="p-6 text-center">
                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-red-100 transition-colors duration-300">
@@ -194,7 +194,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900">Featured Vehicles</h2>
-            <Link to="/cars">
+            <Link to="/vehicles">
               <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300">
                 View All
                 <ArrowRight className="ml-2 w-4 h-4" />
@@ -202,41 +202,41 @@ const HomePage = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredCars.map((car) => (
-              <Link key={car.id} to={`/car/${car.id}`}>
+            {featuredVehicles.map((v) => (
+              <Link key={v.id} to={`/vehicle/${v.id}`}>
                 <Card className="overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                   <div className="relative h-48 overflow-hidden bg-gray-200">
                     <img
-                      src={car.image}
-                      alt={car.name}
+                      src={v.image}
+                      alt={v.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
-                    {car.verified && (
+                    {v.verified && (
                       <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full flex items-center space-x-1">
                         <CheckCircle className="w-4 h-4 text-green-600" />
                         <span className="text-xs font-medium text-gray-900">Verified</span>
                       </div>
                     )}
                     <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      {car.condition}
+                      {v.condition}
                     </div>
                   </div>
                   <CardContent className="p-5">
                     <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-red-600 transition-colors">
-                      {car.name}
+                      {v.name}
                     </h3>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-red-600">
-                        ₦{(car.price / 1000000).toFixed(1)}M
+                        ₦{(v.price / 1000000).toFixed(1)}M
                       </span>
-                      <span className="text-sm text-gray-500">{car.location}</span>
+                      <span className="text-sm text-gray-500">{v.location}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm text-gray-600">
-                      <span>{car.year}</span>
+                      <span>{v.year}</span>
                       <span>•</span>
-                      <span>{car.transmission}</span>
+                      <span>{v.transmission}</span>
                       <span>•</span>
-                      <span>{car.mileage}</span>
+                      <span>{v.mileage}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -297,7 +297,7 @@ const HomePage = () => {
             Browse our extensive collection or chat with our AI assistant for personalized recommendations
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/cars">
+            <Link to="/vehicles">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
                 Browse All Vehicles
               </Button>

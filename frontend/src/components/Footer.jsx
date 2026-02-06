@@ -31,25 +31,25 @@ const Footer = () => {
                 <span className="text-2xl font-bold text-white">Speedy</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
-              Fast, reliable, and customer-focused car marketplace in Nigeria. Your trusted broker for quality vehicles.
+              Fast, reliable, and customer-focused Automotive marketplace in Nigeria. Your trusted broker for quality vehicles.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+              <a href="https://web.facebook.com/speedyng/" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-               <a href="https://wa.me/2349019254080" className="text-gray-400 hover:text-red-500 transition-colors">
+               <a href="https://wa.me/2348135877104" className="text-gray-400 hover:text-red-500 transition-colors">
                 < PiWhatsappLogo className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+              <a href="https://x.com/speedyngcom" className="text-gray-400 hover:text-red-500 transition-colors">
                 <FaXTwitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+              <a href="https://www.instagram.com/speedyng/" className="text-gray-400 hover:text-red-500 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+              <a href="https://www.tiktok.com/@speedyng" className="text-gray-400 hover:text-red-500 transition-colors">
                 <PiTiktokLogo className="w-5 h-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-red-500 transition-colors">
+              <a href="https://www.linkedin.com/in/speedy-ng-2b2ba11a1/" className="text-gray-400 hover:text-red-500 transition-colors">
                 <TbBrandLinkedin className="w-5 h-5" />
               </a>
             </div>
@@ -60,7 +60,7 @@ const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/cars" className="text-sm hover:text-red-500 transition-colors">
+                <Link to="/vehicles" className="text-sm hover:text-red-500 transition-colors">
                   Browse Vehicles
                 </Link>
               </li>
@@ -89,7 +89,7 @@ const Footer = () => {
               {footerCategories.map((cat) => (
                 <li key={cat}>
                   <Link 
-                    to={`/cars?category=${encodeURIComponent(cat)}`} 
+                    to={`/vehicles?category=${encodeURIComponent(cat)}`} 
                     className="text-sm text-gray-400 hover:text-red-500 transition-colors duration-200 block w-full"
                   >
                     {cat}
@@ -119,8 +119,8 @@ const Footer = () => {
               </li>
               <li className="flex items-center space-x-3 text-sm">
                 <Phone className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <a href="tel:09019254080" className="hover:text-red-500 transition-colors">
-                  09019254080
+                <a href="tel:08135877104" className="hover:text-red-500 transition-colors">
+                  08135877104
                 </a>
                 <p className= "text-red-500">or</p>
                 <a href="tel:07056117175" className="hover:text-red-500 transition-colors">

@@ -70,16 +70,16 @@ export const vehicleAPI = {
   delete: (id) => api.delete(`/vehicles/${id}`),
 
 
-  // Fetches the history list for the specific user
-  getChatHistory: (userId) => api.get(`/chat/history/${userId}`),
-};
-
   // --- Chat Functions --
-  saveChatMessage: (messageData) => api.post('/chat/save', {
-    content: messageData.text || messageData.content,
-    sender: messageData.sender,
-    timestamp: messageData.timestamp || new Date().toISOString()
-  }),
+  saveChatMessage: (messageData) => {
+    return api.post('/chat/save', {
+      content: messageData.content || messageData.text,
+      sender: messageData.sender,
+      timestamp: messageData.timestamp || new Date().toISOString()
+    });
+  },
+// Fetches the history list for the specific user
+  getChatHistory: (userId) => api.get(`/chat/history/${userId}`),
 };
   
 

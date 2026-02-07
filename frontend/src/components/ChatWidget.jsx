@@ -155,7 +155,7 @@ const ChatWidget = () => {
         ).sort((a, b) => b.price - a.price);
 
         if (results.length > 0) {
-          const exactMatch = results.filter(v => modelName !== 'vehicle' && v.name.toLowerCase().includes(modelName.toLowerCase()));
+          const exactMatch = results.find(v => modelName !== 'vehicle' && v.name.toLowerCase().includes(modelName.toLowerCase()));
           if (exactMatch) {
             return formatResponse(
               <span>

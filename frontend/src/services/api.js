@@ -69,13 +69,14 @@ export const vehicleAPI = {
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   delete: (id) => api.delete(`/vehicles/${id}`),
 
-  // --- Chat Functions ---
-  // Matches the ChatMessageCreate schema (requires text and sender)
-  saveChatMessage: (messageData) => api.post('/chat/save', {
-    content: messageData.text,
-    sender: messageData.sender,
-    
-  }),
+  // --- Chat Functions --
+  saveChatMessage: (messageData) => {
+    return api.post('/chat/save', {
+      content: messageData.text || messageData.content,
+      sender: messageData.sender,
+      timestamp: messageData.timestamp || new Date().toISOString()
+    });
+  },
 
   // Fetches the history list for the specific user
   getChatHistory: (userId) => api.get(`/chat/history/${userId}`),

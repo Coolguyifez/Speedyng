@@ -4,9 +4,9 @@ import { LuMessageCircleMore } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { vehicleAPI } from '../services/api';
-const [isTyping, setIsTyping] = useState(false);
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [availableVehicles, setAvailableVehicles] = useState([]);
   const navigate = useNavigate();
   
@@ -399,10 +399,8 @@ const ChatWidget = () => {
                    
                     {message.text}
                   </div>
-                  <p className={`text-xs mt-1 ${
-                    message.sender === 'user' ? 'text-white/70' : 'text-gray-400'
-                  }`}>
-                    new Date(message.timestamp).toLocaleTimeString('en-US', {
+                  <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-white/70' : 'text-gray-400'}`}>
+                    {new Date(message.timestamp).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
                     })}

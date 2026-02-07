@@ -112,8 +112,8 @@ const ChatWidget = () => {
         );
       }
       return formatResponse("Currently, we don't have any vehicles listed for rent. Please check back later or browse our vehicles for sale!");
-      }
     }
+  
 
     // 2. BUDGET VEHICLE LOGIC (Searching for a specific category)
     if (input.includes('budget car') || input.includes('budget Vehicle') || input.includes('cheap') || input.includes('affordable')) {
@@ -260,14 +260,14 @@ const ChatWidget = () => {
       input.includes('see the pick up truck') || 
       input.includes('see the van') || 
       input.includes('see the motorcycle') || 
-      input.includes('see the bike') ||
+      input.includes('see the bike')
     ) {
       return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
     }
     if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
     if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.";
     if (input.includes('hello') || input.includes('hi') || input.includes('Yes')) return "Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉";
-    return "Thank you for Choosing speedy today for any more information type "hello";
+    return "Thank you for Choosing speedy today for any more information type 'hello'.";
   };
 
   // 3. HANDLE SEND & SAVE

@@ -143,7 +143,7 @@ async def create_Vehicle(
         vehicle_dict.pop('verified', None)
         
         # 3. Create the Vehicle with the dictionary and explicitly set verified=True
-        new_vehicle = Car(**vehicle_dict, verified=True)
+        new_vehicle = Vehicle(**vehicle_dict, verified=True)
         
         db.add(new_vehicle)
         await db.commit()

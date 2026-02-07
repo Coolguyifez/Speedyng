@@ -189,14 +189,19 @@ const ChatWidget = () => {
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'awaiting_model') {
-      // If user said "no", "none", etc.
-      if (input.includes('no') || input.includes('none') || input.includes('not really')) {
-        // We still need their budget! 
-        // We set tempModel to 'vehicle' so Stage 3 knows to search the whole brand.
+      // If user says "Yes", "Ok", "Sure" to seeing other models of that brand
+      if (input === 'yes' || input === 'ok' || input === 'sure' || input.includes('show me')) {
         setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: 'vehicle' });
-        
         return formatResponse(
-          `No problem! I can show you all our available ${chatState.tempBrand}s. What is your budget for this purchase?`
+          `Great! I'll show you all available ${chatState.tempBrand}s. What is your maximum budget for this?`
+        );
+      }
+    
+      // If user said "no", "none", "not really"
+      if (input.includes('no') || input.includes('none') || input.includes('not really')) {
+        setChatState({ stage: 'general', tempBrand: null, tempModel: null });
+        return formatResponse(
+          "No problem! What other brand or type of vehicle are you interested in?"
         );
       }
       // If they gave a specific name (e.g., "Camry")

@@ -446,12 +446,12 @@ const ChatWidget = () => {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                 placeholder="Ask about vehicles, prices, features or budget..."
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
               />
               <Button
-                onClick={handleSendMessage}
+                onClick={() => handleSendMessage()}
                 size="sm"
                 className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300"
               >

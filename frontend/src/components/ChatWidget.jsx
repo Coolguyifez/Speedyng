@@ -81,7 +81,7 @@ const ChatWidget = () => {
 
   // 2. THE AI ENGINE (Keywords + Budget Search)
   const getLegitResponse = (text) => {
-    const input = text.toLowerCase();
+    const input = text.toLowerCase().trim;
     
     // Helper to separate UI from DB Text
     const formatResponse = (ui, dbText) => ({
@@ -190,11 +190,13 @@ const ChatWidget = () => {
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'suggesting_alternatives') {
-      // If user says "Yes", "Ok", "Sure" to seeing other models of that brand
-      if (input === 'yes' || input === 'ok' || input === 'sure' || input.includes('show me')) {
-        setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: 'vehicle' });
+      const isAgreeing = input === 'yes' || input === 'ok' || input === 'sure' || input.includes('show me') || input.includes('different brand');
+      
+      if (isAgreeing) {
+        // If they were looking for a brand but failed, let them start fresh
+        setChatState({ stage: 'general', tempBrand: null, tempModel: null });
         return formatResponse(
-          `Great! I'll show you all available ${chatState.tempBrand}s. What is your maximum budget for this?`
+          "Great! What other brand are you interested in? Or you can just type 'budget' to see our cheapest deals."
         );
       }
     
@@ -245,8 +247,8 @@ const ChatWidget = () => {
         <span>
           We don't have that particular brand. I suggest these other brands we have:
           {others.map(v => {
-            // FIX: Create a safe string first
-            const featureText = v.features || "High performance and verified condition.";
+            //  Create a safe string first
+            const featureText = String(v.features || "High performance and verified condition.")
             return (
               <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold text-left">
                 {v.name} - Features: {featureText.substring(0, 40)}...
@@ -258,9 +260,9 @@ const ChatWidget = () => {
       );
     }
     // KEYWORD LOGIC
-    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified  broker platform. We inspect every vehicle before listing!";
-    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!";
-    if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.";
+    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return formatResponse("Speedy is a verified  broker platform. We inspect every vehicle before listing!");
+    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return formatResponse("Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!");
+    if (input.includes('location') || input.includes('where') || input.includes('see')) return formatResponse("Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.");
     if (
       input.includes('inspect') || 
       input.includes('see the car') || 
@@ -273,13 +275,34 @@ const ChatWidget = () => {
       input.includes('see the motorcycle') || 
       input.includes('see the bike')
     ) {
-      return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
+      return formatResponse("We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.");
     }
-    if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
-    if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.";
-    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) return "Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉";
-    return "Thank you for Choosing speedy today for any more information type 'hello'.";
+    if (input.includes('sell') || input.includes('agent')) return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.");
+    if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return formatResponse("I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.");
+    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) return formatResponse("Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉");
+    return formatResponse("Thank you for Choosing speedy today for any more information type 'hello' for more option.");
   };
+
+  // HANDLE CLEAR CHAT IN THE UI 
+  const handleClearChat = () => {
+    // 1. Reset the UI messages to just the initial greeting
+    setMessages([
+      {
+        id: Date.now(),
+        text: "Conversation reset! This Speedy Assit. How can I help you find your perfect vehicle now?",
+        sender: 'bot',
+        timestamp: new Date().toISOString()
+      }
+    ]);
+
+    // 2. Reset the internal State Machine logic
+    setChatState({ 
+      stage: 'general', 
+      tempBrand: null, 
+      tempModel: null 
+    });
+  };
+  
 
   // 3. HANDLE SEND & SAVE
   const handleSendMessage = async (clickedQuery = null) => {
@@ -314,12 +337,12 @@ const ChatWidget = () => {
       const botResponse = getLegitResponse(currentInput);
       const botTimestamp = new Date().toISOString();
 
-      // --- FIX #1: Extract values from the response object ---
+      // ----- Extract values from the response object ---
       // If botResponse is an object {ui, text}, use them. If it's just a string, use it for both.
       const displayContent = botResponse.ui || botResponse; 
       const dbContent = botResponse.text || botResponse;
 
-      // --- FIX #2: Show UI (JSX) in the chat bubble ---
+      //  ----Show UI (JSX) in the chat bubble ---
       setMessages(prev => [...prev, { 
         text: displayContent, 
         sender: 'bot', 
@@ -377,13 +400,38 @@ const ChatWidget = () => {
                 <p className="text-xs text-white/80">AI Vehicle Advisor</p>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center space-x-2">
+              {/* RESTART BUTTON */}
+              <button 
+                onClick={handleClearChat}
+                title="Restart Conversation"
+                className="p-1.5 hover:bg-white/20 rounded-md transition-colors duration-200"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="16" 
+                  height="16" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                </svg>
+              </button>
+              <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-white/80 hover:text-white transition-colors p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+            </div>
           </div>
+            
+          
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">

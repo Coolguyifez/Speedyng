@@ -180,7 +180,7 @@ const ChatWidget = () => {
         return (
           <span>
             No problem! Here are all the {chatState.tempBrand}s we have. The best car according to your budget is the <b>{brandVehicles[0]?.name}</b>:
-            {brandvehicles.map(v => (
+            {brandVehicles.map(v => (
                <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
                 {v.name} - ₦{(v.price/1000000).toFixed(1)}M
               </button>
@@ -260,65 +260,65 @@ const ChatWidget = () => {
 
   // 3. HANDLE SEND & SAVE
   const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  if (!inputValue.trim()) return;
 
-    const userMessage = {
-      text: inputValue,
-      sender: 'user',
-      timestamp: new Date().toISOString() // Fixed parentheses
-    };
+  const userMessage = {
+    content: inputValue, // Use 'content' to match backend expectation
+    sender: 'user',
+    user_id: user.id,    // Use snake_case
+    timestamp: new Date().toISOString()
+  };
 
-    setMessages(prev => [...prev, userMessage]);
-    const currentInput = inputValue;
-    setInputValue('');
+  // Update UI (using 'text' for your mapping logic if needed, or just stay consistent)
+  setMessages(prev => [...prev, { ...userMessage, text: userMessage.content }]);
+  const currentInput = inputValue;
+  setInputValue('');
 
-    if (user) {
-      try {
-        await vehicleAPI.saveChatMessage(userMessage);
-      } catch (err) {
-        console.error("Failed to save user message:", err);
-      }
+  if (user) {
+    try {
+      await vehicleAPI.saveChatMessage(userMessage);
+    } catch (err) {
+      console.error("Failed to save user message:", err);
+    }
+  }
+
+  setTimeout(async () => {
+    const botReplyContent = getLegitResponse(currentInput);
+    
+    // Convert JSX to String for the Database
+    let dbText = "";
+    if (typeof botReplyContent === 'string') {
+      dbText = botReplyContent;
+    } else {
+      dbText = React.Children.toArray(botReplyContent.props.children)
+        .map(child => {
+          if (typeof child === 'string') return child;
+          if (child.props && child.props.children) return child.props.children;
+          return "";
+        })
+        .join(" ");
     }
 
-    setTimeout(async () => {
-      const botReplyContent = getLegitResponse(currentInput);
-      const botResponse = {
-        text: botReplyContent,
-        sender: 'bot',
-        timestamp: new Date().toISOString()
-      };
+    const botResponse = {
+      content: dbText,
+      sender: 'bot',
+      user_id: user.id, // Fixed: use_id
+      timestamp: new Date().toISOString()
+    };
 
-      setMessages((prev) => [...prev, botResponse]);
-      
-      if (user) {
-        try {
-          // HELPER: Convert JSX/Rich text to a clean string for DB storage
-          let dbText = "";
-          if (typeof botReplyContent === 'string') {
-            dbText = botReplyContent;
-          } else {
-            // This extracts only the text parts from the <span> and <button> elements
-            dbText = React.Children.toArray(botReplyContent.props.children)
-              .map(child => {
-                if (typeof child === 'string') return child;
-                if (child.props && child.props.children) return child.props.children;
-                return "";
-              })
-              .join(" ");
-          }
-
-          await vehicleAPI.saveChatMessage({
-            content: dbText, // saves the actual text like "Yes! Check the Toyota Camry..."
-            sender: 'bot',
-            userId: user.id,
-            timestamp: botResponse.timestamp
-          });
-        } catch (err) {
-          console.error("Save bot msg error:", err);
-        }
+    // Update UI
+    setMessages((prev) => [...prev, { ...botResponse, text: botReplyContent }]);
+    
+    if (user) {
+      try {
+        await vehicleAPI.saveChatMessage(botResponse);
+      } catch (err) {
+        // This is where your 422 error was triggering
+        console.error("Save bot msg error:", err);
       }
-    }, 800);
-  };
+    }
+  }, 800);
+};
 
 
   const handleToggleChat = () => {

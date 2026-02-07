@@ -153,14 +153,14 @@ const AdminPanel = () => {
     }
   };
 
-  const handleEdit = (vehicle) => {
-    setEditingVehicle(vehicle);
+  const handleEdit = (v) => {
+    setEditingVehicle(v);
     setFormData({
-      ...vehicle,
-      address: vehicle.address || '',           // Ensure value is captured
-      phone_number: vehicle.phone_number || '', // Ensure value is captured
-      fuel_type: vehicle.fuel_type || 'Petrol', // Mapping to match state
-      features: Array.isArray(vehicle.features) ? vehicle.features.join(', ') : vehicle.features
+      ...v,
+      address: v.address || '',           // Ensure value is captured
+      phone_number: v.phone_number || '', // Ensure value is captured
+      fuel_type: v.fuel_type || 'Petrol', // Mapping to match state
+      features: Array.isArray(v.features) ? v.features.join(', ') : v.features
     });
     setIsDialogOpen(true);
   };
@@ -298,7 +298,7 @@ const AdminPanel = () => {
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
-                    <DialogTitle>{editingVehicle ? 'Edit Vehiicle' : 'Add New Vehicle'}</DialogTitle>
+                    <DialogTitle>{editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle'}</DialogTitle>
                     <DialogDescription>
                       Fill out the details below to update the inventory.
                     </DialogDescription>
@@ -528,7 +528,7 @@ const AdminPanel = () => {
                         Cancel
                       </Button>
                       <Button type="submit" className="bg-red-600 hover:bg-red-700 text-white">
-                        {editingCar ? 'Update Vehicle' : 'Add Vehicle'}
+                        {editingVehicle ? 'Update Vehicle' : 'Add Vehicle'}
                       </Button>
                     </div>
                   </form>

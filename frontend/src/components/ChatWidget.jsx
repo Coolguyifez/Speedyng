@@ -247,7 +247,7 @@ const ChatWidget = () => {
     // 4. BRAND NOT FOUND
     const isGreeting = ['hello', 'hi', 'hey', 'good morning', 'yo'].some(g => input === g);
     if (!isGreeting && (input.includes('brand') || (chatState.stage === 'general' && foundBrand === undefined && input.length > 3))) {
-      const others = availableVehicles.slice(0, 3);
+      const others = availableVehicles.slice(0, 30);
       const otherNames = others.map(v => v.name).join(", ");
       setChatState({ ...chatState, stage: 'suggesting_alternatives' });
       return formatResponse(

@@ -81,13 +81,19 @@ const ChatWidget = () => {
 
   // 2. THE AI ENGINE (Keywords + Budget Search)
   const getLegitResponse = (text) => {
-    const input = text.toLowerCase().trim;
+    // SAFEGUARD: Ensure 'text' is a valid string before processing
+    const safeText = typeof text === 'string' ? text : "";
+    const input = safeText.toLowerCase().trim();
     
     // Helper to separate UI from DB Text
     const formatResponse = (ui, dbText) => ({
       ui: ui,
       text: dbText || ui 
     });
+
+    // If input is empty after trimming
+    if (!input) return formatResponse("I'm here to help! What kind of vehicle are you looking for?");
+
 
     // 1. RENTAL VEHICLE LOGIC
     if (input.includes('rent') || input.includes('hiring')) {

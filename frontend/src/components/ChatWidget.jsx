@@ -96,7 +96,7 @@ const ChatWidget = () => {
       );
 
       if (rentalVehicles.length > 0) {
-        const names = rentalVehicle.map(v => v.name).join(", ");
+        const names = rentalVehicles.map(v => v.name).join(", ");
         return formatResponse(
           <span>
             Yes, we have vehicles available for rent! 🚗 <br />
@@ -155,7 +155,7 @@ const ChatWidget = () => {
         ).sort((a, b) => b.price - a.price);
 
         if (results.length > 0) {
-          const exactMatch = results.find(v => modelName !== 'vehicle' && v.name.toLowerCase().includes(modelName.toLowerCase()));
+          const exactMatch = results.filter(v => modelName !== 'vehicle' && v.name.toLowerCase().includes(modelName.toLowerCase()));
           if (exactMatch) {
             return formatResponse(
               <span>

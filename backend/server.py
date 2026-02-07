@@ -216,6 +216,7 @@ async def save_chat_message(
         )
         db.add(new_msg)
         await db.commit()
+        await db.refresh(new_msg)
         return {"status": "saved"}
     except Exception as e:
         logger.error(f"Chat save error: {e}")

@@ -265,7 +265,7 @@ const ChatWidget = () => {
     const currentInput = inputValue;
     const userTimestamp = new Date().toISOString();
 
-    // 1. UI Update for User Message
+    // 1. UI Update
     const userMessage = {
       text: currentInput,
       sender: 'user',
@@ -274,9 +274,13 @@ const ChatWidget = () => {
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
 
-    // 2. Save User Message to DB
+    // 2. Save User Message (Standardized to 'content')
     try {
-      await vehicleAPI.saveChatMessage(userMessage);
+      await vehicleAPI.saveChatMessage({
+        content: currentInput, // Explicitly send content
+        sender: 'user',
+        timestamp: userTimestamp
+      });
     } catch (err) {
       console.error("Failed to save user message:", err);
     }
@@ -286,25 +290,19 @@ const ChatWidget = () => {
       const botReplyContent = getLegitResponse(currentInput);
       const botTimestamp = new Date().toISOString();
 
-      // UI Update for Bot
       setMessages(prev => [...prev, { 
         text: botReplyContent, 
         sender: 'bot', 
         timestamp: botTimestamp 
       }]);
 
-      // Prepare plain text for Database (FastAPI can't store JSX)
-      let dbContent = "";
-      if (typeof botReplyContent === 'string') {
-        dbContent = botReplyContent;
-      } else {
-        // Fallback text if the response contains buttons/links
-        dbContent = "I found some vehicles matching your request. Click the links in the chat to view them!";
-      }
+      let dbContent = typeof botReplyContent === 'string' 
+        ? botReplyContent 
+        : "I found some vehicles matching your request. Click the links in the chat to view them!";
 
       try {
         await vehicleAPI.saveChatMessage({
-          content: dbContent,
+          content: dbContent, // Explicitly send content
           sender: 'bot',
           timestamp: botTimestamp
         });
@@ -313,7 +311,6 @@ const ChatWidget = () => {
       }
     }, 800);
   };
-
 
   const handleToggleChat = () => {
     setIsOpen(!isOpen);

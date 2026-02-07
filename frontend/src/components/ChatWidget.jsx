@@ -82,6 +82,12 @@ const ChatWidget = () => {
   // 2. THE AI ENGINE (Keywords + Budget Search)
   const getLegitResponse = (text) => {
     const input = text.toLowerCase();
+    
+    // Helper to separate UI from DB Text
+    const formatResponse = (ui, dbText) => ({
+      ui: ui,
+      text: dbText || ui 
+    });
 
     // 1. RENTAL VEHICLE LOGIC
     if (input.includes('rent') || input.includes('hiring')) {
@@ -90,7 +96,8 @@ const ChatWidget = () => {
       );
 
       if (rentalVehicles.length > 0) {
-        return (
+        const names = rentalVehicle.map(v => v.name).join(", ");
+        return formatResponse(
           <span>
             Yes, we have vehicles available for rent! 🚗 <br />
             <strong>Note:</strong> The prices listed for rental vehicles are <b>strictly non-negotiable</b>. 
@@ -101,9 +108,10 @@ const ChatWidget = () => {
               </button>
             ))}
           </span>
+          `Yes, we have vehicles available for rent! Note: The Prices listed for rental vehicle are strictly non-negotiable. Here are our available options: ${names}.`
         );
-      } else {
-        return "Currently, we don't have any vehicles listed for rent. Please check back later or browse our vehicles for sale!";
+      }
+      return formatResponse("Currently, we don't have any vehicles listed for rent. Please check back later or browse our vehicles for sale!");
       }
     }
 
@@ -114,7 +122,8 @@ const ChatWidget = () => {
       ).sort((a, b) => a.price - b.price);
 
       if (budgetVehicles.length > 0) {
-        return (
+        const names = budgetVehicles.slice(0, 3).map(v => v.name).join(", ");
+        return formatResponse(
           <span>
             I found some great budget-friendly options for you:
             {budgetVehicles.slice(0, 3).map(v => (
@@ -122,8 +131,8 @@ const ChatWidget = () => {
                 {v.name} - ₦{(v.price / 1000000).toFixed(1)}M
               </button>
             ))}
-            The best deal for a tight budget right now is the <b>{budgetVehicles[0].name}</b>.
           </span>
+          `I found some great budget-friendly options for you: ${names}.`
         );
       }
     }
@@ -135,66 +144,69 @@ const ChatWidget = () => {
         const rawNumber = parseInt(moneyMatch[1]);
         const budget = rawNumber < 1000 ? rawNumber * 1000000 : rawNumber;
         const modelName = chatState.tempModel;
-        
-        const exactMatch = availableVehicles.find(v => 
-          v.name.toLowerCase().includes(modelName.toLowerCase()) && v.price <= budget
-        );
+        const brandName = chatState.tempBrand;
 
         setChatState({ stage: 'general', tempBrand: null, tempModel: null });
+        
+        const results = availableVehicles.find(v => 
+          v.name.toLowerCase().includes(brandName.toLowerCase()) && 
+          (modelName === 'vehicle' ? true : v.name.toLowerCase().includes(modelName.toLowerCase())) &&
+          v.price <= budget                                       
+        ).sort((a, b) => b.price - a.price);
 
-        if (exactMatch) {
-          return (
+        if (results.lenghth > 0) {
+          const exactMatch = results.find(v => modelName !== 'vehicle' && v.name.toLowerCase().includes(modelName.toLowerCase()));
+          if (exactMatch) {
+            return formatResponse(
+              <span>
+                Oh well, we have the <b>{exactMatch.name}</b> 
+                <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
+                  link here
+                </button> 
+                at ₦{(exactMatch.price / 1000000).toFixed(1)}M.
+              </span>
+              `Oh well, we have the ${exactMatch.name} at ₦{(exactMatch.price / 1000000).toFixed(1)}M.`
+            );
+          }
+          return formatResponse(
             <span>
-              Oh well, we have the <b>{exactMatch.name}</b> 
-              <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
-                link here
-              </button> 
-              at ₦{(exactMatch.price / 1000000).toFixed(1)}M.
-            </span>
-          );
-        } else {
-          const alternatives = availableVehicles
-            .filter(v => v.price <= budget)
-            .sort((a, b) => b.price - a.price)
-            .slice(0, 2);
-          
-          return (
-            <span>
-              We don't have that specific {modelName} at that price. However, here are others with a lesser price:
-              {alternatives.map(v => (
+              Based on your budget, check these out:
+              {results.slice(0, 3).map(v => (
                 <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
                   {v.name} - ₦{(v.price/1000000).toFixed(1)}M
                 </button>
               ))}
-            </span>
+            </span>,
+            `Based on your budget, I found ${results.length} vehicles available.`
           );
+        } else {
+          return formatResponse(`We don't have any ${brandName} vehicles within that budget right now. Would you like to try a different brand?`);
         }
       }
     }
+      
+    
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'awaiting_model') {
-      if (input.includes('no') || input.includes('none')) {
-        const brandVehicles = availableVehicles.filter(v => v.name.toLowerCase().includes(chatState.tempBrand.toLowerCase()));
-        setChatState({ ...chatState, stage: 'general' });
-        return (
-          <span>
-            No problem! Here are all the {chatState.tempBrand}s we have. The best car according to your budget is the <b>{brandVehicles[0]?.name}</b>:
-            {brandVehicles.map(v => (
-               <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
-                {v.name} - ₦{(v.price/1000000).toFixed(1)}M
-              </button>
-            ))}
-          </span>
+      // If user said "no", "none", etc.
+      if (input.includes('no') || input.includes('none') || input.includes('not really')) {
+        // We still need their budget! 
+        // We set tempModel to 'vehicle' so Stage 3 knows to search the whole brand.
+        setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: 'vehicle' });
+        
+        return formatResponse(
+          `No problem! I can show you all our available ${chatState.tempBrand}s. What is your budget for this purchase?`
         );
       }
+      // If they gave a specific name (e.g., "Camry")
       setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: input });
-      return `What is your budget for the ${input}?`;
+      return formatResponse(`Got it, a ${input}. What is your budget for that?`);
     }
 
     // 3. STARTING FLOW: GENERAL BRAND & FEATURE SEARCH
     if (input.match(/budget|cost|price/) && !input.match(/(\d+)/)) {
-      return "What specific brand are you looking for?";
+      return formatResponse("What specific brand are you looking for?");
     }
 
     const knownBrands = [...new Set(availableVehicles.map(v => v.name.split(' ')[0].toLowerCase()))];
@@ -205,22 +217,24 @@ const ChatWidget = () => {
       const specificMatch = brandVehicles.find(v => input.includes(v.name.toLowerCase()));
       
       if (specificMatch) {
-        return (
+        return formatResponse(
           <span>
             Yes! Check the <button onClick={() => navigate(`/vehicle/${specificMatch.id}`)} className="text-red-600 underline font-bold mx-1">{specificMatch.name}</button> 
             Features: {specificMatch.features || "High performance and verified condition."}
-          </span>
+          </span>,
+          `Yes! Check the ${specificMatch.name}. Features: ${specificMatch.features || "High performance and verified condition."}`
         );
       }
 
       setChatState({ stage: 'awaiting_model', tempBrand: foundBrand });
-      return `We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific vehicle name in mind (Make and Model)?`;
+      return formatResponse(`We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific vehicle name in mind (Make and Model)?`);
     }
 
     // 4. BRAND NOT FOUND
     if (input.includes('brand')) {
       const others = availableVehicles.slice(0, 3);
-      return (
+      const otherNames = others.map(v => v.name).join(", ");
+      return formatResponse(
         <span>
           We don't have that particular brand. I suggest these other brands we have:
           {others.map(v => (
@@ -228,7 +242,8 @@ const ChatWidget = () => {
              {v.name} - Features: {v.features?.substring(0, 40)}...
            </button>
           ))}
-        </span>
+        </span>,
+        `We don't have that particular brand. I suggest checking out these alternatives: ${otherNames}.`
       );
     }
     // KEYWORD LOGIC
@@ -245,17 +260,14 @@ const ChatWidget = () => {
       input.includes('see the pick up truck') || 
       input.includes('see the van') || 
       input.includes('see the motorcycle') || 
-      input.includes('see the bike') || 
-      input.includes('see the toyota') || 
-      input.includes('see the lexus')
+      input.includes('see the bike') ||
     ) {
       return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
     }
     if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
     if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.";
-    if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a Vehicle based on your budget and brand name. How much are you looking to spend?";
-    
-    return "That sounds interesting! Tell me your budget or a brand you like, and I'll find the best deal for you.";
+    if (input.includes('hello') || input.includes('hi')) || input.includes('Yes')) return "Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉";
+    return "Thank you for Choosing speedy today for any more information type "hello";
   };
 
   // 3. HANDLE SEND & SAVE

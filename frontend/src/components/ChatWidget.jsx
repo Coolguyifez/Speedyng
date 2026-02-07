@@ -148,7 +148,7 @@ const ChatWidget = () => {
 
         setChatState({ stage: 'general', tempBrand: null, tempModel: null });
         
-        const results = availableVehicles.find(v => 
+        const results = availableVehicles.filter(v => 
           v.name.toLowerCase().includes(brandName.toLowerCase()) && 
           (modelName === 'vehicle' ? true : v.name.toLowerCase().includes(modelName.toLowerCase())) &&
           v.price <= budget                                       

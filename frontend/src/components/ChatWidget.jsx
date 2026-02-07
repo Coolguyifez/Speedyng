@@ -285,7 +285,7 @@ const ChatWidget = () => {
     }]);
     setInputValue('');
 
-    // 2. Save User Message
+    // 2. Save User Message to DB
     try {
       await vehicleAPI.saveChatMessage({
         content: currentInput,
@@ -298,43 +298,30 @@ const ChatWidget = () => {
 
     // 3. Generate, Display, and Save Bot Response
     setTimeout(async () => {
-      const botReplyContent = getLegitResponse(currentInput);
+      const botResponse = getLegitResponse(currentInput);
       const botTimestamp = new Date().toISOString();
 
-      // Show in UI immediately (allows JSX/Buttons to work)
+      // --- FIX #1: Extract values from the response object ---
+      // If botResponse is an object {ui, text}, use them. If it's just a string, use it for both.
+      const displayContent = botResponse.ui || botResponse; 
+      const dbContent = botResponse.text || botResponse;
+
+      // --- FIX #2: Show UI (JSX) in the chat bubble ---
       setMessages(prev => [...prev, { 
-        text: botReplyContent, 
+        text: displayContent, 
         sender: 'bot', 
         timestamp: botTimestamp 
       }]);
 
-      // --- NEW LOGIC TO CAPTURE ACTUAL WORDS ---
-      let dbContent = "";
-
-      if (typeof botReplyContent === 'string') {
-        dbContent = botReplyContent;
-      } else if (React.isValidElement(botReplyContent)) {
-        // If it's JSX (like the search results), we try to extract the main text
-        // This looks for the text inside the <span> tags you used in getLegitResponse
-        try {
-          const children = botReplyContent.props.children;
-          // We flatten the children to get the text parts specifically
-          dbContent = React.Children.toArray(children)
-            .filter(child => typeof child === 'string')
-            .join(' ') || `Results for ${currentInput}`;
-        } catch (e) {
-          dbContent = `Found vehicles matching: ${currentInput}`;
-        }
-      }
-
+      // --- FIX #3: Save clean STRING to the Database ---
       try {
         await vehicleAPI.saveChatMessage({
-          content: dbContent.trim(), // Saves the actual words found
+          content: typeof dbContent === 'string' ? dbContent : "Vehicle Search Results",
           sender: 'bot',
           timestamp: botTimestamp
         });
       } catch (err) {
-        console.error("Save bot msg error:", err);
+        console.error("Save bot msg error (422 fix):", err);
       }
     }, 800);
   };

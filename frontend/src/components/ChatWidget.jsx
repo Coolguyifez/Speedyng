@@ -9,6 +9,17 @@ const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [availableVehicles, setAvailableVehicles] = useState([]);
   const navigate = useNavigate();
+  
+  const [inputValue, setInputValue] = useState('');
+  const messagesEndRef = useRef(null);
+  
+  // State Machine for Multi-turn Conversation
+  const [chatState, setChatState] = useState({
+    stage: 'general', // Stages: 'general', 'awaiting_model', 'awaiting_budget'
+    tempBrand: null,
+    tempModel: null
+  });
+
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -73,59 +84,157 @@ const ChatWidget = () => {
   const getLegitResponse = (text) => {
     const input = text.toLowerCase();
 
-    // DYNAMIC BRAND SEARCH
-    const brandMatch = availableVehicles.find(v => 
-      input.includes(v.name.split(' ')[0].toLowerCase())
-    );
-
-    if (brandMatch && !input.match(/(\d+)/)) {
-      const brandName = brandMatch.name.split(' ')[0];
-      const brandVehicles = availableVehicles.filter(v => 
-        v.name.toLowerCase().includes(brandName.toLowerCase())
+    // 1. RENTAL VEHICLE LOGIC
+    if (input.includes('rent') || input.includes('hiring')) {
+      const rentalVehicles = availableVehicles.filter(v => 
+        v.category?.toLowerCase() === 'rent' || v.type?.toLowerCase() === 'rent'
       );
 
-      if (brandVehicles.length > 0) {
-        const topMatch = brandCars[0];
+      if (rentalVehicles.length > 0) {
         return (
           <span>
-            Yes! We have {brandVehicles.length} {brandName} models. The best one right now is the 
-            <a href={`/vehicle/${topMatch.id}`} className="text-blue-600 underline ml-1 font-bold">
-              {topMatch.name}
-            </a>. Would you like to see its full details?
-          </span>
-        );
-      }
-    }
-
-    // BUDGET SEARCH LOGIC
-    const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
-    if (moneyMatch) {
-      const rawNumber = parseInt(moneyMatch[1]);
-      const budgetAmount = rawNumber < 1000 ? rawNumber * 1000000 : rawNumber;
-      
-      const affordableCars = availableVehicles
-        .filter(v => v.price <= budgetAmount)
-        .sort((a, b) => b.price - a.price);
-
-      if (affordableVehicles.length > 0) {
-        const match = affordableVehicles[0];
-        return (
-          <span>
-            I found a great match! The 
-            <a href={`/vehicle/${match.id}`} className="text-blue-600 underline mx-1 font-bold">
-              {match.name}
-            </a> 
-            is only ₦{(match.price / 1000000).toFixed(1)}M. Click the name to see the vehicle features!
+            Yes, we have vehicles available for rent! 🚗 <br />
+            <strong>Note:</strong> The prices listed for rental vehicles are <b>strictly non-negotiable</b>. 
+            Here are our available options:
+            {rentalVehicles.map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold">
+                {v.name} - ₦{v.price.toLocaleString()}/day
+              </button>
+            ))}
           </span>
         );
       } else {
-        return `I don't have any vehicle under ₦${(budgetAmount/1000000).toFixed(1)}M right now. Check our vehicle page for more!`;
+        return "Currently, we don't have any vehicles listed for rent. Please check back later or browse our vehicles for sale!";
       }
     }
 
+    // 2. BUDGET VEHICLE LOGIC (Searching for a specific category)
+    if (input.includes('budget car') || input.includes('budget Vehicle') || input.includes('cheap') || input.includes('affordable')) {
+      const budgetVehicles = availableVehicles.filter(v => 
+        v.category?.toLowerCase() === 'budget' || v.price < 5000000 // Example: Under 5M is "budget"
+      ).sort((a, b) => a.price - b.price);
+
+      if (budgetVehicles.length > 0) {
+        return (
+          <span>
+            I found some great budget-friendly options for you:
+            {budgetVehicles.slice(0, 3).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
+                {v.name} - ₦{(v.price / 1000000).toFixed(1)}M
+              </button>
+            ))}
+            The best deal for a tight budget right now is the <b>{budgetVehicles[0].name}</b>.
+          </span>
+        );
+      }
+    }
+
+    // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
+    if (chatState.stage === 'awaiting_budget') {
+      const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
+      if (moneyMatch) {
+        const rawNumber = parseInt(moneyMatch[1]);
+        const budget = rawNumber < 1000 ? rawNumber * 1000000 : rawNumber;
+        const modelName = chatState.tempModel;
+        
+        const exactMatch = availableVehicles.find(v => 
+          v.name.toLowerCase().includes(modelName.toLowerCase()) && v.price <= budget
+        );
+
+        setChatState({ stage: 'general', tempBrand: null, tempModel: null });
+
+        if (exactMatch) {
+          return (
+            <span>
+              Oh well, we have the <b>{exactMatch.name}</b> 
+              <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
+                link here
+              </button> 
+              at ₦{(exactMatch.price / 1000000).toFixed(1)}M.
+            </span>
+          );
+        } else {
+          const alternatives = availableVehicles
+            .filter(v => v.price <= budget)
+            .sort((a, b) => b.price - a.price)
+            .slice(0, 2);
+          
+          return (
+            <span>
+              We don't have that specific {modelName} at that price. However, here are others with a lesser price:
+              {alternatives.map(v => (
+                <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
+                  {v.name} - ₦{(v.price/1000000).toFixed(1)}M
+                </button>
+              ))}
+            </span>
+          );
+        }
+      }
+    }
+
+    //MODEL FLOW: IF AWAITING MODEL NAME
+    if (chatState.stage === 'awaiting_model') {
+      if (input.includes('no') || input.includes('none')) {
+        const brandVehicles = availableVehicles.filter(v => v.name.toLowerCase().includes(chatState.tempBrand.toLowerCase()));
+        setChatState({ ...chatState, stage: 'general' });
+        return (
+          <span>
+            No problem! Here are all the {chatState.tempBrand}s we have. The best car according to your budget is the <b>{brandVehicles[0]?.name}</b>:
+            {brandvehicles.map(v => (
+               <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
+                {v.name} - ₦{(v.price/1000000).toFixed(1)}M
+              </button>
+            ))}
+          </span>
+        );
+      }
+      setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: input });
+      return `What is your budget for the ${input}?`;
+    }
+
+    // 3. STARTING FLOW: GENERAL BRAND & FEATURE SEARCH
+    if (input.match(/budget|cost|price/) && !input.match(/(\d+)/)) {
+      return "What specific brand are you looking for?";
+    }
+
+    const knownBrands = [...new Set(availableVehicles.map(v => v.name.split(' ')[0].toLowerCase()))];
+    const foundBrand = knownBrands.find(b => input.includes(b));
+
+    if (foundBrand) {
+      const brandVehicles = availableVehicles.filter(v => v.name.toLowerCase().startsWith(foundBrand));
+      const specificMatch = brandVehicles.find(v => input.includes(v.name.toLowerCase()));
+      
+      if (specificMatch) {
+        return (
+          <span>
+            Yes! Check the <button onClick={() => navigate(`/vehicle/${specificMatch.id}`)} className="text-red-600 underline font-bold mx-1">{specificMatch.name}</button> 
+            Features: {specificMatch.features || "High performance and verified condition."}
+          </span>
+        );
+      }
+
+      setChatState({ stage: 'awaiting_model', tempBrand: foundBrand });
+      return `We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific vehicle name in mind (Make and Model)?`;
+    }
+
+    // 4. BRAND NOT FOUND
+    if (input.includes('brand')) {
+      const others = availableVehicles.slice(0, 3);
+      return (
+        <span>
+          We don't have that particular brand. I suggest these other brands we have:
+          {others.map(v => (
+             <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold">
+             {v.name} - Features: {v.features?.substring(0, 40)}...
+           </button>
+          ))}
+        </span>
+      );
+    }
     // KEYWORD LOGIC
-    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified Automotive broker platform. We inspect every vehicle before recommending it!";
-    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments. Check back soon for 'Pay on credit' options!";
+    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified  broker platform. We inspect every vehicle before listing!";
+    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!";
     if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.";
     if (input.includes('inspect') || input.includes('see the car')) || input.includes('see the vehicle')) || input.includes('see the truck')) || input.includes('see the bus')) || input.includes('see the tricycle')) || input.includes('see the pick up truck')) || input.includes('see the van')) || input.includes('see the motorcycle')) || input.includes('see the bike')) || input.includes('see the toyota')) || input.includes('see the lexus')) return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
     if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
@@ -151,7 +260,7 @@ const ChatWidget = () => {
 
     if (user) {
       try {
-        await carAPI.saveChatMessage(userMessage);
+        await vehicleAPI.saveChatMessage(userMessage);
       } catch (err) {
         console.error("Failed to save user message:", err);
       }
@@ -169,16 +278,32 @@ const ChatWidget = () => {
       
       if (user) {
         try {
-          await carAPI.saveChatMessage({
-            text: typeof botReplyContent === 'string' ? botReplyContent : "Recommended a car link",
+          // HELPER: Convert JSX/Rich text to a clean string for DB storage
+          let dbText = "";
+          if (typeof botReplyContent === 'string') {
+            dbText = botReplyContent;
+          } else {
+            // This extracts only the text parts from the <span> and <button> elements
+            dbText = React.Children.toArray(botReplyContent.props.children)
+              .map(child => {
+                if (typeof child === 'string') return child;
+                if (child.props && child.props.children) return child.props.children;
+                return "";
+              })
+              .join(" ");
+          }
+
+          await vehicleAPI.saveChatMessage({
+            content: dbText, // saves the actual text like "Yes! Check the Toyota Camry..."
             sender: 'bot',
+            userId: user.id,
             timestamp: botResponse.timestamp
           });
         } catch (err) {
-          console.error("Failed to save bot message:", err);
+          console.error("Save bot msg error:", err);
         }
       }
-    }, 1000);
+    }, 800);
   };
 
 
@@ -189,7 +314,7 @@ const ChatWidget = () => {
     }
   };
 
-   // IF NO USER, DO NOT RENDER ANYTHING
+   // IF NO USER has signed in, DO NOT RENDER(Show) ANYTHING
  if (!user) {
     return null;
   }
@@ -217,7 +342,7 @@ const ChatWidget = () => {
               </div>
               <div>
                 <h3 className="font-semibold">Speedy Assist</h3>
-                <p className="text-xs text-white/80">AI Car Advisor</p>
+                <p className="text-xs text-white/80">AI Vehicle Advisor</p>
               </div>
             </div>
             <button
@@ -230,9 +355,9 @@ const ChatWidget = () => {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-            {messages.map((message) => (
+            {messages.map((message, index) => (
               <div
-                key={message.id}
+                key={message.id || index}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
@@ -243,10 +368,14 @@ const ChatWidget = () => {
                   }`}
                 >
                  <div className="text-sm leading-relaxed">
+                         {/* This is the key: it handles strings from DB 
+                    and JSX from the live engine automatically 
+                */}
+                   
                     {message.text}
                   </div>
                   <p className={`text-xs mt-1 ${
-                    message.sender === 'user' ? 'text-white/70' : 'text-gray-500'
+                    message.sender === 'user' ? 'text-white/70' : 'text-gray-400'
                   }`}>
                     {new Date(message.timestamp).toLocaleTimeString('en-US', {
                       hour: '2-digit',

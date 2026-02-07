@@ -241,7 +241,8 @@ export const testimonials = [
     comment: 'Best Vehicle broker company in Nigeria! The team was professional and the prices are very competitive. Will definitely come back.',
     rating: 5,
     image: 'https://i.pinimg.com/736x/ff/a9/58/ffa958b6f3bc4b491df9b02a24870bd2.jpg'
-  }
+  },
+  {
   id: 4,
     name: 'Okon John',
     role: 'Tech Expert',

@@ -306,7 +306,7 @@ const AdminPanel = () => {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Make/model</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Name(Make/model)</label>
                         <input
                           type="text"
                           name="name"
@@ -393,7 +393,7 @@ const AdminPanel = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Owner's/Company's Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Dealer's/Seller's Name</label>
                         <input
                           type="text"
                           name="owner_name"
@@ -404,7 +404,7 @@ const AdminPanel = () => {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Owners Address</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                         <input
                           type="text"
                           name="address"
@@ -416,7 +416,7 @@ const AdminPanel = () => {
                         />
                       </div>  
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Owners Phone Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
                         <input
                           type="text"
                           name="phone_number"
@@ -546,7 +546,7 @@ const AdminPanel = () => {
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Price</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Condition</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Location</th>
-                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Dealer/Seller Name</th>
+                    <th className="text-right py-3 px-4 font-semibold text-gray-700">Dealer's/Seller's Name</th>
                     <th className="text-right py-3 px-4 font-semibold text-gray-700">Address</th>
                     <th className="text-right py-3 px-4 font-semibold text-gray-700">Phone Number</th>
                     <th className="text-right py-3 px-4 font-semibold text-gray-700">Actions</th>

@@ -260,65 +260,59 @@ const ChatWidget = () => {
 
   // 3. HANDLE SEND & SAVE
   const handleSendMessage = async () => {
-  if (!inputValue.trim()) return;
+    if (!inputValue.trim()) return;
 
-  const userMessage = {
-    content: inputValue, // Use 'content' to match backend expectation
-    sender: 'user',
-    user_id: user.id,    // Use snake_case
-    timestamp: new Date().toISOString()
-  };
+    const currentInput = inputValue;
+    const userTimestamp = new Date().toISOString();
 
-  // Update UI (using 'text' for your mapping logic if needed, or just stay consistent)
-  setMessages(prev => [...prev, { ...userMessage, text: userMessage.content }]);
-  const currentInput = inputValue;
-  setInputValue('');
+    // 1. UI Update for User Message
+    const userMessage = {
+      text: currentInput,
+      sender: 'user',
+      timestamp: userTimestamp
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
 
-  if (user) {
+    // 2. Save User Message to DB
     try {
       await vehicleAPI.saveChatMessage(userMessage);
     } catch (err) {
       console.error("Failed to save user message:", err);
     }
-  }
 
-  setTimeout(async () => {
-    const botReplyContent = getLegitResponse(currentInput);
-    
-    // Convert JSX to String for the Database
-    let dbText = "";
-    if (typeof botReplyContent === 'string') {
-      dbText = botReplyContent;
-    } else {
-      dbText = React.Children.toArray(botReplyContent.props.children)
-        .map(child => {
-          if (typeof child === 'string') return child;
-          if (child.props && child.props.children) return child.props.children;
-          return "";
-        })
-        .join(" ");
-    }
+    // 3. Generate and Save Bot Response
+    setTimeout(async () => {
+      const botReplyContent = getLegitResponse(currentInput);
+      const botTimestamp = new Date().toISOString();
 
-    const botResponse = {
-      content: dbText,
-      sender: 'bot',
-      user_id: user.id, // Fixed: use_id
-      timestamp: new Date().toISOString()
-    };
+      // UI Update for Bot
+      setMessages(prev => [...prev, { 
+        text: botReplyContent, 
+        sender: 'bot', 
+        timestamp: botTimestamp 
+      }]);
 
-    // Update UI
-    setMessages((prev) => [...prev, { ...botResponse, text: botReplyContent }]);
-    
-    if (user) {
+      // Prepare plain text for Database (FastAPI can't store JSX)
+      let dbContent = "";
+      if (typeof botReplyContent === 'string') {
+        dbContent = botReplyContent;
+      } else {
+        // Fallback text if the response contains buttons/links
+        dbContent = "I found some vehicles matching your request. Click the links in the chat to view them!";
+      }
+
       try {
-        await vehicleAPI.saveChatMessage(botResponse);
+        await vehicleAPI.saveChatMessage({
+          content: dbContent,
+          sender: 'bot',
+          timestamp: botTimestamp
+        });
       } catch (err) {
-        // This is where your 422 error was triggering
         console.error("Save bot msg error:", err);
       }
-    }
-  }, 800);
-};
+    }, 800);
+  };
 
 
   const handleToggleChat = () => {

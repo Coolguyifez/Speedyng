@@ -131,7 +131,7 @@ async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depend
 
 @api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_Vehicle(
-    Vehicle_data: VehicleCreate, 
+    vehicle_data: VehicleCreate, 
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):

@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 
 const CarDetailsPage = () => {
   const { id } = useParams();
-  const [vehicle, setVehicle] = useState(null);
+  const [v, setVehicle] = useState(null);
  const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -64,7 +64,7 @@ const CarDetailsPage = () => {
   }
 
   // 2. Not Found State
-  if (!vehicle) {
+  if (!v) {
     return (
       <div className="min-h-screen bg-white">
         <Header />

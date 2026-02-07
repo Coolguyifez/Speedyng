@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # -------------------- App Setup --------------------
-app = FastAPI(title="Speedy Car Dealership API")
+app = FastAPI(title="Speedy Vehicle Dealership API")
 api_router = APIRouter()
 
 # Secure CORS configuration for Render deployment
@@ -41,7 +41,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# Helper to serialize car data for the frontend
+# Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
 def serialize_vehicle(vehicle):
     return {
@@ -113,7 +113,7 @@ async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
 async def get_current_user_profile(current_user: User = Depends(get_current_user)):
     return current_user
 
-# -------------------- Car Routes (Public) --------------------
+# -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])
 async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
     try:
@@ -124,10 +124,10 @@ async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depend
         vehicles = result.scalars().all()
         return [serialize_vehicle(v) for v in vehicles]
     except Exception as e:
-        logger.error(f"Error fetching cars: {e}")
+        logger.error(f"Error fetching vehicles: {e}")
         raise HTTPException(status_code=500, detail="Database connection failed")
 
-# .......SINGLE Admin Car Creation Route.................
+# .......SINGLE Admin Vehicle Creation Route.................
 
 @api_router.post("/vehicles", response_model=CarResponse)
 async def create_Vehicle(
@@ -142,7 +142,7 @@ async def create_Vehicle(
         # 2. Remove 'verified' if it exists in the incoming data to avoid conflicts
         vehicle_dict.pop('verified', None)
         
-        # 3. Create the car with the dictionary and explicitly set verified=True
+        # 3. Create the Vehicle with the dictionary and explicitly set verified=True
         new_vehicle = Car(**vehicle_dict, verified=True)
         
         db.add(new_vehicle)
@@ -161,7 +161,7 @@ async def get_vehicle(vehicle_id: int, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Vehicle not found")
     return serialize_vehicle(vehicle)
 
-# -------------------- Car Management (Admin Only) --------------------
+# -------------------- Vehicle Management (Admin Only) --------------------
 
 @api_router.put("/vehicles/{vehicle_id}", response_model=VehicleResponse)
 async def update_vehicle(

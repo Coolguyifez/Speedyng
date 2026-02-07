@@ -69,7 +69,7 @@ async def seed_database():
         
         await session.commit()
 
-        # ----------------- Cars -----------------
+        # ----------------- Vehicle -----------------
         result = await session.execute(select(Vehicle))
         vehicle_count = len(result.scalars().all())
         if vehicle_count == 0:

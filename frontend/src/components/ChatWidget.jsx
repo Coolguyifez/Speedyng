@@ -180,6 +180,7 @@ const ChatWidget = () => {
             `Based on your budget, I found ${results.length} vehicles available.`
           );
         } else {
+          setChatState({ ...chatState, stage: 'suggesting_alternatives' });
           return formatResponse(`We don't have any ${brandName} vehicles within that budget right now. Would you like to try a different brand?`);
         }
       }
@@ -188,7 +189,7 @@ const ChatWidget = () => {
     
 
     //MODEL FLOW: IF AWAITING MODEL NAME
-    if (chatState.stage === 'awaiting_model') {
+    if (chatState.stage === 'suggesting_alternatives') {
       // If user says "Yes", "Ok", "Sure" to seeing other models of that brand
       if (input === 'yes' || input === 'ok' || input === 'sure' || input.includes('show me')) {
         setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: 'vehicle' });
@@ -236,9 +237,10 @@ const ChatWidget = () => {
     }
 
     // 4. BRAND NOT FOUND
-    if (input.includes('brand')) {
+    if (input.includes('brand') || (chatState.stage === 'general' && foundBrand === undefined && input.length > 3)) {
       const others = availableVehicles.slice(0, 3);
       const otherNames = others.map(v => v.name).join(", ");
+      setChatState({ ...chatState, stage: 'suggesting_alternatives' });
       return formatResponse(
         <span>
           We don't have that particular brand. I suggest these other brands we have:
@@ -275,7 +277,7 @@ const ChatWidget = () => {
     }
     if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
     if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.";
-    if (input.includes('hello') || input.includes('hi') || input.includes('Yes')) return "Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉";
+    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) return "Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉";
     return "Thank you for Choosing speedy today for any more information type 'hello'.";
   };
 

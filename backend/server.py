@@ -129,7 +129,7 @@ async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depend
 
 # .......SINGLE Admin Vehicle Creation Route.................
 
-@api_router.post("/vehicles", response_model=CarResponse)
+@api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_Vehicle(
     Vehicle_data: VehicleCreate, 
     current_admin: User = Depends(get_current_admin),

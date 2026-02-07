@@ -235,7 +235,18 @@ const ChatWidget = () => {
     if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return "Speedy is a verified  broker platform. We inspect every vehicle before listing!";
     if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return "Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!";
     if (input.includes('location') || input.includes('where') || input.includes('see')) return "Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.";
-    if (input.includes('inspect') || input.includes('see the car')) || input.includes('see the vehicle')) || input.includes('see the truck')) || input.includes('see the bus')) || input.includes('see the tricycle')) || input.includes('see the pick up truck')) || input.includes('see the van')) || input.includes('see the motorcycle')) || input.includes('see the bike')) || input.includes('see the toyota')) || input.includes('see the lexus')) return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
+    if (input.includes('inspect') || 
+        input.includes('see the car')) || 
+        input.includes('see the vehicle')) || 
+        input.includes('see the truck')) || 
+        input.includes('see the bus')) || 
+        input.includes('see the tricycle')) || 
+        input.includes('see the pick up truck')) || 
+        input.includes('see the van')) || 
+        input.includes('see the motorcycle')) || 
+        input.includes('see the bike')) || 
+        input.includes('see the toyota')) || 
+        input.includes('see the lexus')) return "We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.";
     if (input.includes('sell') || input.includes('agent')) return "Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.";
     if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return "I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.";
     if (input.includes('hello') || input.includes('hi')) return "Hi there! I'm Speedy Assist. I can help you find a Vehicle based on your budget and brand name. How much are you looking to spend?";

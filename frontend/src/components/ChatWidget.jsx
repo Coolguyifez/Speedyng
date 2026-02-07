@@ -265,19 +265,18 @@ const ChatWidget = () => {
     const currentInput = inputValue;
     const userTimestamp = new Date().toISOString();
 
-    // 1. UI Update
-    const userMessage = {
+    // 1. UI Update for User
+    setMessages(prev => [...prev, {
       text: currentInput,
       sender: 'user',
       timestamp: userTimestamp
-    };
-    setMessages(prev => [...prev, userMessage]);
+    }]);
     setInputValue('');
 
-    // 2. Save User Message (Standardized to 'content')
+    // 2. Save User Message
     try {
       await vehicleAPI.saveChatMessage({
-        content: currentInput, // Explicitly send content
+        content: currentInput,
         sender: 'user',
         timestamp: userTimestamp
       });
@@ -285,29 +284,40 @@ const ChatWidget = () => {
       console.error("Failed to save user message:", err);
     }
 
-    // 3. Generate and Save Bot Response
+    // 3. Generate, Display, and Save Bot Response
     setTimeout(async () => {
       const botReplyContent = getLegitResponse(currentInput);
       const botTimestamp = new Date().toISOString();
 
+      // Show in UI immediately (allows JSX/Buttons to work)
       setMessages(prev => [...prev, { 
         text: botReplyContent, 
         sender: 'bot', 
         timestamp: botTimestamp 
       }]);
 
-      let dbContent;
+      // --- NEW LOGIC TO CAPTURE ACTUAL WORDS ---
+      let dbContent = "";
+
       if (typeof botReplyContent === 'string') {
         dbContent = botReplyContent;
-      } else {
-        // If it's JSX, we extract the text or use a descriptive version 
-        // that still mentions the specific brand/search
-        dbContent = `Search results for: "${currentInput}"`; 
+      } else if (React.isValidElement(botReplyContent)) {
+        // If it's JSX (like the search results), we try to extract the main text
+        // This looks for the text inside the <span> tags you used in getLegitResponse
+        try {
+          const children = botReplyContent.props.children;
+          // We flatten the children to get the text parts specifically
+          dbContent = React.Children.toArray(children)
+            .filter(child => typeof child === 'string')
+            .join(' ') || `Results for ${currentInput}`;
+        } catch (e) {
+          dbContent = `Found vehicles matching: ${currentInput}`;
+        }
       }
 
       try {
         await vehicleAPI.saveChatMessage({
-          content: dbContent, // Explicitly send content
+          content: dbContent.trim(), // Saves the actual words found
           sender: 'bot',
           timestamp: botTimestamp
         });
@@ -316,7 +326,6 @@ const ChatWidget = () => {
       }
     }, 800);
   };
-
   const handleToggleChat = () => {
     setIsOpen(!isOpen);
     if (!isOpen) {

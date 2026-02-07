@@ -296,9 +296,14 @@ const ChatWidget = () => {
         timestamp: botTimestamp 
       }]);
 
-      let dbContent = typeof botReplyContent === 'string' 
-        ? botReplyContent 
-        : "I found some vehicles matching your request. Click the links in the chat to view them!";
+      let dbContent;
+      if (typeof botReplyContent === 'string') {
+        dbContent = botReplyContent;
+      } else {
+        // If it's JSX, we extract the text or use a descriptive version 
+        // that still mentions the specific brand/search
+        dbContent = `Search results for: "${currentInput}"`; 
+      }
 
       try {
         await vehicleAPI.saveChatMessage({

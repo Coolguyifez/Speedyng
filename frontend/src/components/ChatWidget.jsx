@@ -4,7 +4,7 @@ import { LuMessageCircleMore } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { vehicleAPI } from '../services/api';
-
+const [isTyping, setIsTyping] = useState(false);
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [availableVehicles, setAvailableVehicles] = useState([]);
@@ -77,7 +77,7 @@ const ChatWidget = () => {
 
   useEffect(() => {
     if (isOpen) scrollToBottom();
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isTyping]);
 
   // 2. THE AI ENGINE (Keywords + Budget Search)
   const getLegitResponse = (text) => {
@@ -237,11 +237,15 @@ const ChatWidget = () => {
       return formatResponse(
         <span>
           We don't have that particular brand. I suggest these other brands we have:
-          {others.map(v => (
-             <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold">
-             {v.name} - Features: {v.features?.substring(0, 40)}...
-           </button>
-          ))}
+          {others.map(v => {
+            // FIX: Create a safe string first
+            const featureText = v.features || "High performance and verified condition.";
+            return (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold text-left">
+                {v.name} - Features: {featureText.substring(0, 40)}...
+              </button>
+            );
+          })}
         </span>,
         `We don't have that particular brand. I suggest checking out these alternatives: ${otherNames}.`
       );
@@ -271,19 +275,21 @@ const ChatWidget = () => {
   };
 
   // 3. HANDLE SEND & SAVE
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  const handleSendMessage = async (clickedQuery = null) => {
+    const messageToSend = clickedQuery || inputValue;
+    if (typeof messageToSend !== 'string' || !messageToSend.trim()) return;
 
-    const currentInput = inputValue;
+    const currentInput = messageToSend;
     const userTimestamp = new Date().toISOString();
 
     // 1. UI Update for User
     setMessages(prev => [...prev, {
       text: currentInput,
       sender: 'user',
-      timestamp: userTimestamp
+      timestamp: userTimestamp 
     }]);
     setInputValue('');
+    setIsTyping(true); // START LOADING
 
     // 2. Save User Message to DB
     try {
@@ -312,6 +318,7 @@ const ChatWidget = () => {
         sender: 'bot', 
         timestamp: botTimestamp 
       }]);
+      setIsTyping(false); // STOP LOADING
 
       // --- FIX #3: Save clean STRING to the Database ---
       try {
@@ -323,7 +330,7 @@ const ChatWidget = () => {
       } catch (err) {
         console.error("Save bot msg error (422 fix):", err);
       }
-    }, 800);
+    }, 1000);
   };
   const handleToggleChat = () => {
     setIsOpen(!isOpen);
@@ -395,7 +402,7 @@ const ChatWidget = () => {
                   <p className={`text-xs mt-1 ${
                     message.sender === 'user' ? 'text-white/70' : 'text-gray-400'
                   }`}>
-                    {new Date(message.timestamp).toLocaleTimeString('en-US', {
+                    new Date(message.timestamp).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
                     })}
@@ -403,8 +410,36 @@ const ChatWidget = () => {
                 </div>
               </div>
             ))}
+
+            {/* TYPING INDICATOR */}
+            {isTyping && (
+              <div className="flex justify-start animate-in fade-in duration-300">
+                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                  <div className="flex space-x-1 items-center h-4">
+                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce"></div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div ref={messagesEndRef} />
           </div>
+
+          {/* QUICK REPLIES */}
+          {!inputValue && !isTyping && (
+            <div className="px-4 py-2 flex flex-wrap gap-2 bg-white border-t border-gray-100 animate-in slide-in-from-bottom-2">
+              {["Rent a car", "Budget vehicles", "Sell my car", "Office location"].map((query) => (
+                <button
+                  key={query}
+                  onClick={() => handleSendMessage(query)}
+                  className="text-[10px] bg-gray-50 border border-gray-200 text-gray-600 px-2 py-1 rounded-full hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm"
+                >
+                  {query}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Input */}
           <div className="p-4 border-t border-gray-200 bg-white rounded-b-lg">

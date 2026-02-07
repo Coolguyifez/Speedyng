@@ -28,8 +28,7 @@ const ChatWidget = () => {
       timestamp: new Date()
     }
   ]);
-  const [inputValue, setInputValue] = useState('');
-  const messagesEndRef = useRef(null);
+  
   
   // Get logged-in user info safely
   const user = JSON.parse(localStorage.getItem('user'));

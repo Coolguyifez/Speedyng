@@ -204,7 +204,7 @@ const CarsPage = () => {
 
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold text-gray-900">{filteredCars.length}</span> Vehicles
+              Showing <span className="font-semibold text-gray-900">{filteredVehicles.length}</span> Vehicles
             </p>
             <Button
               variant="ghost"
@@ -242,7 +242,7 @@ const CarsPage = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredVechicles.map((v) => (
+            {filteredVehicles.map((v) => (
               <Link key={v.id} to={`/vehicle/${v.id}`}>
                 <Card className="overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                   <div className="relative h-52 overflow-hidden bg-gray-200">

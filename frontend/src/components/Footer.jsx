@@ -9,9 +9,10 @@ const Footer = () => {
   const footerCategories = [
     "Subcompact Sedan", "Compact Sedan", "Mid-size Sedan", "Full-Size Sedan", "Luxury Sedan",
     "Sport Sedan", "Subcompact SUV", "Compact SUV", "Mid-size SUV", "Full-size SUV",
-    "Coupe SUV", "CUV", "Luxury SUV", "Sport Compact", "Truck", "Pickup Truck",
-    "Hatchback", "Exotic", "Bus", "Small Van", "Mini MPV", "Motorcycle", "Tricycle", "Rent", "Budget"
-  ];
+    "Coupe SUV", "CUV", "Luxury SUV", "Sport Compact","Hatchback", "Exotic", "Box Truck", "Dump Truck", "Flatbed Truck", "Tanker Truck", 
+    "Refrigerator Truck", "Tow Truck", "Trailer Head", "Single Cabin Pickup", "Double Cabin Pickup", "Compact Pickup", "Full-Size Pickup", "Heavy-Duty Pickup (Dually)", 
+    "Off-Road Pickup", "Mini-Bus", "Coaster Bus", "School Bus", "Luxury Coach", "Cargo Van", "Passenger Van", "Minivan",
+    "Panel Van", "Sport Bike", "Cruiser", "Touring Bike", "Standard Motorcycle", "Passenger Keke", "Cargo Tricycle", "Delivery Tricycle",
   
   return (
     <footer className="bg-gray-900 text-gray-300">

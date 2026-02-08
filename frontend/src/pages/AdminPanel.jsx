@@ -106,7 +106,7 @@ const AdminPanel = () => {
     setFormData({
       name: '',
       type: 'Car',           
-      service: 'Sell',
+      service: 'For Sale',
       category: 'Sedan',
       price: '',
       condition: 'Foreign Used',

@@ -196,7 +196,7 @@ const ChatWidget = () => {
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'awaiting_model') {
-      const isDeclining = input === 'no' || input === 'none' || input.includes('not really') || input.includes('don't');
+      const isDeclining = input === 'no' || input === 'none' || input.includes('not really');
       // If user says "Toyota Camry", we strip the brand "Toyota" to get just the model "Camry"
       const modelClean = input.replace(chatState.tempBrand, '').trim();
       const modelName = isDeclining ? 'vehicle' : (modelClean || input);

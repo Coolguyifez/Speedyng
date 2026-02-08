@@ -195,29 +195,35 @@ const ChatWidget = () => {
     
 
     //MODEL FLOW: IF AWAITING MODEL NAME
-    if (chatState.stage === 'suggesting_alternatives') {
-      const isAgreeing = input === 'yes' || input === 'ok' || input === 'sure' || input.includes('show me') || input.includes('different brand');
+    if (chatState.stage === 'awaiting_model') {
+      const isDeclining = input === 'no' || input === 'none' || input.includes('not really');
+      // If user says "Toyota Camry", we strip the brand "Toyota" to get just the model "Camry"
+      const modelClean = input.replace(chatState.tempBrand, '').trim();
+      const modelName = isDeclining ? 'vehicle' : (modelClean || input);
+
+      setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: modelName });
       
+      return formatResponse(
+        isDeclining 
+          ? `No problem! I'll look at all available ${chatState.tempBrand.toUpperCase()} models. What is your maximum budget for this?`
+          : `Got it, the ${chatState.tempBrand.toUpperCase()} ${modelName}. What is your maximum budget for this?`
+      );
+    }
+
+    if (chatState.stage === 'suggesting_alternatives') {
+      const isAgreeing = input === 'yes' || input === 'ok' || input === 'sure' || input.includes('show me');
       if (isAgreeing) {
-        // If they were looking for a brand but failed, let them start fresh
         setChatState({ stage: 'general', tempBrand: null, tempModel: null });
-        return formatResponse(
-          "Great! What other brand are you interested in? Or you can just type 'budget' to see our cheapest deals."
-        );
+        return formatResponse("Great! What other brand are you interested in? Or type 'budget' to see cheap deals.");
       }
-    
-      // If user said "no", "none", "not really"
-      if (input.includes('no') || input.includes('none') || input.includes('not really')) {
+      if (input.includes('no') || input.includes('none')) {
         setChatState({ stage: 'general', tempBrand: null, tempModel: null });
-        return formatResponse(
-          "No problem! What other brand or type of vehicle are you interested in?"
-        );
+        return formatResponse("No problem! What other brand or type of vehicle are you interested in?");
       }
-      // If they gave a specific name (e.g., "Camry")
       setChatState({ ...chatState, stage: 'awaiting_budget', tempModel: input });
       return formatResponse(`Got it, a ${input}. What is your budget for that?`);
     }
-
+    
     // 3. STARTING FLOW: GENERAL BRAND & FEATURE SEARCH
     if (input.match(/budget|cost|price/) && !input.match(/(\d+)/)) {
       return formatResponse("What specific brand are you looking for?");

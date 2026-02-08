@@ -58,8 +58,8 @@ const categories = [
 ];
 const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
-const conditions = ['all', 'Car', 'Truck', 'Van', 'Bus', 'Motorcycle', 'Tricycle', 'Budget'];
-const conditions = ['all', 'Sell', 'Rent', 'Lease'];
+const types = ['all', 'Car', 'Truck', 'Van', 'Bus', 'Motorcycle', 'Tricycle'];
+const services = ['all', 'Sell', 'Rent', 'Lease', 'Budget'];
 
 const CarsPage = () => {
   const [vehicles, setVehicles] = useState([]);

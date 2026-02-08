@@ -47,8 +47,8 @@ def serialize_vehicle(vehicle):
     return {
         "id": getattr(vehicle, 'id', None),
         "name": getattr(vehicle, 'name', 'Unknown'),
-        "type": getattr(vehicle, 'type', 'Car'),
-        "service": getattr(vehicle, 'service', 'Sales'),
+        "type": getattr(vehicle, 'type', 'Unknown'),
+        "service": getattr(vehicle, 'service', 'Unknown'),
         "category": getattr(vehicle, 'category', 'Uncategorized'),
         "price": getattr(vehicle, 'price', 0),
         "condition": getattr(vehicle, 'condition', 'Used'),

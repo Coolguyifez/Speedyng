@@ -200,6 +200,12 @@ const CarDetailsPage = () => {
                   <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
                     {v.condition}
                   </div>
+                  <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                    {v.type}
+                  </div>
+                  <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                    {v.service}
+                  </div>
                 </div>
 
                 {/* Specifications */}

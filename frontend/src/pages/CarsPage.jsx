@@ -233,7 +233,7 @@ const CarsPage = () => {
                 </SelectTrigger>
                 <SelectContent>
                   {services.map((service, index) => (
-                    <SelectItem key={index} value={type}>
+                    <SelectItem key={index} value={service}>
                       {type}
                     </SelectItem>
                   ))}

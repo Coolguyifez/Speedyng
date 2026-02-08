@@ -77,13 +77,20 @@ const CarsPage = () => {
 
   useEffect(() => {
     const categoryFromUrl = searchParams.get('category');
+    const typeFromUrl = searchParams.get('type');
+
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
+      setSelectedType('all'); // Reset type if category is specific
+    } else if (typeFromUrl) {
+      setSelectedType(typeFromUrl);
+      setSelectedCategory('all');
     } else {
       setSelectedCategory('all');
+      setSelectedType('all');
     }
   }, [searchParams]);
-
+  
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -113,7 +120,7 @@ const CarsPage = () => {
     const matchesCategory = selectedCategory === 'all' || v.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || v.location === selectedLocation;
     const matchesCondition = selectedCondition === 'All Conditions' || v.condition === selectedCondition;
-    const matchesType = selectedType === 'all' || v.type === selectedType;
+    const matchesType = selectedType === 'all' || v.type?.toLowerCase() === selectedType.toLowerCase();
     const matchesService = selectedService === 'all' || v.service === selectedService;
     
     let matchesPrice = true;
@@ -176,11 +183,11 @@ const CarsPage = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((cat, index) => (
-                    <SelectItem key={index} value={cat.name}>
+                  {categories.map((cat, i) => 
+                    <SelectItem key={i} value={cat.name}>
                       {cat.name}
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
   
@@ -190,11 +197,11 @@ const CarsPage = () => {
                   <SelectValue placeholder="Location" />
                 </SelectTrigger>
                 <SelectContent>
-                  {locations.map((location, index) => (
-                    <SelectItem key={index} value={location}>
-                      {location}
+                  {locations.map((l, i) => 
+                    <SelectItem key={i} value={l}>
+                      {l}
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
   
@@ -204,11 +211,11 @@ const CarsPage = () => {
                   <SelectValue placeholder="Condition" />
                 </SelectTrigger>
                 <SelectContent>
-                  {conditions.map((condition, index) => (
-                    <SelectItem key={index} value={condition}>
-                      {condition}
+                  {conditions.map((c, i) => 
+                    <SelectItem key={i} value={c}>
+                      {c}
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
               
@@ -218,11 +225,11 @@ const CarsPage = () => {
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {types.map((type, index) => (
-                    <SelectItem key={index} value={type}>
-                      {type}
+                  {types.map((t, i) =>
+                    <SelectItem key={i} value={t}>
+                      {t}
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
 
@@ -232,11 +239,11 @@ const CarsPage = () => {
                   <SelectValue placeholder="Service" />
                 </SelectTrigger>
                 <SelectContent>
-                  {services.map((service, index) => (
-                    <SelectItem key={index} value={service}>
-                      {service}
+                  {services.map((s, i) => 
+                    <SelectItem key={i} value={s}>
+                      {s}
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
   
@@ -313,13 +320,14 @@ const CarsPage = () => {
                         <span className="text-xs font-medium text-gray-900">Verified</span>
                       </div>
                     )}
-                    <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      {v.service}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                      <div className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm w-fit">
+                        {v.service}
+                      </div>
+                      <div className="bg-black/70 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium w-fit">
+                        {v.condition}
+                      </div>
                     </div>
-                    <div className="absolute top-3 left-3 bg-gray-900/80 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      {v.condition}
-                    </div>
-                  </div>
                   <CardContent className="p-5">
                     <div className="mb-2 text-xs font-medium uppercase">
                       <span className="text-gray-400">{v.type}</span>

@@ -66,7 +66,7 @@ const AdminPanel = () => {
   const [formData, setFormData] = useState({
     name: '',
     type: 'Car',          
-    service: 'Sell',
+    service: 'For Sell',
     category: 'Sedan',
     price: '',
     condition: 'Foreign Used',
@@ -106,7 +106,7 @@ const AdminPanel = () => {
     setFormData({
       name: '',
       type: 'Car',           
-      service: 'Sell',
+      service: 'For Sell',
       category: 'Sedan',
       price: '',
       condition: 'Foreign Used',
@@ -401,7 +401,6 @@ const AdminPanel = () => {
                             <SelectItem value="Bus">Bus</SelectItem>
                             <SelectItem value="Motorcycle">Motorcycle</SelectItem>
                             <SelectItem value="Tricycle">Tricycle</SelectItem>
-                            <SelectItem value="Budget">Budget</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -412,9 +411,10 @@ const AdminPanel = () => {
                             <SelectValue placeholder="Select Service" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Sell">Sell</SelectItem>
-                            <SelectItem value="Rent">Rent</SelectItem>
-                            <SelectItem value="Lease">Lease</SelectItem>
+                            <SelectItem value="Sell">For Sell</SelectItem>
+                            <SelectItem value="Rent">For Rent</SelectItem>
+                            <SelectItem value="Lease">For Lease</SelectItem>
+                            <SelectItem value="Budget">Budget Price</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -597,6 +597,8 @@ const AdminPanel = () => {
                 <thead>
                   <tr className="border-b border-gray-200">
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Vehicle</th>
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Type</th>
+                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Service</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Category</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Price</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Condition</th>
@@ -616,6 +618,8 @@ const AdminPanel = () => {
                           <span className="font-medium text-gray-900">{v.name}</span>
                         </div>
                       </td>
+                      <td className="py-3 px-4 text-gray-700">{v.type}</td>
+                      <td className="py-3 px-4 text-gray-700">{v.service}</td>
                       <td className="py-3 px-4 text-gray-700">{v.category}</td>
                       <td className="py-3 px-4 text-gray-900 font-semibold">₦{(v.price / 1000000).toFixed(1)}M</td>
                       <td className="py-3 px-4">

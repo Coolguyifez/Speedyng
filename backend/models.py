@@ -26,8 +26,8 @@ class Vehicle(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(200), nullable=False)
-    type = Column(String(50), default="Car", nullable=False)
-    service = Column(String(50), default="Sales", nullable=False)
+    type = Column(String(50), nullable=False)
+    service = Column(String(50), nullable=False)
     category = Column(String(50), nullable=False)
     price = Column(Integer, nullable=False)
     condition = Column(String(50), nullable=False)  # Brand New / Foreign Used / Nigerian Used

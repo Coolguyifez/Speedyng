@@ -193,20 +193,16 @@ const CarDetailsPage = () => {
                   </div>
                 </div>
 
-                <div className="mb-6">
-                  <div className="text-4xl font-bold text-red-600 mb-2">
+                <div className="mb-8">
+                  <div className="text-4xl font-black text-gray-900 mb-3">
                     ₦{Number(v.price).toLocaleString()}
                   </div>
-                  <div className = "inline-block">
-                    <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                      {v.condition}
-                    </div>
-                    <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                      {v.type}
-                    </div>
-                    <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                      {v.service}
-                    </div>
+                  <div className="flex flex-wrap gap-2">
+                    {[v.condition, v.type, v.service].map((badge, idx) => (
+                      <span key={idx} className="bg-red-50 text-red-700 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border border-red-100">
+                        {badge}
+                      </span>
+                    ))}
                   </div>
                 </div>
 

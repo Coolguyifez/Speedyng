@@ -13,6 +13,7 @@ const Footer = () => {
     "Refrigerator Truck", "Tow Truck", "Trailer Head", "Single Cabin Pickup", "Double Cabin Pickup", "Compact Pickup", "Full-Size Pickup", "Heavy-Duty Pickup (Dually)", 
     "Off-Road Pickup", "Mini-Bus", "Coaster Bus", "School Bus", "Luxury Coach", "Cargo Van", "Passenger Van", "Minivan",
     "Panel Van", "Sport Bike", "Cruiser", "Touring Bike", "Standard Motorcycle", "Passenger Keke", "Cargo Tricycle", "Delivery Tricycle",
+  ];
   
   return (
     <footer className="bg-gray-900 text-gray-300">

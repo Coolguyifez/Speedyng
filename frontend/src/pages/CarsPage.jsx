@@ -213,7 +213,7 @@ const CarsPage = () => {
               </Select>
               
               {/* Type Filter */}
-              <Select value={setSelectedType} onValueChange={setSelectedType}>
+              <Select value={SelectedType} onValueChange={SelectedType}>
                 <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>

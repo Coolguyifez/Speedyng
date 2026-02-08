@@ -411,10 +411,10 @@ const AdminPanel = () => {
                             <SelectValue placeholder="Select Service" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Sell">For Sale</SelectItem>
-                            <SelectItem value="Rent">For Rent</SelectItem>
-                            <SelectItem value="Lease">For Lease</SelectItem>
-                            <SelectItem value="Budget">For Budget Sale</SelectItem>
+                            <SelectItem value="For Sale">For Sale</SelectItem>
+                            <SelectItem value="For Rent">For Rent</SelectItem>
+                            <SelectItem value="For Lease">For Lease</SelectItem>
+                            <SelectItem value="For Budget Sale">For Budget Sale</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

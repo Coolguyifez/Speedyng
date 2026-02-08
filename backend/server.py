@@ -47,6 +47,8 @@ def serialize_vehicle(vehicle):
     return {
         "id": getattr(vehicle, 'id', None),
         "name": getattr(vehicle, 'name', 'Unknown'),
+        "type": getattr(vehicle, 'type', 'Car'),
+        "service": getattr(vehicle, 'service', 'Sales'),
         "category": getattr(vehicle, 'category', 'Uncategorized'),
         "price": getattr(vehicle, 'price', 0),
         "condition": getattr(vehicle, 'condition', 'Used'),
@@ -115,16 +117,37 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
 
 # -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])
-async def get_vehicles(category: Optional[str] = None, db: AsyncSession = Depends(get_db)):
+async def get_vehicles(
+    category: Optional[str] = Query(None), # Handles ?type=Luxury Sedan
+    v_type: Optional[str] = Query(None, alias="type"), # Handles ?type=Truck
+    service: Optional[str] = Query(None),             # Handles ?service=Rent
+    db: AsyncSession = Depends(get_db)
+):
     try:
         query = select(Vehicle)
+        
+        # 1. Filter by Category (e.g., Luxury Sedan, Compact SUV)
         if category:
             query = query.filter(Vehicle.category == category)
+            
+        # 2. Filter by Type (e.g., Car, Truck, Bus, Motorcycle)
+        if v_type:
+            query = query.filter(Vehicle.type == v_type)
+            
+        # 3. Filter by Service (e.g., Sales, Rent, Auction)
+        if service:
+            query = query.filter(Vehicle.service == service)
+            
+        # Order by newest first so Speedy always looks fresh
+        query = query.order_by(Vehicle.id.desc())
+        
         result = await db.execute(query)
         vehicles = result.scalars().all()
+        
         return [serialize_vehicle(v) for v in vehicles]
+        
     except Exception as e:
-        logger.error(f"Error fetching vehicles: {e}")
+        logger.error(f"Error fetching vehicles with filters: {e}")
         raise HTTPException(status_code=500, detail="Database connection failed")
 
 # .......SINGLE Admin Vehicle Creation Route.................

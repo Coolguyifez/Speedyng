@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Phone, MapPin, Clock, Gauge, Fuel, Settings, 
-  CheckCircle, Heart, Share2, Calendar, Loader2, ArrowLeft 
+  CheckCircle, Heart, Share2, Calendar, Loader2, ArrowLeft, Car
 } from 'lucide-react';
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
@@ -197,20 +197,22 @@ const CarDetailsPage = () => {
                   <div className="text-4xl font-bold text-red-600 mb-2">
                     ₦{Number(v.price).toLocaleString()}
                   </div>
-                  <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                    {v.condition}
-                  </div>
-                  <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                    {v.type}
-                  </div>
-                  <div className="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
-                    {v.service}
-                  </div>
+                  <div className = "inline-block">
+                    <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                      {v.condition}
+                    </div>
+                    <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                      {v.type}
+                    </div>
+                    <div className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                      {v.service}
+                    </div>
                 </div>
 
                 {/* Specifications */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   {[
+                    { icon: Car, label: 'Category', value: v.category },
                     { icon: Calendar, label: 'Year', value: v.year },
                     { icon: Gauge, label: 'Mileage', value: v.mileage },
                     { icon: Settings, label: 'Transmission', value: v.transmission },

@@ -65,6 +65,36 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/vehicles?type=Car" className="text-sm hover:text-red-500 transition-colors">
+                  Browse Cars
+                </Link>
+              </li>
+              <li>
+                <Link to="/vehicles?type=Truck" className="text-sm hover:text-red-500 transition-colors">
+                  Browse Trucks
+                </Link>
+              </li>
+              <li>
+                <Link to="/vehicles?type=Van" className="text-sm hover:text-red-500 transition-colors">
+                  Browse Vans
+                </Link>
+              </li>
+              <li>
+                <Link to="/vehicles?type=Bus" className="text-sm hover:text-red-500 transition-colors">
+                  Browse Buses
+                </Link>
+              </li>
+              <li>
+                <Link to="/vehicles?type=Motorcycle" className="text-sm hover:text-red-500 transition-colors">
+                  Browse Motorcycles
+                </Link>
+              </li>
+              <li>
+                <Link to="/vehicles?type=Tricycle" className="text-sm hover:text-red-500 transition-colors">
+                  Browse Tricycles (Keke)
+                </Link>
+              </li>
+              <li>
                 <Link to="/" className="text-sm hover:text-red-500 transition-colors">
                   Categories
                 </Link>

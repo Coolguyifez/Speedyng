@@ -25,20 +25,41 @@ const categories = [
   { name: 'CUV' },
   { name: 'Luxury SUV' },
   { name: 'Sport Compact' },
-  { name: 'Truck' },
-  { name: 'Pickup Truck' },
   { name: 'Hatchback' },
   { name: 'Exotic' },
-  { name: 'Bus' },
-  { name: 'Small Van' },
-  { name: 'Mini MPV' },
-  { name: 'Motorcycle' },
-  { name: 'Tricycle' },
-  { name: 'Rent' },
-  { name: 'Budget' },
+  { name: 'Box Truck' },
+  { name: 'Dump Truck' },
+  { name: 'Flatbed Truck' },
+  { name: 'Tanker Truck' },
+  { name: 'Refrigerator Truck' },
+  { name: 'Tow Truck' },
+  { name: 'Trailer Head' },
+  { name: 'Single Cabin Pickup' },
+  { name: 'Double Cabin Pickup' },
+  { name: 'Compact Pickup' },
+  { name: 'Full-Size Pickup' },
+  { name: 'Heavy-Duty Pickup (Dually)' },
+  { name: 'Off-Road Pickup' },
+  { name: 'Mini-Bus' },
+  { name: 'Coaster Bus' },
+  { name: 'School Bus' },
+  { name: 'Luxury Coach' },
+  { name: 'Cargo Van' },
+  { name: 'Passenger Van' },
+  { name: 'Minivan' },
+  { name: 'Panel Van' },
+  { name: 'Sport Bike' },
+  { name: 'Cruiser' },
+  { name: 'Touring Bike' },
+  { name: 'Standard Motorcycle' },
+  { name: 'Passenger Keke' },
+  { name: 'Cargo Tricycle' },
+  { name: 'Delivery Tricycle' },
 ];
 const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
+const conditions = ['all', 'Car', 'Truck', 'Van', 'Bus', 'Motorcycle', 'Tricycle', 'Budget'];
+const conditions = ['all', 'Sell', 'Rent', 'Lease'];
 
 const CarsPage = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -49,6 +70,9 @@ const CarsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [selectedCondition, setSelectedCondition] = useState('All Conditions');
+  const [selectedType, setSelectedType] = useState('all');
+  const [selectedService, setSelectedService] = useState('all');
+  
   const [priceRange, setPriceRange] = useState('all');
 
   useEffect(() => {
@@ -89,6 +113,8 @@ const CarsPage = () => {
     const matchesCategory = selectedCategory === 'all' || v.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || v.location === selectedLocation;
     const matchesCondition = selectedCondition === 'All Conditions' || v.condition === selectedCondition;
+    const matchesType = selectedType === 'all' || v.type === selectedType;
+    const matchesService = selectedService === 'all' || v.service === selectedService;
     
     let matchesPrice = true;
     if (priceRange === 'under10') matchesPrice = v.price < 10000000;
@@ -96,7 +122,7 @@ const CarsPage = () => {
     else if (priceRange === '20to40') matchesPrice = v.price >= 20000000 && v.price < 40000000;
     else if (priceRange === 'over40') matchesPrice = v.price >= 40000000;
 
-    return matchesSearch && matchesCategory && matchesLocation && matchesCondition && matchesPrice;
+    return matchesSearch && matchesCategory && matchesLocation && matchesCondition && matchesPrice && matchesType && matchesService;
   });
 
   return (
@@ -185,6 +211,34 @@ const CarsPage = () => {
                   ))}
                 </SelectContent>
               </Select>
+              
+              {/* Type Filter */}
+              <Select value={selectedType} onValueChange={selectedType}>
+                <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {types.map((type, index) => (
+                    <SelectItem key={index} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Type Filter */}
+              <Select value={selectedService} onValueChange={selectedService}>
+                <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
+                  <SelectValue placeholder="Service" />
+                </SelectTrigger>
+                <SelectContent>
+                  {services.map((service, index) => (
+                    <SelectItem key={index} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
   
               {/* Price Range Filter */}
               <Select value={priceRange} onValueChange={setPriceRange}>
@@ -214,6 +268,8 @@ const CarsPage = () => {
                 setSelectedCategory('all');
                 setSelectedLocation('All Locations');
                 setSelectedCondition('All Conditions');
+                setSelectedType('all');    
+                setSelectedService('all');
                 setPriceRange('all');
               }}
               className="text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -258,12 +314,17 @@ const CarsPage = () => {
                       </div>
                     )}
                     <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                      {v.service}
+                    </div>
+                    <div className="absolute top-3 left-3 bg-gray-900/80 text-white px-3 py-1 rounded-full text-xs font-medium">
                       {v.condition}
                     </div>
                   </div>
                   <CardContent className="p-5">
-                    <div className="mb-2">
-                      <span className="text-xs font-medium text-gray-500 uppercase">{v.category}</span>
+                    <div className="mb-2 text-xs font-medium uppercase">
+                      <span className="text-gray-400">{v.type}</span>
+                      <span className="text-gray-300">•</span>
+                      <span className="text-gray-500">{v.category}</span>
                     </div>
                     <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-red-600 transition-colors">
                       {v.name}

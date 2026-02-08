@@ -58,8 +58,8 @@ const categories = [
 ];
 const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
-const types = ['all', 'Car', 'Truck', 'Van', 'Bus', 'Motorcycle', 'Tricycle'];
-const services = ['all', 'For sale', 'For Rent', 'For Lease', 'For Budget Sale'];
+const types = ['All Types', 'Car', 'Truck', 'Van', 'Bus', 'Motorcycle', 'Tricycle'];
+const services = ['All Services', 'For sale', 'For Rent', 'For Lease', 'For Budget Sale'];
 
 const CarsPage = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -70,8 +70,8 @@ const CarsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [selectedCondition, setSelectedCondition] = useState('All Conditions');
-  const [selectedType, setSelectedType] = useState('all');
-  const [selectedService, setSelectedService] = useState('all');
+  const [selectedType, setSelectedType] = useState('All Types');
+  const [selectedService, setSelectedService] = useState('All Services');
   
   const [priceRange, setPriceRange] = useState('all');
 
@@ -81,13 +81,13 @@ const CarsPage = () => {
 
     if (categoryFromUrl) {
       setSelectedCategory(categoryFromUrl);
-      setSelectedType('all'); // Reset type if category is specific
+      setSelectedType('All Types'); // Reset type if category is specific
     } else if (typeFromUrl) {
       setSelectedType(typeFromUrl);
       setSelectedCategory('all');
     } else {
       setSelectedCategory('all');
-      setSelectedType('all');
+      setSelectedType('All Types');
     }
   }, [searchParams]);
   
@@ -120,8 +120,8 @@ const CarsPage = () => {
     const matchesCategory = selectedCategory === 'all' || v.category === selectedCategory;
     const matchesLocation = selectedLocation === 'All Locations' || v.location === selectedLocation;
     const matchesCondition = selectedCondition === 'All Conditions' || v.condition === selectedCondition;
-    const matchesType = selectedType === 'all' || v.type?.toLowerCase() === selectedType.toLowerCase();
-    const matchesService = selectedService === 'all' || v.service === selectedService;
+    const matchesType = selectedType === 'All Types' || v.type?.toLowerCase() === selectedType.toLowerCase();
+    const matchesService = selectedService === 'All Services' || v.service === selectedService;
     
     let matchesPrice = true;
     if (priceRange === 'under10') matchesPrice = v.price < 10000000;
@@ -275,8 +275,8 @@ const CarsPage = () => {
                 setSelectedCategory('all');
                 setSelectedLocation('All Locations');
                 setSelectedCondition('All Conditions');
-                setSelectedType('all');    
-                setSelectedService('all');
+                setSelectedType('All Types');    
+                setSelectedService('All Services');
                 setPriceRange('all');
               }}
               className="text-red-600 hover:text-red-700 hover:bg-red-50"

@@ -66,7 +66,7 @@ const AdminPanel = () => {
   const [formData, setFormData] = useState({
     name: '',
     type: 'Car',          
-    service: 'For Sell',
+    service: 'Sell',
     category: 'Sedan',
     price: '',
     condition: 'Foreign Used',
@@ -106,7 +106,7 @@ const AdminPanel = () => {
     setFormData({
       name: '',
       type: 'Car',           
-      service: 'For Sell',
+      service: 'Sell',
       category: 'Sedan',
       price: '',
       condition: 'Foreign Used',

@@ -196,7 +196,7 @@ const ChatWidget = () => {
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'awaiting_model') {
-      const isDeclining = input === 'no' || input === 'none' || input.includes('not really');
+      const isDeclining = input === 'no' || input === 'none' || input.includes('not really') || input.includes('don't');
       // If user says "Toyota Camry", we strip the brand "Toyota" to get just the model "Camry"
       const modelClean = input.replace(chatState.tempBrand, '').trim();
       const modelName = isDeclining ? 'vehicle' : (modelClean || input);
@@ -247,7 +247,7 @@ const ChatWidget = () => {
       }
 
       setChatState({ stage: 'awaiting_model', tempBrand: foundBrand });
-      return formatResponse(`We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific vehicle name in mind (Make and Model)?`);
+      return formatResponse(`We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific ${foundBrand.toUpperCase()} name (Make and model) you have in mind?. if yes just type the ${foundBrand.toUpperCase()} name`);
     }
 
     // 4. BRAND NOT FOUND

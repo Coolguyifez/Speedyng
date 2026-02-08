@@ -66,7 +66,7 @@ const AdminPanel = () => {
   const [formData, setFormData] = useState({
     name: '',
     type: 'Car',          
-    service: 'Sell',
+    service: 'For Sale',
     category: 'Sedan',
     price: '',
     condition: 'Foreign Used',
@@ -411,7 +411,7 @@ const AdminPanel = () => {
                             <SelectValue placeholder="Select Service" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Sell">For Sell</SelectItem>
+                            <SelectItem value="Sell">For Sale</SelectItem>
                             <SelectItem value="Rent">For Rent</SelectItem>
                             <SelectItem value="Lease">For Lease</SelectItem>
                             <SelectItem value="Budget">Budget Price</SelectItem>

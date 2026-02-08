@@ -234,7 +234,7 @@ const CarsPage = () => {
                 <SelectContent>
                   {services.map((service, index) => (
                     <SelectItem key={index} value={service}>
-                      {type}
+                      {service}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -390,7 +390,7 @@ const AdminPanel = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                        <Select value={formData.type} onValueChange={(value) => setFormData({...formData, condition: value})}>
+                        <Select value={formData.type} onValueChange={(value) => setFormData({...formData, type: value})}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select Type" />
                           </SelectTrigger>
@@ -406,7 +406,7 @@ const AdminPanel = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Service</label>
-                        <Select value={formData.service} onValueChange={(value) => setFormData({...formData, condition: value})}>
+                        <Select value={formData.service} onValueChange={(value) => setFormData({...formData, service: value})}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select Service" />
                           </SelectTrigger>

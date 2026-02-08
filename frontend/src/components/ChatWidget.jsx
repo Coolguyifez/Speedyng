@@ -247,7 +247,7 @@ const ChatWidget = () => {
       }
 
       setChatState({ stage: 'awaiting_model', tempBrand: foundBrand });
-      return formatResponse(`We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific ${foundBrand.toUpperCase()} name (Make and model) you have in mind?. if yes just type the ${foundBrand.toUpperCase()} name`);
+      return formatResponse(`We have ${brandVehicles.length} ${foundBrand.toUpperCase()} models. Do you have a specific ${foundBrand.toUpperCase()} model in mind?. if yes just type the ${foundBrand.toUpperCase()} model not the make`);
     }
 
     // 4. BRAND NOT FOUND

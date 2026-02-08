@@ -36,6 +36,8 @@ class TokenResponse(BaseModel):
 # -------------------- Vehicle Schemas --------------------
 class VehicleBase(BaseModel):
     name: str
+    type: str = "Car"         
+    service: str = "Sales"
     category: str
     price: int
     condition: str
@@ -58,6 +60,8 @@ class VehicleCreate(VehicleBase):
 
 class VehicleUpdate(BaseModel):
     name: Optional[str]
+    type: Optional[str]        
+    service: Optional[str]
     category: Optional[str]
     price: Optional[int]
     condition: Optional[str]

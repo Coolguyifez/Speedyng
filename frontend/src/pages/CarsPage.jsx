@@ -328,6 +328,7 @@ const CarsPage = () => {
                         {v.condition}
                       </div>
                     </div>
+                  </div>
                   <CardContent className="p-5">
                     <div className="mb-2 text-xs font-medium uppercase">
                       <span className="text-gray-400">{v.type}</span>

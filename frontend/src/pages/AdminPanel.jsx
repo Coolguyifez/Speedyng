@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2 } from 'lucide-react';
+import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2, CircleGauge } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../components/ui/dialog';
@@ -24,17 +24,36 @@ const categories = [
   { name: 'CUV' },
   { name: 'Luxury SUV' },
   { name: 'Sport Compact' },
-  { name: 'Truck' },
-  { name: 'Pickup Truck' },
   { name: 'Hatchback' },
   { name: 'Exotic' },
-  { name: 'Bus' },
-  { name: 'Small Van' },
-  { name: 'Mini MPV' },
-  { name: 'Motorcycle' },
-  { name: 'Tricycle' },
-  { name: 'Rent' },
-  { name: 'Budget' },
+  { name: 'Box Truck' },
+  { name: 'Dump Truck' },
+  { name: 'Flatbed Truck' },
+  { name: 'Tanker Truck' },
+  { name: 'Refrigerator Truck' },
+  { name: 'Tow Truck' },
+  { name: 'Trailer Head' },
+  { name: 'Single Cabin Pickup' },
+  { name: 'Double Cabin Pickup' },
+  { name: 'Compact Pickup' },
+  { name: 'Full-Size Pickup' },
+  { name: 'Heavy-Duty Pickup (Dually)' },
+  { name: 'Off-Road Pickup' },
+  { name: 'Mini-Bus' },
+  { name: 'Coaster Bus' },
+  { name: 'School Bus' },
+  { name: 'Luxury Coach' },
+  { name: 'Cargo Van' },
+  { name: 'Passenger Van' },
+  { name: 'Minivan' },
+  { name: 'Panel Van' },
+  { name: 'Sport Bike' },
+  { name: 'Cruiser' },
+  { name: 'Touring Bike' },
+  { name: 'Standard Motorcycle' },
+  { name: 'Passenger Keke' },
+  { name: 'Cargo Tricycle' },
+  { name: 'Delivery Tricycle' }
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 
@@ -46,6 +65,8 @@ const AdminPanel = () => {
   
   const [formData, setFormData] = useState({
     name: '',
+    type: 'Car',          
+    service: 'Sell',
     category: 'Sedan',
     price: '',
     condition: 'Foreign Used',
@@ -84,6 +105,8 @@ const AdminPanel = () => {
     setEditingVehicle(null);
     setFormData({
       name: '',
+      type: 'Car',           
+      service: 'Sell',
       category: 'Sedan',
       price: '',
       condition: 'Foreign Used',
@@ -260,7 +283,7 @@ const AdminPanel = () => {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
+                  <CircleGauge className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
             </CardContent>
@@ -306,7 +329,7 @@ const AdminPanel = () => {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Name(Make/model)</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle model</label>
                         <input
                           type="text"
                           name="name"
@@ -360,6 +383,38 @@ const AdminPanel = () => {
                             <SelectItem value="Brand New">Brand New</SelectItem>
                             <SelectItem value="Foreign Used">Foreign Used</SelectItem>
                             <SelectItem value="Nigerian Used">Nigerian Used</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
+                        <Select value={formData.type} onValueChange={(value) => setFormData({...formData, condition: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Car">Car</SelectItem>
+                            <SelectItem value="Truck">Truck</SelectItem>
+                            <SelectItem value="Van">Van</SelectItem>
+                            <SelectItem value="Bus">Bus</SelectItem>
+                            <SelectItem value="Motorcycle">Foreign Used</SelectItem>
+                            <SelectItem value="Tricycle"></SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Service</label>
+                        <Select value={formData.service} onValueChange={(value) => setFormData({...formData, condition: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Service" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Sell">Sell</SelectItem>
+                            <SelectItem value="Rent">Rent</SelectItem>
+                            <SelectItem value="Lease">Lease</SelectItem>
+                            <SelectItem value="Budget">Budget</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

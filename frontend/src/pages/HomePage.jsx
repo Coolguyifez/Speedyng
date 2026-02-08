@@ -218,10 +218,18 @@ const HomePage = () => {
                       </div>
                     )}
                     <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                      {v.service}
+                    </div>
+                    <div className="absolute top-3 left-3 bg-gray-900/80 text-white px-3 py-1 rounded-full text-xs font-medium">
                       {v.condition}
                     </div>
                   </div>
                   <CardContent className="p-5">
+                    <div className="mb-2 text-xs font-medium uppercase">
+                      <span className="text-gray-400">{v.type}</span>
+                      <span className="text-gray-300">•</span>
+                      <span className="text-gray-500">{v.category}</span>
+                    </div>
                     <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-red-600 transition-colors">
                       {v.name}
                     </h3>

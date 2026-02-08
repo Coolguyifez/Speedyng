@@ -53,7 +53,7 @@ const categories = [
   { name: 'Standard Motorcycle' },
   { name: 'Passenger Keke' },
   { name: 'Cargo Tricycle' },
-  { name: 'Delivery Tricycle' }
+  { name: 'Delivery Tricycle' },
 ];
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 
@@ -399,8 +399,9 @@ const AdminPanel = () => {
                             <SelectItem value="Truck">Truck</SelectItem>
                             <SelectItem value="Van">Van</SelectItem>
                             <SelectItem value="Bus">Bus</SelectItem>
-                            <SelectItem value="Motorcycle">Foreign Used</SelectItem>
-                            <SelectItem value="Tricycle"></SelectItem>
+                            <SelectItem value="Motorcycle">Motorcycle</SelectItem>
+                            <SelectItem value="Tricycle">Tricycle</SelectItem>
+                            <SelectItem value="Budget">Budget</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -414,7 +415,6 @@ const AdminPanel = () => {
                             <SelectItem value="Sell">Sell</SelectItem>
                             <SelectItem value="Rent">Rent</SelectItem>
                             <SelectItem value="Lease">Lease</SelectItem>
-                            <SelectItem value="Budget">Budget</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

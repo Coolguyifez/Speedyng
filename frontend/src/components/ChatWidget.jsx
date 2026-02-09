@@ -4,6 +4,11 @@ import { LuMessageCircleMore } from "react-icons/lu";
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
 import { vehicleAPI } from '../services/api';
+const SPEEDY_SERVICES = {
+  RENTAL: ['rent', 'rental', 'hiring'],
+  LEASE: ['lease', 'leasing'],
+  BUDGET: ['budget', 'cheap', 'affordable']
+};
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -94,51 +99,63 @@ const ChatWidget = () => {
     // If input is empty after trimming
     if (!input) return formatResponse("I'm here to help! What kind of vehicle are you looking for?");
 
+    // --- SERVICE DETECTION ---
+    const isLeaseQuery = SPEEDY_SERVICES.LEASE.some(k => input.includes(k));
+    const isRentQuery = SPEEDY_SERVICES.RENTAL.some(k => input.includes(k));
+    const isBudgetQuery = SPEEDY_SERVICES.BUDGET.some(k => input.includes(k));
 
-    // 1. RENTAL VEHICLE LOGIC
-    if (input.includes('rent') || input.includes('hiring')) {
-      const rentalVehicles = availableVehicles.filter(v => 
-        v.category?.toLowerCase() === 'rent' || v.type?.toLowerCase() === 'rent'
-      );
+    // 1. RENT & LEASE VEHICLE LOGIC
+    if (isLeaseQuery || isRentQuery) {
+      const filtered = availableVehicles.filter(v => {
+        const cat = v.category?.toLowerCase();
+        const type = v.type?.toLowerCase();
+        return isLeaseQuery 
+          ? SPEEDY_SERVICES.LEASE.includes(cat) 
+          : SPEEDY_SERVICES.RENTAL.includes(cat) || SPEEDY_SERVICES.RENTAL.includes(type);
+      });
 
-      if (rentalVehicles.length > 0) {
-        const names = rentalVehicles.map(v => v.name).join(", ");
+      if (filtered.length > 0) {
+        const title = isLeaseQuery ? "Speedy Lease Service 📄" : "Speedy Rental Service 🚗";
+        const note = isLeaseQuery 
+          ? "Leasing requires a 6-month minimum commitment." 
+          : "Rental prices are non-negotiable.";
+
         return formatResponse(
           <span>
-            Yes, we have vehicles available for rent! 🚗 <br />
-            <strong>Note:</strong> The prices listed for rental vehicles are <b>strictly non-negotiable</b>. 
-            Here are our available options:
-            {rentalVehicles.map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold">
-                {v.name} - ₦{v.price.toLocaleString()}/day
+            <strong className="text-red-600">{title}</strong><br/>
+            <span className="text-[10px] text-gray-500 italic mb-2 block">{note}</span>
+            {filtered.map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 font-semibold text-left hover:text-red-900">
+                {v.name} - {isLeaseQuery ? "View Lease Plan" : `₦${v.price.toLocaleString()}/day`}
               </button>
             ))}
-          </span>
-          `Yes, we have vehicles available for rent! Note: The Prices listed for rental vehicle are strictly non-negotiable. Here are our available options: ${names}.`
+          </span>,
+          `${title}: ${note}`
         );
       }
-      return formatResponse("Currently, we don't have any vehicles listed for rent. Please check back later or browse our vehicles for sale!");
+      return formatResponse(`We don't have any vehicles listed for ${isLeaseQuery ? 'lease' : 'rent'} right now.`);
     }
-  
 
     // 2. BUDGET VEHICLE LOGIC (Searching for a specific category)
-    if (input.includes('budget car') || input.includes('budget Vehicle') || input.includes('cheap') || input.includes('affordable')) {
+    if (isBudgetQuery && chatState.stage === 'general') {
       const budgetVehicles = availableVehicles.filter(v => 
-        v.category?.toLowerCase() === 'budget' || v.price < 5000000 // Example: Under 5M is "budget"
+        SPEEDY_SERVICES.BUDGET.includes(v.category?.toLowerCase()) || v.price < 5000000
       ).sort((a, b) => a.price - b.price);
 
       if (budgetVehicles.length > 0) {
-        const names = budgetVehicles.slice(0, 3).map(v => v.name).join(", ");
         return formatResponse(
           <span>
-            I found some great budget-friendly options for you:
-            {budgetVehicles.slice(0, 3).map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
+            <strong className="text-red-600">Speedy Budget Sales 💰</strong><br/>
+            Affordable options for purchase:
+            {budgetCars.slice(0, 3).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left">
                 {v.name} - ₦{(v.price / 1000000).toFixed(1)}M
               </button>
             ))}
           </span>
-          `I found some great budget-friendly options for you: ${names}.`
+          `Speedy Budget Sales 💰 
+           Affordable options for purchase:
+          ${names}.`
         );
       }
     }

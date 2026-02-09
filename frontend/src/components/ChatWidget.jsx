@@ -99,43 +99,35 @@ const ChatWidget = () => {
     // If input is empty after trimming
     if (!input) return formatResponse("I'm here to help! What kind of vehicle are you looking for?");
 
-    // --- SERVICE DETECTION ---
     const isLeaseQuery = SPEEDY_SERVICES.LEASE.some(k => input.includes(k));
     const isRentQuery = SPEEDY_SERVICES.RENTAL.some(k => input.includes(k));
     const isBudgetQuery = SPEEDY_SERVICES.BUDGET.some(k => input.includes(k));
 
-    // 1. RENT & LEASE VEHICLE LOGIC
+    // 1. RENT & LEASE LOGIC
     if (isLeaseQuery || isRentQuery) {
       const filtered = availableVehicles.filter(v => {
-        const cat = v.category?.toLowerCase();
-        const type = v.type?.toLowerCase();
+        const vService = (v.service || "").toLowerCase();
         return isLeaseQuery 
-          ? SPEEDY_SERVICES.LEASE.includes(cat) 
-          : SPEEDY_SERVICES.RENTAL.includes(cat) || SPEEDY_SERVICES.RENTAL.includes(type);
+          ? SPEEDY_SERVICES.LEASE.some(s => vService.includes(s))
+          : SPEEDY_SERVICES.RENTAL.some(s => vService.includes(s));
       });
 
       if (filtered.length > 0) {
         const title = isLeaseQuery ? "Speedy Lease Service 📄" : "Speedy Rental Service 🚗";
-        const note = isLeaseQuery 
-          ? "Leasing requires a 6-month minimum commitment." 
-          : "Rental prices are non-negotiable.";
-
         return formatResponse(
           <span>
             <strong className="text-red-600">{title}</strong><br/>
-            <span className="text-[10px] text-gray-500 italic mb-2 block">{note}</span>
-            {filtered.map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 font-semibold text-left hover:text-red-900">
-                {v.name} - {isLeaseQuery ? "View Lease Plan" : `₦${v.price.toLocaleString()}/day`}
+            {filtered.slice(0, 5).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 font-semibold text-left">
+                {v.name} - {isLeaseQuery ? "View Lease Terms" : `₦${v.price.toLocaleString()}/day`}
               </button>
             ))}
           </span>,
-          `${title}: ${note}`
+          `I found ${filtered.length} vehicles available for ${isLeaseQuery ? 'lease' : 'rent'}.`
         );
       }
-      return formatResponse(`We don't have any vehicles listed for ${isLeaseQuery ? 'lease' : 'rent'} right now.`);
+      return formatResponse(`We don't have any vehicles listed for ${isLeaseQuery ? 'lease' : 'rent'} at the moment.`);
     }
-
     // 2. BUDGET VEHICLE LOGIC (Searching for a specific category)
     if (isBudgetQuery && chatState.stage === 'general') {
       const budgetVehicles = availableVehicles.filter(v => 
@@ -143,19 +135,18 @@ const ChatWidget = () => {
       ).sort((a, b) => a.price - b.price);
 
       if (budgetVehicles.length > 0) {
+        const names = budgetVehicles.slice(0, 3).map(v => v.name).join(", ");
         return formatResponse(
           <span>
             <strong className="text-red-600">Speedy Budget Sales 💰</strong><br/>
             Affordable options for purchase:
-            {budgetCars.slice(0, 3).map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left">
+            {budgetVehicles.slice(0, 3).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left font-semibold">
                 {v.name} - ₦{(v.price / 1000000).toFixed(1)}M
               </button>
             ))}
-          </span>
-          `Speedy Budget Sales 💰 
-           Affordable options for purchase:
-          ${names}.`
+          </span>,
+          `Speedy Budget Sales 💰: ${names}`
         );
       }
     }

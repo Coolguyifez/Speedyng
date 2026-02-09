@@ -217,11 +217,13 @@ const HomePage = () => {
                         <span className="text-xs font-medium text-gray-900">Verified</span>
                       </div>
                     )}
-                    <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      {v.service}
-                    </div>
-                    <div className="absolute top-3 left-3 bg-gray-900/80 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      {v.condition}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+                      <div className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm w-fit">
+                        {v.service}
+                      </div>
+                      <div className="bg-black/70 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-medium w-fit">
+                        {v.condition}
+                      </div>
                     </div>
                   </div>
                   <CardContent className="p-5">

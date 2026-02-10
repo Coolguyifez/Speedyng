@@ -105,6 +105,25 @@ const CarsPage = () => {
     fetchVehicles();
   }, []);
 
+
+  // Universal formatting function for 8M / 80K
+  const formatPrice = (price) => {
+    if (price === undefined || price === null || price === "") return "₦0";
+    const num = parseFloat(price);
+
+    // For Millions (e.g., 10.5M)
+    if (num >= 1000000) {
+      return `₦${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+    }
+    // For Thousands (e.g., 850K)
+    if (num >= 1000) {
+      return `₦${(num / 1000).toFixed(0)}K`;
+    }
+    // Fallback for smaller amounts
+    return `₦${num.toLocaleString()}`;
+  };
+
+
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
     if (value === 'all') {
@@ -333,6 +352,8 @@ const CarsPage = () => {
                     <div className="mb-2 text-xs font-medium uppercase">
                       <span className="text-gray-400">{v.type}</span>
                       <span className="text-gray-300">•</span>
+                      <span className="text-gray-400">{v.color}</span>
+                      <span className="text-gray-300">•</span>
                       <span className="text-gray-500">{v.category}</span>
                     </div>
                     <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-red-600 transition-colors">
@@ -340,7 +361,7 @@ const CarsPage = () => {
                     </h3>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-red-600">
-                        ₦{(v.price / 1000000).toFixed(1)}M
+                        ₦{formatPrice(v.price)}
                       </span>
                       <span className="text-sm text-gray-500 flex items-center">
                         <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>

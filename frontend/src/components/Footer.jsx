@@ -35,7 +35,7 @@ const Footer = () => {
               Fast, reliable, and customer-focused Automotive marketplace in Nigeria. Your trusted broker for quality vehicles.
             </p>
             <div className="flex flex-wrap gap-4">
-              <a href="https:https://web.facebook.com/profile.php?id=61587492129988" className="hover:text-red-500 transition-colors"><Facebook className="w-5 h-5" /></a>
+              <a href="https://web.facebook.com/profile.php?id=61587492129988" className="hover:text-red-500 transition-colors"><Facebook className="w-5 h-5" /></a>
               <a href="https://wa.me/2348135877104" className="hover:text-red-500 transition-colors"><PiWhatsappLogo className="w-5 h-5" /></a>
               <a href="https://x.com/speedyngcom" className="hover:text-red-500 transition-colors"><FaXTwitter className="w-5 h-5" /></a>
               <a href="https://www.instagram.com/_speedyng/" className="hover:text-red-500 transition-colors"><Instagram className="w-5 h-5" /></a>

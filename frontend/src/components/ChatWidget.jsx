@@ -173,11 +173,11 @@ const ChatWidget = () => {
     }
 
     if (input.match(/installment|payment plan|credit|pay small/)) {
-      return formatResponse("Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!");
+      return formatResponse("Currently, we mostly accept full payments only especially for the rental and lease vehicles. Check back soon for 'Pay on credit' options!");
     }
 
     if (input.match(/sell|agent|list my car/)) {
-      return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us at 0901254080 or 07056117175 to list your car.");
+      return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us at 08135877104 or 07056117175 to list your vehicle.");
     }
 
     if (input.match(/services|what do you do|what can you do|help me with/)) {
@@ -199,31 +199,43 @@ const ChatWidget = () => {
     }
 
     // CATEGORY SEARCH (Trucks, Vans, Motorcycles, Tricycles)
-    const categoryMatch = input.match(/truck|car|van|motorcycle|bike|tricycle|bus|keke|pickup/);
-    if (categoryMatch) {
-      const type = categoryMatch[0];
-      const foundVehicles = availableVehicles.filter(v => 
-        (v.category?.toLowerCase().includes(type)) || (v.name.toLowerCase().includes(type))
-      );
+    const categoryMatch = input.match(/truck|car|van|motorcycle|bike|tricycle|bus|keke|pickup/i);
 
+    if (categoryMatch) {
+      const typeQuery = categoryMatch[0].toLowerCase();
+      
+      const foundVehicles = availableVehicles.filter(v => {
+        // 2. Search across .type, .category, AND .name to be safe
+        const vType = (v.type || "").toLowerCase();
+        const vCategory = (v.category || "").toLowerCase();
+        const vName = (v.name || "").toLowerCase();
+    
+        return vType.includes(typeQuery) || 
+               vCategory.includes(typeQuery) || 
+               vName.includes(typeQuery);
+      });
+    
       if (foundVehicles.length > 0) {
         return formatResponse(
           <span>
-            <strong className="text-red-600">Available {type.charAt(0).toUpperCase() + type.slice(1)}s:</strong><br/>
+            <strong className="text-red-600">Available {typeQuery.charAt(0).toUpperCase() + typeQuery.slice(1)}s:</strong><br/>
             I found these matches in our inventory:
             {foundVehicles.slice(0, 5).map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-2 font-semibold text-left">
+              <button 
+                key={v.id} 
+                onClick={() => navigate(`/vehicle/${v.id}`)} 
+                className="text-red-700 underline block text-xs mt-2 font-semibold text-left"
+              >
                 {v.name} - ₦{aiFormatPrice(v.price)}
               </button>
             ))}
-          </span>
+          </span>,
+          `I found ${foundVehicles.length} ${typeQuery}s available in our inventory.`
         );
       }
-      return formatResponse(`We currently don't have any ${type}s in stock, but we update our inventory daily! Check back soon.`);
+      return formatResponse(`We currently don't have any ${typeQuery}s in stock, but we update our inventory daily! Check back soon.`);
     }
 
-
-    
 
     // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
     if (chatState.stage === 'awaiting_budget') {

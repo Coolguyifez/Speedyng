@@ -123,6 +123,7 @@ async def get_vehicles(
     category: Optional[str] = Query(None), # Handles ?type=Luxury Sedan
     v_type: Optional[str] = Query(None, alias="type"), # Handles ?type=Truck
     service: Optional[str] = Query(None),             # Handles ?service=Rent
+    color: Optional[str] = Query(None),  
     db: AsyncSession = Depends(get_db)
 ):
     try:
@@ -139,6 +140,10 @@ async def get_vehicles(
         # 3. Filter by Service (e.g., Sales, Rent, Auction)
         if service:
             query = query.filter(Vehicle.service == service)
+            
+        # 4. Filter by Color (e.g., Black, Red, White)
+        if color:
+            query = query.filter(Vehicle.color.ilike(f"%{color}%"))    
             
         # Order by newest first so Speedy always looks fresh
         query = query.order_by(Vehicle.id.desc())

@@ -670,7 +670,7 @@ const AdminPanel = () => {
                       <td className="py-3 px-4 text-gray-700">{v.color}</td>
                       <td className="py-3 px-4 text-gray-700">{v.service}</td>
                       <td className="py-3 px-4 text-gray-700">{v.category}</td>
-                      <td className="py-3 px-4 text-gray-900 font-semibold">{formatPrice(v.price)}</td>
+                      <td className="py-3 px-4 text-gray-900 font-semibold">₦{formatPrice(v.price)}</td>
                       <td className="py-3 px-4">
                         <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">
                           {v.condition}

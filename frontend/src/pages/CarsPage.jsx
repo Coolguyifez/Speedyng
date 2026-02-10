@@ -361,7 +361,7 @@ const CarsPage = () => {
                     </h3>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-red-600">
-                        ₦{formatPrice(v.price)}
+                        {formatPrice(v.price)}
                       </span>
                       <span className="text-sm text-gray-500 flex items-center">
                         <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>

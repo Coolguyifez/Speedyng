@@ -144,7 +144,7 @@ const ChatWidget = () => {
       ).sort((a, b) => a.price - b.price);
 
       if (budgetVehicles.length > 0) {
-        const names = budgetVehicles.slice(0, 3).map(v => v.name).join(", ");
+        const names = budgetVehicles.slice(0, 40).map(v => v.name).join(", ");
         return formatResponse(
           <span>
             <strong className="text-red-600">Speedy Budget Sales 💰</strong><br/>
@@ -220,7 +220,7 @@ const ChatWidget = () => {
           <span>
             <strong className="text-red-600">Available {typeQuery.charAt(0).toUpperCase() + typeQuery.slice(1)}s:</strong><br/>
             I found these matches in our inventory:
-            {foundVehicles.slice(0, 5).map(v => (
+            {foundVehicles.slice(0, 40).map(v => (
               <button 
                 key={v.id} 
                 onClick={() => navigate(`/vehicle/${v.id}`)} 

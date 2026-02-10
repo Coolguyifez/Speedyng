@@ -213,7 +213,7 @@ const CarDetailsPage = () => {
                     { icon: Palette , label: 'Exterior Color', value: v.color },
                     { icon: Calendar, label: 'Year', value: v.year },
                     { icon: Gauge, label: 'Mileage', value: v.mileage },
-                    { icon: CircleGauge, label: 'Acceleration(Acceleration (0-100 km/h)', value: v.acceleration ? `${v.acceleration}s` : 'N/A' },
+                    { icon: CircleGauge, label: 'Acceleration(0-100 km/h)', value: v.acceleration ? `${v.acceleration}s` : 'N/A' },
                     { icon: Settings, label: 'Transmission', value: v.transmission },
                     { icon: Fuel, label: 'Fuel Type', value: v.fuel_type },
                     { icon: MapPin, label: 'Location', value: v.location },

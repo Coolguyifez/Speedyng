@@ -71,6 +71,8 @@ const AdminPanel = () => {
     price: '',
     condition: 'Foreign Used',
     location: 'Lagos',
+    acceleration: '',
+    color: '',
     owner_name: '',
     address: '',       
     phone_number: '',
@@ -101,6 +103,20 @@ const AdminPanel = () => {
     }
   };
 
+  // Helper function for the 80K / 8M formatting
+  const formatPrice = (price) => {
+    if (price === undefined || price === null || price === "") return "₦0";
+    const num = parseFloat(price);
+    
+    if (num >= 1000000) {
+      return `₦${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+    }
+    if (num >= 1000) {
+      return `₦${(num / 1000).toFixed(0)}K`;
+    }
+    return `₦${num.toLocaleString()}`;
+  };
+
   const resetForm = () => {
     setEditingVehicle(null);
     setFormData({
@@ -111,6 +127,8 @@ const AdminPanel = () => {
       price: '',
       condition: 'Foreign Used',
       location: 'Lagos',
+      acceleration: '',
+      color: '',
       owner_name: '',
       address: '',
       phone_number: '',
@@ -136,6 +154,7 @@ const AdminPanel = () => {
       // Ensure these are numbers for the database
       price: parseFloat(formData.price),
       year: parseInt(formData.year),
+      acceleration: formData.acceleration ? parseFloat(formData.acceleration) : null,
       verified: true,
       images: typeof formData.images === 'string' 
         ? formData.images.split(',').map(img => img.trim()).filter(img => img !== "") 
@@ -180,10 +199,13 @@ const AdminPanel = () => {
     setEditingVehicle(v);
     setFormData({
       ...v,
+      acceleration: v.acceleration || '',
+      color: v.color || '',
       address: v.address || '',           // Ensure value is captured
       phone_number: v.phone_number || '', // Ensure value is captured
       fuel_type: v.fuel_type || 'Petrol', // Mapping to match state
-      features: Array.isArray(v.features) ? v.features.join(', ') : v.features
+      features: Array.isArray(v.features) ? v.features.join(', ') : v.features,
+      images: Array.isArray(v.images) ? v.images.join(', ') : v.images
     });
     setIsDialogOpen(true);
   };
@@ -435,6 +457,31 @@ const AdminPanel = () => {
                         </Select>
                       </div>
                       <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Acceleration (0-100 km/h)</label>
+                        <input
+                          type="number"
+                          name="acceleration"
+                          step="0.1"
+                          value={formData.acceleration}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="e.g. 6.2"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Exterior Color</label>
+                        <input
+                          type="text"
+                          name="color"
+                          value={formData.color}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="e.g. Metallic Silver"
+                        />
+                      </div>
+                      <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
                         <input
                           type="number"
@@ -598,7 +645,8 @@ const AdminPanel = () => {
                   <tr className="border-b border-gray-200">
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Vehicle</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Type</th>
-                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Service</th>
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Exterior Color</th>
+                    <th className="text-left py-3 px-4 font-semibold text-gray-700">Service</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Category</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Price</th>
                     <th className="text-left py-3 px-4 font-semibold text-gray-700">Condition</th>
@@ -619,9 +667,10 @@ const AdminPanel = () => {
                         </div>
                       </td>
                       <td className="py-3 px-4 text-gray-700">{v.type}</td>
+                      <td className="py-3 px-4 text-gray-700">{v.color}</td>
                       <td className="py-3 px-4 text-gray-700">{v.service}</td>
                       <td className="py-3 px-4 text-gray-700">{v.category}</td>
-                      <td className="py-3 px-4 text-gray-900 font-semibold">₦{(v.price / 1000000).toFixed(1)}M</td>
+                      <td className="py-3 px-4 text-gray-900 font-semibold">{formatPrice(v.price)}</td>
                       <td className="py-3 px-4">
                         <span className="inline-block bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">
                           {v.condition}

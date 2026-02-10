@@ -273,7 +273,14 @@ app.include_router(api_router, prefix="/api")
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables created/ready")
+        try:
+            await conn.execute(text("ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS acceleration FLOAT"))
+            await conn.execute(text("ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS color VARCHAR(100)"))
+            logger.info("Database migration successful")
+        except Exception as e:
+            logger.error(f"Migration error: {e}")   
+            
+            
 
 @app.get("/")
 async def root():

@@ -140,7 +140,7 @@ const ChatWidget = () => {
     // 2. BUDGET VEHICLE LOGIC (Searching for a specific category)
     if (isBudgetQuery && chatState.stage === 'general') {
       const budgetVehicles = availableVehicles.filter(v => 
-        SPEEDY_SERVICES.BUDGET.includes(v.category?.toLowerCase()) || v.price < 5000000
+        SPEEDY_SERVICES.BUDGET.includes(v.category?.toLowerCase()) || v.price < 50000000
       ).sort((a, b) => a.price - b.price);
 
       if (budgetVehicles.length > 0) {

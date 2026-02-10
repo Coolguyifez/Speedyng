@@ -6,7 +6,7 @@ from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
+from sqlalchemy import text
 # Import shared components
 from database import get_db, engine, Base
 from models import User, Vehicle, Contact, ChatMessage

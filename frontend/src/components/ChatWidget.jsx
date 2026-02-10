@@ -33,6 +33,8 @@ const ChatWidget = () => {
       timestamp: new Date()
     }
   ]);
+
+  
   
   
   // Get logged-in user info safely
@@ -96,6 +98,13 @@ const ChatWidget = () => {
       text: dbText || ui 
     });
 
+    // Price shorthand helper for AI text
+    const aiFormatPrice = (num) => {
+      if (num >= 1000000) return `${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+      if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
+      return num.toLocaleString();
+    };
+
     // If input is empty after trimming
     if (!input) return formatResponse("I'm here to help! What kind of vehicle are you looking for?");
 
@@ -119,7 +128,7 @@ const ChatWidget = () => {
             <strong className="text-red-600">{title}</strong><br/>
             {filtered.slice(0, 5).map(v => (
               <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 font-semibold text-left">
-                {v.name} - {isLeaseQuery ? "View Lease Terms" : `₦${v.price.toLocaleString()}/day`}
+                {v.name} - {isLeaseQuery ? "View Lease Terms" : `₦${v.price.toLocaleString()}/month`}
               </button>
             ))}
           </span>,
@@ -142,7 +151,7 @@ const ChatWidget = () => {
             Affordable options for purchase:
             {budgetVehicles.slice(0, 3).map(v => (
               <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left font-semibold">
-                {v.name} - ₦{(v.price / 1000000).toFixed(1)}M
+                {v.name} - ₦{aiFormatPrice(v.price)}
               </button>
             ))}
           </span>,
@@ -150,13 +159,80 @@ const ChatWidget = () => {
         );
       }
     }
+    //TOP PRIORITY: FAQ & TRUST KEYWORDS
+    if (input.match(/scam|legit|safe|fraud|trust/)) {
+      return formatResponse("Speedy is a verified broker platform. We physically inspect every vehicle and verify documents before listing to ensure your safety!");
+    }
+
+    if (input.match(/location|where|office|address/)) {
+      return formatResponse("Our main offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.");
+    }
+
+    if (input.match(/inspect|see the|check the/)) {
+      return formatResponse("We arrange physical inspections before payment. A small inspection fee may apply based on your location (non-refundable).");
+    }
+
+    if (input.match(/installment|payment plan|credit|pay small/)) {
+      return formatResponse("Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!");
+    }
+
+    if (input.match(/sell|agent|list my car/)) {
+      return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us at 0901254080 or 07056117175 to list your car.");
+    }
+
+    if (input.match(/services|what do you do|what can you do|help me with/)) {
+      return formatResponse(
+        <span>
+          <strong className="text-red-600">Speedy Services:</strong><br/>
+          • 🚗 <b>Vehicle Sales:</b> Verified Brand new, Foreign and Nigeria used vehicles.<br/>
+          • 🏢 <b>Brokerage:</b> We connect serious buyers with vetted Dealers.<br/>
+          • 🛠️ <b>Inspection:</b> Document verification & physical vehicle checks.<br/>
+          • 🚲 <b>Logistics:</b> Sales of vetted dealers(cars, Trucks, Vans, and Motorcycles, Tricycles<br/>
+          • 📄 <b>Leasing & Renting:</b> Flexible options for corporate and personal use.
+        </span>,
+        "Speedy offers Vehicle Sales, Brokerage, Inspections, Logistics, and Leasing/Rental services."
+      );
+    }
+    
+    if (input.match(/foreign used|nigeria used|brand new|tokunbo/)) {
+        return formatResponse("I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page.");
+    }
+
+    // CATEGORY SEARCH (Trucks, Vans, Motorcycles, Tricycles)
+    const categoryMatch = input.match(/truck|car|van|motorcycle|bike|tricycle|bus|keke|pickup/);
+    if (categoryMatch) {
+      const type = categoryMatch[0];
+      const foundVehicles = availableVehicles.filter(v => 
+        (v.category?.toLowerCase().includes(type)) || (v.name.toLowerCase().includes(type))
+      );
+
+      if (foundVehicles.length > 0) {
+        return formatResponse(
+          <span>
+            <strong className="text-red-600">Available {type.charAt(0).toUpperCase() + type.slice(1)}s:</strong><br/>
+            I found these matches in our inventory:
+            {foundVehicles.slice(0, 5).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-2 font-semibold text-left">
+                {v.name} - ₦{aiFormatPrice(v.price)}
+              </button>
+            ))}
+          </span>
+        );
+      }
+      return formatResponse(`We currently don't have any ${type}s in stock, but we update our inventory daily! Check back soon.`);
+    }
+
+
+    
 
     // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
     if (chatState.stage === 'awaiting_budget') {
       const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
       if (moneyMatch) {
         const rawNumber = parseInt(moneyMatch[1]);
-        const budget = rawNumber < 1000 ? rawNumber * 1000000 : rawNumber;
+        const budget = (input.includes('m') || input.includes('million')) && rawNumber < 1000 
+                     ? rawNumber * 1000000 
+                     : (rawNumber < 1000 ? rawNumber * 1000000 : rawNumber);
         const modelName = chatState.tempModel;
         const brandName = chatState.tempBrand;
 
@@ -177,9 +253,9 @@ const ChatWidget = () => {
                 <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
                   link here
                 </button> 
-                at ₦{(exactMatch.price / 1000000).toFixed(1)}M.
+                at ₦{aiFormatPrice(exactMatch.price)}.
               </span>
-              `Oh well, we have the ${exactMatch.name} at ₦{(exactMatch.price / 1000000).toFixed(1)}M.`
+              `Oh well, we have the ${exactMatch.name} at ₦${aiFormatPrice(exactMatch.price)}.`
             );
           }
           return formatResponse(
@@ -187,7 +263,7 @@ const ChatWidget = () => {
               Based on your budget, check these out:
               {results.slice(0, 3).map(v => (
                 <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
-                  {v.name} - ₦{(v.price/1000000).toFixed(1)}M
+                  {v.name} - ₦{aiFormatPrice(v.price)}
                 </button>
               ))}
             </span>,
@@ -259,8 +335,10 @@ const ChatWidget = () => {
     }
 
     // 4. BRAND NOT FOUND
-    const isGreeting = ['hello', 'hi', 'hey', 'good morning', 'yo'].some(g => input === g);
-    if (!isGreeting && (input.includes('brand') || (chatState.stage === 'general' && foundBrand === undefined && input.length > 3))) {
+    const isGreeting = ['hello', 'hi', 'hey', 'good morning', 'good evening', 'yo'].some(g => input === g);
+    if (isGreeting) return formatResponse("Hi there! I'm Speedy Assist. Ask about our Vehicle brand or our services!"); 
+    
+    if (input.length > 3) { 
       const others = availableVehicles.slice(0, 30);
       const otherNames = others.map(v => v.name).join(", ");
       setChatState({ ...chatState, stage: 'suggesting_alternatives' });
@@ -280,27 +358,6 @@ const ChatWidget = () => {
         `We don't have that particular brand. I suggest checking out these alternatives: ${otherNames}.`
       );
     }
-    // KEYWORD LOGIC
-    if (input.includes('scam') || input.includes('legit') || input.includes('safe') || input.includes('fraud')) return formatResponse("Speedy is a verified  broker platform. We inspect every vehicle before listing!");
-    if (input.includes('installment') || input.includes('payment plan') || input.includes('credit')) return formatResponse("Currently, we mostly accept full payments only. Check back soon for 'Pay on credit' options!");
-    if (input.includes('location') || input.includes('where') || input.includes('see')) return formatResponse("Our Offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.");
-    if (
-      input.includes('inspect') || 
-      input.includes('see the car') || 
-      input.includes('see the vehicle') || 
-      input.includes('see the truck') || 
-      input.includes('see the bus') || 
-      input.includes('see the tricycle') || 
-      input.includes('see the pick up truck') || 
-      input.includes('see the van') || 
-      input.includes('see the motorcycle') || 
-      input.includes('see the bike')
-    ) {
-      return formatResponse("We arrange inspections before payment. A small inspection fee may apply based on your location, but note that there's no refund after inspection.");
-    }
-    if (input.includes('sell') || input.includes('agent')) return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us now at 0901254080 or 07056117175 to list your car and make arrangements.");
-    if (input.includes('foreign used') || input.includes('nigeria used') || input.includes('brand new')) return formatResponse("I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page to see everything from brand new to Nigeria used.");
-    if (input.includes('hello') || input.includes('hi') || input.includes('hey')) return formatResponse("Hi there! I'm Speedy Assist. I can help you find your specific Vehicle brand or type base on your budget. just ask me!😉");
     return formatResponse("Thank you for Choosing speedy today for any more information type 'hello' for more option.");
   };
 

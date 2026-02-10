@@ -51,6 +51,8 @@ def serialize_vehicle(vehicle):
         "service": getattr(vehicle, 'service', 'Unknown'),
         "category": getattr(vehicle, 'category', 'Uncategorized'),
         "price": getattr(vehicle, 'price', 0),
+        "acceleration": getattr(vehicle, 'acceleration', None), 
+        "color": getattr(vehicle, 'color', 'Unknown'),
         "condition": getattr(vehicle, 'condition', 'Used'),
         "location": getattr(vehicle, 'location', 'Unknown'),
         "owner_name": getattr(vehicle, 'owner_name', ''),

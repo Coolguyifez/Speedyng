@@ -30,8 +30,10 @@ class Vehicle(Base):
     service = Column(String(50), nullable=False)
     category = Column(String(50), nullable=False)
     price = Column(Integer, nullable=False)
-    condition = Column(String(50), nullable=False)  # Brand New / Foreign Used / Nigerian Used
+    condition = Column(String(50), nullable=False)  
     location = Column(String(50), nullable=False)
+    acceleration = Column(Float, nullable=True)  
+    color = Column(String, nullable=True)
     owner_name = Column(String(100), nullable=True)
     address = Column(String(255), nullable=True)     
     phone_number = Column(String(20), nullable=True)

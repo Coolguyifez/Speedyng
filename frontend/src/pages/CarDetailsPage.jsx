@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Phone, MapPin, Clock, Gauge, Fuel, Settings, 
-  CheckCircle, Heart, Share2, Calendar, Loader2, ArrowLeft, Car
+  CheckCircle, Heart, Share2, Calendar, Loader2, ArrowLeft, Car, Palette, CircleGauge
 } from 'lucide-react';
-import { FaPhoneAlt } from "react-icons/fa";
+import { FaPhoneAlt } from "react-icons/fa"
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import Header from '../components/Header';
@@ -210,8 +210,10 @@ const CarDetailsPage = () => {
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   {[
                     { icon: Car, label: 'Category', value: v.category },
+                    { icon: Palette , label: 'Exterior Color', value: v.color },
                     { icon: Calendar, label: 'Year', value: v.year },
                     { icon: Gauge, label: 'Mileage', value: v.mileage },
+                    { icon: CircleGauge, label: 'Acceleration(Acceleration (0-100 km/h)', value: v.acceleration ? `${v.acceleration}s` : 'N/A' },
                     { icon: Settings, label: 'Transmission', value: v.transmission },
                     { icon: Fuel, label: 'Fuel Type', value: v.fuel_type },
                     { icon: MapPin, label: 'Location', value: v.location },

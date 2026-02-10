@@ -22,6 +22,22 @@ const HomePage = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const formatPrice = (price) => {
+    if (!price) return "0";
+    const num = parseFloat(price);
+    
+    // Format for Millions (e.g., 12.5M)
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+    }
+    // Format for Thousands (e.g., 850K)
+    if (num >= 1000) {
+      return `${(num / 1000).toFixed(0)}K`;
+    }
+    // Fallback for smaller amounts
+    return num.toLocaleString();
+  };
+
   // Fetch real cars from the database
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -179,7 +195,7 @@ const HomePage = () => {
                       </div>
                       <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
                       {/* Displaying the real number from your database */}
-                      <p className="text-sm text-gray-500">{actualCount} cars</p>
+                      <p className="text-sm text-gray-500">{actualCount} unit(s)</p>
                     </CardContent>
                   </Card>
                 </Link>
@@ -230,6 +246,8 @@ const HomePage = () => {
                     <div className="mb-2 text-xs font-medium uppercase">
                       <span className="text-gray-400">{v.type}</span>
                       <span className="text-gray-300">•</span>
+                      <span className="text-gray-400">{v.color}</span>
+                      <span className="text-gray-300">•</span>
                       <span className="text-gray-500">{v.category}</span>
                     </div>
                     <h3 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-red-600 transition-colors">
@@ -237,7 +255,7 @@ const HomePage = () => {
                     </h3>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-2xl font-bold text-red-600">
-                        ₦{(v.price / 1000000).toFixed(1)}M
+                        ₦{formatPrice(v.price)}
                       </span>
                       <span className="text-sm text-gray-500">{v.location}</span>
                     </div>

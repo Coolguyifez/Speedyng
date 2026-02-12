@@ -12,6 +12,15 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const vehicleTypes = [
+    { name: 'Cars', slug: 'Car' },
+    { name: 'Trucks', slug: 'Truck' },
+    { name: 'Vans', slug: 'Van' },
+    { name: 'Buses', slug: 'Bus' },
+    { name: 'Motorcycles', slug: 'Motorcycle' },
+    { name: 'Tricycles', slug: 'Tricycle' },
+  ];
+
   useEffect(() => {
     const fetchUser = () => {
       try {
@@ -30,10 +39,10 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  // Helper to check if a specific category is active based on URL query
-  const isCategoryActive = (slug) => {
+  // Checks if the current URL matches the vehicle type query
+  const isTypeActive = (slug) => {
     const params = new URLSearchParams(location.search);
-    return params.get('type') === slug;
+    return location.pathname === '/vehicles' && params.get('type') === slug;
   };
 
   const handleLogout = () => {
@@ -73,16 +82,15 @@ const Header = () => {
               Home
             </Link>
 
-            {/* Replaced Browse Vehicles with specific categories */}
-            {categories.map((cat) => (
+            {vehicleTypes.map((type) => (
               <Link
-                key={cat.slug}
-                to={`/vehicles?type=${cat.slug}`}
-                className={`text-xs xl:text-sm font-medium transition-colors hover:text-red-600 ${
-                  isCategoryActive(cat.slug) ? 'text-red-600' : 'text-gray-700'
+                key={type.slug}
+                to={`/vehicles?type=${type.slug}`}
+                className={`text-xs xl:text-sm font-semibold transition-colors hover:text-red-600 ${
+                  isTypeActive(type.slug) ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
-                {cat.name}
+                {type.name}
               </Link>
             ))}
             <Link
@@ -169,14 +177,15 @@ const Header = () => {
               >
                 Home
               </Link>
-              categories.map((cat) => (
+              {vehicleTypes.map((type) => (
                 <Link
-                  key={cat.slug}
-                  to={`/vehicles?type=${cat.slug}`}
+                  key={type.slug}
+                  to={`/vehicles?type=${type.slug}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm text-gray-700 hover:text-red-600"
+                  className="text-sm font-semibold text-gray-700 hover:text-red-600 flex items-center"
                 >
-                  {cat.name}
+                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></div>
+                  {type.name}
                 </Link>
               ))}
               <Link

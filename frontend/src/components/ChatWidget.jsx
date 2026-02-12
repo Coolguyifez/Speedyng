@@ -151,7 +151,7 @@ const ChatWidget = () => {
             Affordable options for purchase:
             {budgetVehicles.slice(0, 3).map(v => (
               <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left font-semibold">
-                {v.name} - ₦{aiFormatPrice(v.price)}
+                {v.name} - ₦{aiFormatPrice(v.price)} - {v.service}
               </button>
             ))}
           </span>,
@@ -180,7 +180,7 @@ const ChatWidget = () => {
       return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us at 08135877104 or 07056117175 to list your vehicle.");
     }
 
-    if (input.match(/services|what do you do|what can you do|help me with/)) {
+    if (input.match(/services|service|guys do|what do you do|what can you do|offer/)) {
       return formatResponse(
         <span>
           <strong className="text-red-600">Speedy Services:</strong><br/>
@@ -226,7 +226,7 @@ const ChatWidget = () => {
                 onClick={() => navigate(`/vehicle/${v.id}`)} 
                 className="text-red-700 underline block text-xs mt-2 font-semibold text-left"
               >
-                {v.name} - ₦{aiFormatPrice(v.price)}
+                {v.name} - ₦{aiFormatPrice(v.price)} - {v.service}
               </button>
             ))}
           </span>,
@@ -265,9 +265,9 @@ const ChatWidget = () => {
                 <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
                   link here
                 </button> 
-                at ₦{aiFormatPrice(exactMatch.price)}.
+                at ₦{aiFormatPrice(exactMatch.price) - {v.service}.
               </span>
-              `Oh well, we have the ${exactMatch.name} at ₦${aiFormatPrice(exactMatch.price)}.`
+              `Oh well, we have the ${exactMatch.name} at ₦${aiFormatPrice(exactMatch.price)} - {v.service}.`
             );
           }
           return formatResponse(
@@ -275,7 +275,7 @@ const ChatWidget = () => {
               Based on your budget, check these out:
               {results.slice(0, 3).map(v => (
                 <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
-                  {v.name} - ₦{aiFormatPrice(v.price)}
+                  {v.name} - ₦{aiFormatPrice(v.price)} - {v.service}
                 </button>
               ))}
             </span>,
@@ -477,137 +477,104 @@ const ChatWidget = () => {
       )}
 
       {/* Chat Window */}
-      {isOpen && (
-        <div className="bg-white rounded-lg shadow-2xl w-96 h-[500px] flex flex-col animate-in slide-in-from-bottom-5 duration-300">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 rounded-t-lg flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <LuMessageCircleMore className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-semibold">Speedy Assist</h3>
-                <p className="text-xs text-white/80">AI Vehicle Advisor</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              {/* RESTART BUTTON */}
-              <button 
-                onClick={handleClearChat}
-                title="Restart Conversation"
-                className="p-1.5 hover:bg-white/20 rounded-md transition-colors duration-200"
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                >
-                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                  <path d="M3 3v5h5"/>
-                </svg>
-              </button>
-              <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-white/80 hover:text-white transition-colors p-1"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-            </div>
+  {isOpen && (
+    <div className="fixed z-50 
+      /* Mobile: Floating with 1rem (4) space on sides | Desktop: fixed 24rem (96) */
+      bottom-20 left-4 right-4 
+      sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 
+      
+      /* Height constraints to prevent overlap with status bars */
+      h-[500px] max-h-[75vh] 
+      
+      flex flex-col bg-white rounded-2xl shadow-2xl 
+      animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100"
+    >
+      {/* Header */}
+      <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex items-center justify-between shrink-0">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+            <LuMessageCircleMore className="w-5 h-5" />
           </div>
-            
-          
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-            {messages.map((message, index) => (
-              <div
-                key={message.id || index}
-                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-lg p-3 ${
-                    message.sender === 'user'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-white text-gray-800 shadow-sm border border-gray-200'
-                  }`}
-                >
-                 <div className="text-sm leading-relaxed">
-                         {/* This is the key: it handles strings from DB 
-                    and JSX from the live engine automatically 
-                */}
-                   
-                    {message.text}
-                  </div>
-                  <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-white/70' : 'text-gray-400'}`}>
-                    {new Date(message.timestamp).toLocaleTimeString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                </div>
-              </div>
-            ))}
-
-            {/* TYPING INDICATOR */}
-            {isTyping && (
-              <div className="flex justify-start animate-in fade-in duration-300">
-                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
-                  <div className="flex space-x-1 items-center h-4">
-                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce"></div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* QUICK REPLIES */}
-          {!inputValue && !isTyping && (
-            <div className="px-4 py-2 flex flex-wrap gap-2 bg-white border-t border-gray-100 animate-in slide-in-from-bottom-2">
-              {["Rent a car", "Budget vehicles", "Sell my car", "Office location"].map((query) => (
-                <button
-                  key={query}
-                  onClick={() => handleSendMessage(query)}
-                  className="text-[10px] bg-gray-50 border border-gray-200 text-gray-600 px-2 py-1 rounded-full hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all shadow-sm"
-                >
-                  {query}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Input */}
-          <div className="p-4 border-t border-gray-200 bg-white rounded-b-lg">
-            <div className="flex space-x-2">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask about vehicles, prices, features or budget..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm"
-              />
-              <Button
-                onClick={() => handleSendMessage()}
-                size="sm"
-                className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
-            </div>
+          <div>
+            <h3 className="font-semibold text-sm">Speedy Assist</h3>
+            <p className="text-[10px] text-white/80 uppercase tracking-widest font-medium">AI Agent Advisor</p>
           </div>
         </div>
+        <div className="flex items-center space-x-1">
+          <button 
+            onClick={handleClearChat}
+            className="p-2 hover:bg-white/20 rounded-full transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+            </svg>
+          </button>
+          <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+  
+      {/* Messages - Added smooth scrolling and bg tint */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 scrollbar-hide">
+        {messages.map((message, index) => (
+          <div key={message.id || index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
+                message.sender === 'user' ? 'bg-red-600 text-white rounded-tr-none' : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
+              }`}>
+              {message.text}
+              <p className={`text-[10px] mt-1 opacity-70`}>
+                {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
+          </div>
+        ))}
+        {isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-white border border-gray-100 rounded-2xl rounded-tl-none p-3 shadow-sm">
+              <div className="flex space-x-1">
+                <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                <div className="w-1.5 h-1.5 bg-red-400 rounded-full animate-bounce"></div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+  
+      {/* Quick Replies - Horizontal scroll to save vertical space on mobile */}
+      {!inputValue && !isTyping && (
+        <div className="px-4 py-2 flex overflow-x-auto space-x-2 bg-white border-t border-gray-50 no-scrollbar">
+          {["vehicles for Rent", "Vehicles for Lease", "Budget vehicles", "Sell my car", "Office location"].map((query) => (
+            <button
+              key={query}
+              onClick={() => handleSendMessage(query)}
+              className="whitespace-nowrap text-[11px] bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-full hover:bg-red-50 hover:text-red-600 transition-all"
+            >
+              {query}
+            </button>
+          ))}
+        </div>
       )}
+  
+      {/* Input Area - Adjusted for mobile thumbs */}
+      <div className="p-3 border-t border-gray-100 bg-white">
+        <div className="flex items-center bg-gray-50 rounded-xl border border-gray-200 px-2">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Ask Speedy..."
+            className="flex-1 bg-transparent px-2 py-3 text-sm focus:outline-none"
+          />
+          <Button onClick={() => handleSendMessage()} size="sm" className="bg-red-600 text-white rounded-lg h-8 w-8 p-0 shrink-0">
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+      </div>
     </div>
-  );
+  )}
 };
 
 export default ChatWidget;

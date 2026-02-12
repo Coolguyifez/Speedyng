@@ -82,17 +82,35 @@ const Header = () => {
               Home
             </Link>
 
-            {vehicleTypes.map((type) => (
-              <Link
-                key={type.slug}
-                to={`/vehicles?type=${type.slug}`}
-                className={`text-xs xl:text-sm font-semibold transition-colors hover:text-red-600 ${
-                  isTypeActive(type.slug) ? 'text-red-600' : 'text-gray-700'
+            <div 
+              className="relative group py-4"
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => setDropdownOpen(false)}
+            >
+              <button
+                className={`flex items-center space-x-1 text-sm font-semibold transition-colors hover:text-red-600 ${
+                  location.pathname === '/vehicles' ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
-                {type.name}
-              </Link>
-            ))}
+                <span>Vehicle Types</span>
+                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Menu - "View All" removed */}
+              <div className={`absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 transition-all duration-200 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                {vehicleTypes.map((type) => (
+                  <Link
+                    key={type.slug}
+                    to={`/vehicles?type=${type.slug}`}
+                    className={`block px-4 py-2 text-sm transition-colors hover:bg-red-50 hover:text-red-600 ${
+                      isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
+                    }`}
+                  >
+                    {type.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
             <Link
               to="/contact"
               className={`text-sm font-medium transition-colors hover:text-red-600 ${
@@ -182,9 +200,10 @@ const Header = () => {
                   key={type.slug}
                   to={`/vehicles?type=${type.slug}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm font-semibold text-gray-700 hover:text-red-600 flex items-center"
+                  className={`py-2 px-2 text-sm font-semibold rounded-md ${
+                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-600'
+                  }`}
                 >
-                  <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></div>
                   {type.name}
                 </Link>
               ))}

@@ -95,9 +95,9 @@ const Header = () => {
                   location.pathname === '/vehicles' ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
-                <span>Vehicle Types</span>
+                <span>Vehicle Types
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
+              </button></span>
 
               {/* Dropdown Menu - "View All" removed */}
               <div className={`absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 transition-all duration-200 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
@@ -126,7 +126,7 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="flex flex-col xl:flex-row xl:space-x-4">
+            <div className="flex items-center space-x-4 border-r pr-4 mr-2">
               <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4" />
                 <span className="text-sm font-medium">08135877104</span>
@@ -198,18 +198,20 @@ const Header = () => {
               >
                 Home
               </Link>
-              {vehicleTypes.map((type) => (
-                <Link
-                  key={type.slug}
-                  to={`/vehicles?type=${type.slug}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`py-2 px-2 text-sm font-semibold rounded-md ${
-                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-600'
-                  }`}
-                >
-                  {type.name}
-                </Link>
-              ))}
+              <div className="flex flex-col space-y-1">
+                {vehicleTypes.map((type) => (
+                  <Link
+                    key={type.slug}
+                    to={`/vehicles?type=${type.slug}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`py-2 px-2 text-sm font-semibold rounded-md transition-colors ${
+                      isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-600'
+                    }`}
+                  >
+                    {type.name}
+                  </Link>
+                ))}
+              </div>
               <Link
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}

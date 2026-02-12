@@ -243,54 +243,58 @@ const Header = () => {
               >
                 Contact
               </Link>
-              <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-                <Phone className="w-4 h-4" />
-                <span className="text-sm font-medium">08135877104</span>
-              </a>
-              <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-                <Phone className="w-4 h-4" />
-                <span className="text-sm font-medium">07056117175</span>
-              </a>
+              <div className="pt-4 space-y-4 px-2 border-t border-gray-50 mt-2">
+                <div className="flex flex-col space-y-3">
+                   <a href="tel:08135877104" className="flex items-center text-sm font-semibold text-gray-600">
+                     <Phone className="w-4 h-4 mr-2" /> 
+                     08135877104
+                   </a>
+                   <a href="tel:07056117175" className="flex items-center text-sm font-semibold text-gray-600">
+                     <Phone className="w-4 h-4 mr-2" /> 
+                     07056117175
+                   </a>
+                </div>
               
-              {user ? (
-                <>
-                  <span className="text-sm text-gray-600">Hello, {user.name}</span>
-                  {isAdmin && (
-                    <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-                      <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
-                        Admin Panel
+                {user ? (
+                  <div className="space-y-3">
+                    <span className="text-sm text-gray-600">Hello, {user.name}</span>
+                    {isAdmin && (
+                      <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                        <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                          Admin Panel
+                        </Button>
+                      </Link>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full"
+                    >
+                      <LogOut className="w-4 h-4 mr-1" />
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3 pt-2>
+                    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <FiUserCheck className="w-4 h-4 mr-1" />
+                        Login
                       </Button>
                     </Link>
-                  )}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full"
-                  >
-                    <LogOut className="w-4 h-4 mr-1" />
-                    Logout
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <FiUserCheck className="w-4 h-4" />
-                      Login
-                    </Button>
-                  </Link>
-                  <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                    <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
-                      <User className="w-4 h-4" />
-                      Sign Up
-                    </Button>
-                  </Link>
-                </>
-              )}
+                    <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                      <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                        <User className="w-4 h-4 mr-1" />
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
         )}

@@ -208,94 +208,96 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="xl:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top px-4">
-            <nav className="flex flex-col space-y-1">
-              <Link
-                to="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
-                  isActive('/') ? 'text-red-600 bg-red-50' : 'text-gray-700'
-                }`}
-              >
-                Home
-              </Link>
-                
-              {vehicleTypes.map((type) => (
+          <div className="xl:hidden border-t border-gray-200 animate-in slide-in-from-top">
+            <div className="max-h-[80vh] overflow-y-auto px-4 py-4">
+              <nav className="flex flex-col space-y-1">
                 <Link
-                  key={type.slug}
-                  to={`/vehicles?type=${type.slug}`}
+                  to="/"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
-                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
+                    isActive('/') ? 'text-red-600 bg-red-50' : 'text-gray-700'
                   }`}
                 >
-                  {type.name}
+                  Home
                 </Link>
-              ))}
+                  
+                {vehicleTypes.map((type) => (
+                  <Link
+                    key={type.slug}
+                    to={`/vehicles?type=${type.slug}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
+                      isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
+                    }`}
+                  >
+                    {type.name}
+                  </Link>
+                ))}
+    
+                <Link
+                  to="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
+                    isActive('/contact') ? 'text-red-600 bg-red-50' : 'text-gray-700'
+                  }`}
+                >
+                  Contact
+                </Link>
   
-              <Link
-                to="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
-                  isActive('/contact') ? 'text-red-600 bg-red-50' : 'text-gray-700'
-                }`}
-              >
-                Contact
-              </Link>
-
-              <div className="pt-4 space-y-4 px-2 border-t border-gray-50 mt-2">
-                <div className="flex flex-col space-y-3">
-                   <a href="tel:08135877104" className="flex items-center text-sm font-semibold text-gray-600">
-                     <Phone className="w-4 h-4 mr-2" /> 
-                     08135877104
-                   </a>
-                   <a href="tel:07056117175" className="flex items-center text-sm font-semibold text-gray-600">
-                     <Phone className="w-4 h-4 mr-2" /> 
-                     07056117175
-                   </a>
-                </div>
-              
-                {user ? (
-                  <div className="space-y-3">
-                    <span className="text-sm text-gray-600 block">Hello, {user.name}</span>
-                    {isAdmin && (
-                      <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-                        <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
-                          Admin Panel
+                <div className="pt-4 space-y-4 px-2 border-t border-gray-50 mt-2">
+                  <div className="flex flex-col space-y-3">
+                     <a href="tel:08135877104" className="flex items-center text-sm font-semibold text-gray-600">
+                       <Phone className="w-4 h-4 mr-2" /> 
+                       08135877104
+                     </a>
+                     <a href="tel:07056117175" className="flex items-center text-sm font-semibold text-gray-600">
+                       <Phone className="w-4 h-4 mr-2" /> 
+                       07056117175
+                     </a>
+                  </div>
+                
+                  {user ? (
+                    <div className="space-y-3">
+                      <span className="text-sm text-gray-600 block">Hello, {user.name}</span>
+                      {isAdmin && (
+                        <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                          <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                            Admin Panel
+                          </Button>
+                        </Link>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="w-full"
+                      >
+                        <LogOut className="w-4 h-4 mr-1" />
+                        Logout
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3 pt-2">
+                      <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <FiUserCheck className="w-4 h-4 mr-1" />
+                          Login
                         </Button>
                       </Link>
-                    )}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => {
-                        handleLogout();
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full"
-                    >
-                      <LogOut className="w-4 h-4 mr-1" />
-                      Logout
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3 pt-2">
-                    <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                      <Button variant="outline" size="sm" className="w-full">
-                        <FiUserCheck className="w-4 h-4 mr-1" />
-                        Login
-                      </Button>
-                    </Link>
-                    <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                      <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
-                        <User className="w-4 h-4 mr-1" />
-                        Sign Up
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </nav>
+                      <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                        <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
+                          <User className="w-4 h-4 mr-1" />
+                          Sign Up
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </nav>
+            </div>
           </div>
         )}
       </div>

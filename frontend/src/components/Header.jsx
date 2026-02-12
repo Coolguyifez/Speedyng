@@ -42,29 +42,27 @@ const Header = () => {
 
 
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    // If the click is not on the dropdown button, close it
-    if (!event.target.closest('.relative')) {
-      setDropdownOpen(false);
-    }
-  };
-
-  if (dropdownOpen) {
-    document.addEventListener('mousedown', handleClickOutside);
-  }
-
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, [dropdownOpen]);
-
-
+    const handleClickOutside = (event) => {
+      // If the click is not on the dropdown button, close it
+      if (!event.target.closest('.dropdown-container')) {
+        setDropdownOpen(false);
+      }
+    };
   
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+  
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
 
   const isActive = (path) => location.pathname === path;
 
   // Checks if the current URL matches the vehicle type query
- const isTypeActive = (slug) => {
+  const isTypeActive = (slug) => {
     const params = new URLSearchParams(location.search);
     return params.get('type') === slug;
   };
@@ -79,11 +77,11 @@ const Header = () => {
   const isAdmin = user && user.role === 'admin';
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 w-full">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 shrink-0">
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
                 <span className="text-white font-bold text-xl">S</span>
@@ -96,7 +94,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center ml-12 lg:ml-20 space-x-6 lg:space-x-8">
+          <nav className="hidden xl:flex items-center ml-12 space-x-8 flex-1">
             <Link
               to="/"
               className={`text-sm font-medium transition-colors hover:text-red-600 ${
@@ -107,11 +105,12 @@ const Header = () => {
             </Link>
 
             <div 
-              className="relative group py-4"
+              className="relative dropdown-container py-4"
               onMouseEnter={() => setDropdownOpen(true)}
               onMouseLeave={() => setDropdownOpen(false)}
             >
               <button
+                type="button"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className={`flex items-center space-x-1 text-sm font-semibold transition-colors hover:text-red-600 ${
                   location.pathname === '/vehicles' ? 'text-red-600' : 'text-gray-700'
@@ -147,55 +146,56 @@ const Header = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center ml-auto space-x-4 lg:space-x-6 border-l pl-6">
-            <div className="flex items-center space-x-4 border-r pr-4 mr-2">
-              <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-                <Phone className="w-4 h-4" />
-                <span className="text-sm font-medium">08135877104</span>
+          <div className="hidden lg:flex items-center ml-auto space-x-6">
+            <div className="flex items-center space-x-4">
+              <a href="tel:08135877104" className="flex items-center text-gray-700 hover:text-red-600 transition-colors">
+                <Phone className="w-4 h-4 mr-1" />
+                <span className="text-xs font-bold">08135877104</span>
               </a>
-              <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-                <Phone className="w-4 h-4" />
-                <span className="text-sm font-medium">07056117175</span>
+              <a href="tel:07056117175" className="flex items-center  text-gray-700 hover:text-red-600 transition-colors">
+                <Phone className="w-4 h-4 mr-1" />
+                <span className="text-xs font-bold">07056117175</span>
               </a>
             </div>
             
-            
-            {user ? (
-              <>
-                <span className="text-sm text-gray-600">Hello, {user.name}</span>
-                {isAdmin && (
-                  <Link to="/admin">
-                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
-                      Admin Panel
+            <div className="flex items-center space-x-2">
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-600">Hello, {user.name}</span>
+                  {isAdmin && (
+                    <Link to="/admin">
+                      <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
+                        Admin Panel
+                      </Button>
+                    </Link>
+                  )}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={handleLogout}
+                    className="text-gray-700 hover:text-red-600 hover:bg-red-50"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm" className="text-gray-700 hover:text-red-600 hover:bg-red-50">
+                      <FiUserCheck className="w-4 h-4" />
+                      Login
                     </Button>
                   </Link>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleLogout}
-                  className="text-gray-700 hover:text-red-600 hover:bg-red-50"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">
-                  <Button variant="ghost" size="sm" className="text-gray-700 hover:text-red-600 hover:bg-red-50">
-                    <FiUserCheck className="w-4 h-4" />
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/register">
-                  <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
-                    <User className="w-4 h-4" />
-                    Sign Up
-                  </Button>
-                </Link>
-              </>
-            )}
+                  <Link to="/register">
+                    <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
+                      <User className="w-4 h-4" />
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Mobile menu button */}

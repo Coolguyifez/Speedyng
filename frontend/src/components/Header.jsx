@@ -40,6 +40,27 @@ const Header = () => {
     setDropdownOpen(false);
   }, [location]);
 
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    // If the click is not on the dropdown button, close it
+    if (!event.target.closest('.relative')) {
+      setDropdownOpen(false);
+    }
+  };
+
+  if (dropdownOpen) {
+    document.addEventListener('mousedown', handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, [dropdownOpen]);
+
+
+  
+
   const isActive = (path) => location.pathname === path;
 
   // Checks if the current URL matches the vehicle type query
@@ -101,7 +122,7 @@ const Header = () => {
               </button>
 
               {/* Dropdown Menu - "View All" removed */}
-              <div className={`absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 transition-all duration-200 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+              <div className={`absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                 {vehicleTypes.map((type) => (
                   <Link
                     key={type.slug}

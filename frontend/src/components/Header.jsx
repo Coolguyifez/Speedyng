@@ -79,7 +79,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 w-full">
+        <div className="flex items-center h-16 w-full">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 shrink-0">
             <div className="relative">
@@ -90,14 +90,14 @@ const Header = () => {
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-2xl font-bold text-black">Speedy</span>
+            <span className="text-2xl font-bold text-black ml-2">Speedy</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center ml-12 space-x-8 flex-1">
+          <nav className="hidden xl:flex items-center ml-12 space-x-8">
             <Link
               to="/"
-              className={`text-sm font-medium transition-colors hover:text-red-600 ${
+              className={`text-sm font-semibold transition-colors hover:text-red-600 ${
                 isActive('/') ? 'text-red-600' : 'text-gray-700'
               }`}
             >
@@ -147,7 +147,7 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center ml-auto space-x-6">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <a href="tel:08135877104" className="flex items-center text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4 mr-1" />
                 <span className="text-xs font-bold">08135877104</span>
@@ -161,7 +161,7 @@ const Header = () => {
             <div className="flex items-center space-x-2">
               {user ? (
                 <>
-                  <span className="text-sm text-gray-600">Hello, {user.name}</span>
+                  <span className="text-sm font-medium text-gray-600">Hello, {user.name}</span>
                   {isAdmin && (
                     <Link to="/admin">
                       <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
@@ -201,7 +201,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-gray-700 hover:text-red-600 transition-colors"
+            className="xl:hidden ml-auto p-2 text-gray-700 hover:text-red-600 transition-colors"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -209,12 +209,12 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top">
-            <nav className="flex flex-col space-y-4">
+          <div className="xl:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top px-4">
+            <nav className="flex flex-col space-y-1">
               <Link
                 to="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
+                className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
                   isActive('/') ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
@@ -226,8 +226,8 @@ const Header = () => {
                   key={type.slug}
                   to={`/vehicles?type=${type.slug}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
-                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-700'
+                  className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
+                    isTypeActive(type.slug) ? 'text-red-600' : 'text-gray-700'
                   }`}
                 >
                   {type.name}
@@ -237,7 +237,7 @@ const Header = () => {
               <Link
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
+                className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
                   isActive('/contact') ? 'text-red-600' : 'text-gray-700'
                 }`}
               >

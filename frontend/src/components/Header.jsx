@@ -94,7 +94,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center ml-12 space-x-8">
+          <nav className="hidden 2xl:flex items-center ml-12 space-x-8">
             <Link
               to="/"
               className={`text-sm font-semibold transition-colors hover:text-red-600 ${
@@ -145,7 +145,7 @@ const Header = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center ml-auto space-x-6">
+          <div className="hidden 2xl:flex items-center ml-auto space-x-6">
             <div className="flex items-center space-x-6">
               <a href="tel:08135877104" className="flex items-center text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4 mr-1" />
@@ -200,7 +200,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden ml-auto p-2 text-gray-700 hover:text-red-600 transition-colors"
+            className="2xl:hidden ml-auto p-2 text-gray-700 hover:text-red-600 transition-colors"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -208,7 +208,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="xl:hidden border-t border-gray-200 animate-in slide-in-from-top">
+          <div className="2xl:hidden border-t border-gray-200 animate-in slide-in-from-top">
             <div className="max-h-[80vh] overflow-y-auto px-4 py-4">
               <nav className="flex flex-col space-y-1">
                 <Link

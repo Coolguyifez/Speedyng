@@ -265,9 +265,9 @@ const ChatWidget = () => {
                 <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
                   link here
                 </button> 
-                at ₦{aiFormatPrice(exactMatch.price) - {v.service}.
+                at ₦{aiFormatPrice(exactMatch.price) - {exactMatch.service}.
               </span>
-              `Oh well, we have the ${exactMatch.name} at ₦${aiFormatPrice(exactMatch.price)} - {v.service}.`
+              `Oh well, we have the ${exactMatch.name} at ₦${aiFormatPrice(exactMatch.price)} - ${exactMatch.service}.`
             );
           }
           return formatResponse(

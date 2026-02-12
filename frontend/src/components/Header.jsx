@@ -94,7 +94,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden 2xl:flex items-center ml-12 space-x-8">
+          <nav className="hidden xl:flex items-center space-x-4 2xl:space-x-6 ml-8">
             <Link
               to="/"
               className={`text-sm font-semibold transition-colors hover:text-red-600 ${
@@ -145,8 +145,8 @@ const Header = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden 2xl:flex items-center ml-auto space-x-6">
-            <div className="flex items-center space-x-6">
+          <div className="hidden xl:flex items-center ml-auto space-x-4">
+            <div className="flex flex-col items-end pr-4">
               <a href="tel:08135877104" className="flex items-center text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4 mr-1" />
                 <span className="text-xs font-bold">08135877104</span>
@@ -160,7 +160,7 @@ const Header = () => {
             <div className="flex items-center space-x-2">
               {user ? (
                 <>
-                  <span className="text-sm font-medium text-gray-600">Hello, {user.name}</span>
+                  <span className="text-sm font-medium text-gray-600 ">Hello, {user.name}</span>
                   {isAdmin && (
                     <Link to="/admin">
                       <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
@@ -200,7 +200,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="2xl:hidden ml-auto p-2 text-gray-700 hover:text-red-600 transition-colors"
+            className="xl:hidden p-2 text-gray-700 hover:text-red-600 transition-colors shrink-0"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -208,7 +208,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="2xl:hidden border-t border-gray-200 animate-in slide-in-from-top">
+          <div className="xl:hidden border-t border-gray-200 animate-in slide-in-from-top">
             <div className="max-h-[80vh] overflow-y-auto px-4 py-4">
               <nav className="flex flex-col space-y-1">
                 <Link

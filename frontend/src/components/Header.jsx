@@ -75,7 +75,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center ml-12 lg:ml-20 space-x-6 lg:space-x-8">
             <Link
               to="/"
               className={`text-sm font-medium transition-colors hover:text-red-600 ${
@@ -125,7 +125,7 @@ const Header = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center ml-auto space-x-4 lg:space-x-6 border-l pl-6">
             <div className="flex items-center space-x-4 border-r pr-4 mr-2">
               <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4" />
@@ -192,31 +192,31 @@ const Header = () => {
               <Link
                 to="/"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium transition-colors hover:text-red-600 ${
-                  isActive('/') ? 'text-red-600' : 'text-gray-700'
+                className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
+                  isActive('/') ? 'text-red-600' : 'text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 Home
               </Link>
-              <div className="flex flex-col space-y-1">
-                {vehicleTypes.map((type) => (
-                  <Link
-                    key={type.slug}
-                    to={`/vehicles?type=${type.slug}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`py-2 px-2 text-sm font-semibold rounded-md transition-colors ${
-                      isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-600'
-                    }`}
-                  >
-                    {type.name}
-                  </Link>
-                ))}
-              </div>
+               
+              {vehicleTypes.map((type) => (
+                <Link
+                  key={type.slug}
+                  to={`/vehicles?type=${type.slug}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
+                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {type.name}
+                </Link>
+              ))}
+  
               <Link
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium transition-colors hover:text-red-600 ${
-                  isActive('/contact') ? 'text-red-600' : 'text-gray-700'
+                className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
+                  isActive('/contact') ? 'text-red-600' : 'text-gray-700 hover:bg-gray-50'
                 }`}
               >
                 Contact

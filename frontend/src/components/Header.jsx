@@ -215,7 +215,7 @@ const Header = () => {
                 to="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
-                  isActive('/') ? 'text-red-600' : 'text-gray-700 hover:bg-gray-50'
+                  isActive('/') ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
                 Home
@@ -227,7 +227,7 @@ const Header = () => {
                   to={`/vehicles?type=${type.slug}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
-                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-700 hover:bg-gray-50'
+                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50' : 'text-gray-700'
                   }`}
                 >
                   {type.name}
@@ -238,7 +238,7 @@ const Header = () => {
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`text-sm font-medium rounded-md transition-colors hover:text-red-600 ${
-                  isActive('/contact') ? 'text-red-600' : 'text-gray-700 hover:bg-gray-50'
+                  isActive('/contact') ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
                 Contact

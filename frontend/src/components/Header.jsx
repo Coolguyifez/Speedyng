@@ -30,6 +30,12 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  // Helper to check if a specific category is active based on URL query
+  const isCategoryActive = (slug) => {
+    const params = new URLSearchParams(location.search);
+    return params.get('type') === slug;
+  };
+
   const handleLogout = () => {
     authAPI.logout();
     setUser(null);
@@ -66,14 +72,19 @@ const Header = () => {
             >
               Home
             </Link>
-            <Link
-              to="/vehicles"
-              className={`text-sm font-medium transition-colors hover:text-red-600 ${
-                isActive('/vehicles') ? 'text-red-600' : 'text-gray-700'
-              }`}
-            >
-              Browse Vehicles
-            </Link>
+
+            {/* Replaced Browse Vehicles with specific categories */}
+            {categories.map((cat) => (
+              <Link
+                key={cat.slug}
+                to={`/vehicles?type=${cat.slug}`}
+                className={`text-xs xl:text-sm font-medium transition-colors hover:text-red-600 ${
+                  isCategoryActive(cat.slug) ? 'text-red-600' : 'text-gray-700'
+                }`}
+              >
+                {cat.name}
+              </Link>
+            ))}
             <Link
               to="/contact"
               className={`text-sm font-medium transition-colors hover:text-red-600 ${
@@ -86,14 +97,16 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-              <Phone className="w-4 h-4 ml-1" />
-              <span className="text-sm font-medium">08135877104</span>
-            </a>
-            <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
-              <Phone className="w-4 h-4 ml-1" />
-              <span className="text-sm font-medium">07056117175</span>
-            </a>
+            <div className="flex flex-col xl:flex-row xl:space-x-4">
+              <a href="tel:08135877104" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
+                <Phone className="w-4 h-4" />
+                <span className="text-sm font-medium">08135877104</span>
+              </a>
+              <a href="tel:07056117175" className="flex items-center space-x-2 text-gray-700 hover:text-red-600 transition-colors">
+                <Phone className="w-4 h-4" />
+                <span className="text-sm font-medium">07056117175</span>
+              </a>
+            </div>
             
             
             {user ? (
@@ -120,13 +133,13 @@ const Header = () => {
               <>
                 <Link to="/login">
                   <Button variant="ghost" size="sm" className="text-gray-700 hover:text-red-600 hover:bg-red-50">
-                    <FiUserCheck className="w-4 h-4 mr-1" />
+                    <FiUserCheck className="w-4 h-4" />
                     Login
                   </Button>
                 </Link>
                 <Link to="/register">
                   <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white transition-colors duration-300">
-                    <User className="w-4 h-4 mr-1" />
+                    <User className="w-4 h-4" />
                     Sign Up
                   </Button>
                 </Link>
@@ -156,15 +169,16 @@ const Header = () => {
               >
                 Home
               </Link>
-              <Link
-                to="/vehicles"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`text-sm font-medium transition-colors hover:text-red-600 ${
-                  isActive('/vehicles') ? 'text-red-600' : 'text-gray-700'
-                }`}
-              >
-                Browse Vehicles
-              </Link>
+              categories.map((cat) => (
+                <Link
+                  key={cat.slug}
+                  to={`/vehicles?type=${cat.slug}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm text-gray-700 hover:text-red-600"
+                >
+                  {cat.name}
+                </Link>
+              ))}
               <Link
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
@@ -210,13 +224,13 @@ const Header = () => {
                 <>
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="outline" size="sm" className="w-full">
-                      <FiUserCheck className="w-4 h-4 mr-1" />
+                      <FiUserCheck className="w-4 h-4" />
                       Login
                     </Button>
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
                     <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
-                      <User className="w-4 h-4 mr-1" />
+                      <User className="w-4 h-4" />
                       Sign Up
                     </Button>
                   </Link>

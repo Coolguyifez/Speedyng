@@ -91,13 +91,14 @@ const Header = () => {
               onMouseLeave={() => setDropdownOpen(false)}
             >
               <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
                 className={`flex items-center space-x-1 text-sm font-semibold transition-colors hover:text-red-600 ${
                   location.pathname === '/vehicles' ? 'text-red-600' : 'text-gray-700'
                 }`}
               >
-                <span>Vehicle Types
+                <span>Vehicle Types</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
-              </button></span>
+              </button>
 
               {/* Dropdown Menu - "View All" removed */}
               <div className={`absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 transition-all duration-200 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>

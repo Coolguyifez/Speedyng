@@ -120,7 +120,6 @@ const Header = () => {
                 <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* Dropdown Menu - "View All" removed */}
               <div className={`absolute top-full left-0 w-48 bg-white border border-gray-100 shadow-xl rounded-xl py-2 transition-all duration-200 z-50 ${dropdownOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
                 {vehicleTypes.map((type) => (
                   <Link
@@ -152,7 +151,7 @@ const Header = () => {
                 <Phone className="w-4 h-4 mr-1" />
                 <span className="text-xs font-bold">08135877104</span>
               </a>
-              <a href="tel:07056117175" className="flex items-center  text-gray-700 hover:text-red-600 transition-colors">
+              <a href="tel:07056117175" className="flex items-center text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4 mr-1" />
                 <span className="text-xs font-bold">07056117175</span>
               </a>
@@ -215,19 +214,19 @@ const Header = () => {
                 to="/"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
-                  isActive('/') ? 'text-red-600' : 'text-gray-700'
+                  isActive('/') ? 'text-red-600 bg-red-50' : 'text-gray-700'
                 }`}
               >
                 Home
               </Link>
-               
+                
               {vehicleTypes.map((type) => (
                 <Link
                   key={type.slug}
                   to={`/vehicles?type=${type.slug}`}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
-                    isTypeActive(type.slug) ? 'text-red-600' : 'text-gray-700'
+                    isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
                   }`}
                 >
                   {type.name}
@@ -238,11 +237,12 @@ const Header = () => {
                 to="/contact"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
-                  isActive('/contact') ? 'text-red-600' : 'text-gray-700'
+                  isActive('/contact') ? 'text-red-600 bg-red-50' : 'text-gray-700'
                 }`}
               >
                 Contact
               </Link>
+
               <div className="pt-4 space-y-4 px-2 border-t border-gray-50 mt-2">
                 <div className="flex flex-col space-y-3">
                    <a href="tel:08135877104" className="flex items-center text-sm font-semibold text-gray-600">
@@ -257,7 +257,7 @@ const Header = () => {
               
                 {user ? (
                   <div className="space-y-3">
-                    <span className="text-sm text-gray-600">Hello, {user.name}</span>
+                    <span className="text-sm text-gray-600 block">Hello, {user.name}</span>
                     {isAdmin && (
                       <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                         <Button size="sm" className="w-full bg-red-600 hover:bg-red-700 text-white">
@@ -279,7 +279,7 @@ const Header = () => {
                     </Button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-3 pt-2>
+                  <div className="grid grid-cols-2 gap-3 pt-2">
                     <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                       <Button variant="outline" size="sm" className="w-full">
                         <FiUserCheck className="w-4 h-4 mr-1" />
@@ -302,5 +302,4 @@ const Header = () => {
     </header>
   );
 };
-
 export default Header;

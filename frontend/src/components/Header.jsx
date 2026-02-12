@@ -79,7 +79,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex items-center h-16 w-full">
+        <div className="flex items-center justify-between h-16 w-full">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 shrink-0">
             <div className="relative">
@@ -94,7 +94,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center space-x-4 2xl:space-x-6 ml-8">
+          <nav className="hidden xl:flex items-center space-x-4 space-x-6 ml-8">
             <Link
               to="/"
               className={`text-sm font-semibold transition-colors hover:text-red-600 ${
@@ -146,7 +146,7 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden xl:flex items-center ml-auto space-x-4">
-            <div className="flex flex-col items-end pr-4">
+            <div className="flex items-center space-x-3 pr-4">
               <a href="tel:08135877104" className="flex items-center text-gray-700 hover:text-red-600 transition-colors">
                 <Phone className="w-4 h-4 mr-1" />
                 <span className="text-xs font-bold">08135877104</span>
@@ -200,7 +200,7 @@ const Header = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="xl:hidden p-2 text-gray-700 hover:text-red-600 transition-colors shrink-0"
+            className="xl:hidden p-2 -mr-2 text-gray-700 hover:text-red-600 transition-colors"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

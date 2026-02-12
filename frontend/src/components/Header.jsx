@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, ChevronDown } from 'lucide-react';
 import { FiUserCheck } from "react-icons/fi";
 import { Button } from './ui/button';
 import { authAPI } from '../services/api';
@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,14 +36,16 @@ const Header = () => {
     };
 
     fetchUser();
+    setMobileMenuOpen(false);
+    setDropdownOpen(false);
   }, [location]);
 
   const isActive = (path) => location.pathname === path;
 
   // Checks if the current URL matches the vehicle type query
-  const isTypeActive = (slug) => {
+ const isTypeActive = (slug) => {
     const params = new URLSearchParams(location.search);
-    return location.pathname === '/vehicles' && params.get('type') === slug;
+    return params.get('type') === slug;
   };
 
   const handleLogout = () => {

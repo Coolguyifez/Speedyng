@@ -490,7 +490,7 @@ const ChatWidget = () => {
   
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      {/* Chat Button */}
+      {/* 1. Toggle Button - Shown only when chat is CLOSED */}
       {!isOpen ? (
         <Button
           onClick={() => setIsOpen(true)}
@@ -498,15 +498,10 @@ const ChatWidget = () => {
         >
           <LuMessageCircleMore className="w-6 h-6" />
         </Button>
-      {/* Chat Window */}
       ) : (
-        <div className="fixed z-50 
-          bottom-20 left-4 right-4 
-          sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 
-          h-[500px] max-h-[75vh] 
-          flex flex-col bg-white rounded-2xl shadow-2xl 
-          animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100"
-        >
+        /* 2. Chat Window - Shown only when chat is OPEN */
+        <div className="fixed z-50 bottom-20 left-4 right-4 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 h-[500px] max-h-[75vh] flex flex-col bg-white rounded-2xl shadow-2xl animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100">
+          
           {/* Header */}
           <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex items-center justify-between shrink-0">
             <div className="flex items-center space-x-3">
@@ -519,10 +514,7 @@ const ChatWidget = () => {
               </div>
             </div>
             <div className="flex items-center space-x-1">
-              <button 
-                onClick={handleClearChat}
-                className="p-2 hover:bg-white/20 rounded-full transition-colors"
-              >
+              <button onClick={handleClearChat} className="p-2 hover:bg-white/20 rounded-full transition-colors">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
                 </svg>
@@ -533,7 +525,7 @@ const ChatWidget = () => {
             </div>
           </div>
       
-          {/* Messages - Added smooth scrolling and bg tint */}
+          {/* Messages Body */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/50 scrollbar-hide">
             {messages.map((message, index) => (
               <div key={message.id || index} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -541,7 +533,7 @@ const ChatWidget = () => {
                     message.sender === 'user' ? 'bg-red-600 text-white rounded-tr-none' : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
                   }`}>
                   {message.text}
-                  <p className={`text-[10px] mt-1 opacity-70`}>
+                  <p className="text-[10px] mt-1 opacity-70">
                     {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -561,7 +553,7 @@ const ChatWidget = () => {
             <div ref={messagesEndRef} />
           </div>
       
-          {/* Quick Replies - Horizontal scroll to save vertical space on mobile */}
+          {/* Quick Replies */}
           {!inputValue && !isTyping && (
             <div className="px-4 py-2 flex overflow-x-auto space-x-2 bg-white border-t border-gray-50 no-scrollbar">
               {["vehicles for Rent", "Vehicles for Lease", "Budget vehicles", "Sell my car", "Office location"].map((query) => (
@@ -576,7 +568,7 @@ const ChatWidget = () => {
             </div>
           )}
       
-          {/* Input Area - Adjusted for mobile thumbs */}
+          {/* Input Area */}
           <div className="p-3 border-t border-gray-100 bg-white">
             <div className="flex items-center bg-gray-50 rounded-xl border border-gray-200 px-2">
               <input
@@ -597,4 +589,5 @@ const ChatWidget = () => {
     </div>
   );
 };
+
 export default ChatWidget;

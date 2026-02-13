@@ -219,7 +219,7 @@ const ChatWidget = () => {
         return formatResponse(
           <span>
             <strong className="text-red-600">Available {typeQuery.charAt(0).toUpperCase() + typeQuery.slice(1)}s:</strong><br/>
-            I found these matches in our inventory:
+            These are what we have in our inventory:
             {foundVehicles.slice(0, 40).map(v => (
               <button 
                 key={v.id} 
@@ -242,9 +242,9 @@ const ChatWidget = () => {
       const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
       if (moneyMatch) {
         const rawNumber = parseInt(moneyMatch[1]);
-        const budget = (input.includes('m') || input.includes('million')) && rawNumber < 1000 
+        const budget = (input.includes('m') || input.includes('million')) || rawNumber < 1000 
                      ? rawNumber * 1000000 
-                     : (rawNumber < 1000 ? rawNumber * 1000000 : rawNumber);
+                     : rawNumber;
         const modelName = chatState.tempModel;
         const brandName = chatState.tempBrand;
 
@@ -565,7 +565,8 @@ const ChatWidget = () => {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask Speedy..."
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                placeholder="Ask about vehicles, prices, features or budget..."
                 className="flex-1 bg-transparent px-2 py-3 text-sm focus:outline-none"
               />
               <Button onClick={() => handleSendMessage()} size="sm" className="bg-red-600 text-white rounded-lg h-8 w-8 p-0 shrink-0">

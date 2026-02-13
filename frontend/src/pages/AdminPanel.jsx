@@ -437,6 +437,8 @@ const AdminPanel = () => {
                             <SelectItem value="For Rent">For Rent</SelectItem>
                             <SelectItem value="For Lease">For Lease</SelectItem>
                             <SelectItem value="For Budget Sale">For Budget Sale</SelectItem>
+                            <SelectItem value="Under Inspection">Under Inspection</SelectItem>
+                            <SelectItem value="Sold">Sold</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

@@ -489,18 +489,22 @@ const ChatWidget = () => {
   }
   
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      {/* 1. Toggle Button - Shown only when chat is CLOSED */}
-      {!isOpen ? (
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
-        >
-          <LuMessageCircleMore className="w-6 h-6" />
-        </Button>
-      ) : (
-        /* 2. Chat Window - Shown only when chat is OPEN */
-        <div className="fixed z-50 bottom-20 left-4 right-4 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 h-[500px] max-h-[75vh] flex flex-col bg-white rounded-2xl shadow-2xl animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100">
+   <>
+      {/* 1. Toggle Button - Only rendered when the window is CLOSED */}
+      {!isOpen && (
+        <div className="fixed bottom-6 right-6 z-50 animate-in fade-in zoom-in duration-300">
+          <Button
+            onClick={() => setIsOpen(true)}
+            className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 flex items-center justify-center"
+          >
+            <LuMessageCircleMore className="w-7 h-7" />
+          </Button>
+        </div>
+      )}
+
+      {/* 2. Chat Window - Only rendered when the window is OPEN */}
+      {isOpen && (
+        <div className="fixed z-50 bottom-4 left-4 right-4 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 h-[550px] max-h-[85vh] flex flex-col bg-white rounded-2xl shadow-2xl animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100">
           
           {/* Header */}
           <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex items-center justify-between shrink-0">
@@ -514,12 +518,18 @@ const ChatWidget = () => {
               </div>
             </div>
             <div className="flex items-center space-x-1">
-              <button onClick={handleClearChat} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+              <button 
+                onClick={handleClearChat} 
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
                 </svg>
               </button>
-              <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/20 rounded-full transition-colors">
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -532,7 +542,7 @@ const ChatWidget = () => {
                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${
                     message.sender === 'user' ? 'bg-red-600 text-white rounded-tr-none' : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
                   }`}>
-                  {message.text}
+                  <div className="whitespace-pre-wrap">{message.text}</div>
                   <p className="text-[10px] mt-1 opacity-70">
                     {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
@@ -576,7 +586,7 @@ const ChatWidget = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                placeholder="Ask about vehicles, prices, features or budget..."
+                placeholder="Ask Speedy..."
                 className="flex-1 bg-transparent px-2 py-3 text-sm focus:outline-none"
               />
               <Button onClick={() => handleSendMessage()} size="sm" className="bg-red-600 text-white rounded-lg h-8 w-8 p-0 shrink-0">
@@ -586,7 +596,7 @@ const ChatWidget = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

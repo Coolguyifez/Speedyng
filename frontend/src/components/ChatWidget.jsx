@@ -73,7 +73,6 @@ const ChatWidget = () => {
 
   // Listen for signal from Contact Page
   useEffect(() => {
-    setIsOpen(false);
     const handleExternalOpen = () => {
       setIsOpen(true);
       setTimeout(scrollToBottom, 500);
@@ -243,7 +242,6 @@ const ChatWidget = () => {
     }
 
 
-    // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
     // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
     if (chatState.stage === 'awaiting_budget') {
       const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
@@ -500,21 +498,9 @@ const ChatWidget = () => {
         >
           <LuMessageCircleMore className="w-6 h-6" />
         </Button>
-      )}
-
       {/* Chat Window */}
-      {isOpen && (
-        <div className="fixed z-50 
-          /* Mobile: Floating with 1rem (4) space on sides | Desktop: fixed 24rem (96) */
-          bottom-20 left-4 right-4 
-          sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 
-          
-          /* Height constraints to prevent overlap with status bars */
-          h-[500px] max-h-[75vh] 
-          
-          flex flex-col bg-white rounded-2xl shadow-2xl 
-          animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100"
-        >
+      ) : (
+        <div className="fixed bottom-20 left-4 right-4 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 h-[500px] max-h-[75vh] flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
           <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex items-center justify-between shrink-0">
             <div className="flex items-center space-x-3">

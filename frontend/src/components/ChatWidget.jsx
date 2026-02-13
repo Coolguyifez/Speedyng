@@ -244,13 +244,14 @@ const ChatWidget = () => {
 
 
     // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
+    // 3. EXISTING BUDGET FLOW: IF AWAITING BUDGET (Stage 3)
     if (chatState.stage === 'awaiting_budget') {
       const moneyMatch = input.match(/(\d+)\s*(million|m|000,000)/i) || input.match(/₦?\s*(\d+)/);
       if (moneyMatch) {
         const rawNumber = parseInt(moneyMatch[1]);
         const budget = (input.includes('m') || input.includes('million')) || rawNumber < 1000 
-                     ? rawNumber * 1000000 
-                     : rawNumber;
+                       ? rawNumber * 1000000 
+                       : rawNumber;
         const modelName = chatState.tempModel;
         const brandName = chatState.tempBrand;
 
@@ -272,7 +273,7 @@ const ChatWidget = () => {
                   link here
                 </button> 
                 at ₦{aiFormatPrice(exactMatch.price)} ({exactMatch.service}).
-              </span>
+              </span>, // FIXED: Added missing comma here
               `Oh well, we have the ${exactMatch.name} at ₦${aiFormatPrice(exactMatch.price)} (${exactMatch.service}).`
             );
           }
@@ -280,7 +281,7 @@ const ChatWidget = () => {
             <span>
               Based on your budget, check these out:
               {results.slice(0, 10).map(v => (
-                <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1">
+                <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 text-left">
                   {v.name} at ₦{aiFormatPrice(v.price)} {v.service}
                 </button>
               ))}
@@ -288,31 +289,30 @@ const ChatWidget = () => {
             `Based on your budget, I found ${results.length} vehicles available.`
           );
         } else {
-        // FALLBACK: If no specific model fits, find ANY vehicle of that brand within the budget
-        const brandCloseMatches = availableVehicles.filter(v => 
-          v.name.toLowerCase().includes(brandName.toLowerCase()) && 
-          v.price <= budget
-        ).sort((a, b) => b.price - a.price);
+          const brandCloseMatches = availableVehicles.filter(v => 
+            v.name.toLowerCase().includes(brandName.toLowerCase()) && 
+            v.price <= budget
+          ).sort((a, b) => b.price - a.price);
 
-        if (brandCloseMatches.length > 0) {
-          return formatResponse(
-            <span>
-              I couldn't find a <b>{modelName}</b> under ₦{aiFormatPrice(budget)}, but here are other <b>{brandName.toUpperCase()}</b> deals in your range:
-              {brandCloseMatches.slice(0, 5).map(v => (
-                <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-2 text-left font-semibold">
-                  {v.name} at ₦{aiFormatPrice(v.price)}
-                </button>
-              ))}
-            </span>,
-            `No ${modelName} available in that budget, but I found other ${brandName} options.`
-          );
+          if (brandCloseMatches.length > 0) {
+            return formatResponse(
+              <span>
+                I couldn't find a <b>{modelName}</b> under ₦{aiFormatPrice(budget)}, but here are other <b>{brandName.toUpperCase()}</b> deals in your range:
+                {brandCloseMatches.slice(0, 5).map(v => (
+                  <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-2 text-left font-semibold">
+                    {v.name} at ₦{aiFormatPrice(v.price)}
+                  </button>
+                ))}
+              </span>,
+              `No ${modelName} available in that budget, but I found other ${brandName} options.`
+            );
+          }
+
+          setChatState({ ...chatState, stage: 'suggesting_alternatives' });
+          return formatResponse(`We don't have any ${brandName} vehicles within that budget right now. Would you like to try a different brand?`);
         }
-
-        setChatState({ ...chatState, stage: 'suggesting_alternatives' });
-        return formatResponse(`We don't have any ${brandName} vehicles within that budget right now. Would you like to try a different brand?`);
       }
     }
-  }
       
     
 

@@ -494,7 +494,7 @@ const ChatWidget = () => {
       {/* Chat Button */}
       {!isOpen && (
         <Button
-          onClick={handleToggleChat}
+          onClick={() => setIsOpen(true)}
           className="w-14 h-14 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
         >
           <LuMessageCircleMore className="w-6 h-6" />

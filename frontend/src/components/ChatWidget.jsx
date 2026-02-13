@@ -500,7 +500,13 @@ const ChatWidget = () => {
         </Button>
       {/* Chat Window */}
       ) : (
-        <div className="fixed bottom-20 left-4 right-4 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 h-[500px] max-h-[75vh] flex flex-col bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed z-50 
+          bottom-20 left-4 right-4 
+          sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 
+          h-[500px] max-h-[75vh] 
+          flex flex-col bg-white rounded-2xl shadow-2xl 
+          animate-in slide-in-from-bottom-5 duration-300 overflow-hidden border border-gray-100"
+        >
           {/* Header */}
           <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-4 flex items-center justify-between shrink-0">
             <div className="flex items-center space-x-3">

@@ -14,10 +14,12 @@ import ChatWidget from './components/ChatWidget';
 import AuthCallback from './pages/AuthCallback';
 
 function App() {
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = useState(null);
+  const [isMounted, setIsMounted] = useState(false); // New: Tracks if we are in the browser
 
-  React.useEffect(() => {
-    // This only runs in the browser, safely after hydration
+  useEffect(() => {
+    setIsMounted(true); // We are now safely in the browser
+    
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       try {
@@ -27,6 +29,11 @@ function App() {
       }
     }
   }, []);
+
+  // If we haven't mounted yet, render a blank shell to match the server
+  if (!isMounted) {
+    return <div className="App" />;
+  }
 
   
   return (

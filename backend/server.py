@@ -87,15 +87,19 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
     if not user:
         user = User(
             name=name, email=email, role="user", 
-            password=f"SOCIAL_AUTH_{provider.upper()}",
+           password=get_password_hash(f"SOCIAL_AUTH_{provider.upper()}_{email}"),
             is_active=True
         )
         db.add(user)
         await db.commit()
         await db.refresh(user)
     
-    token = create_access_token(data={"sub": user.email, "role": user.role})
-    return token
+    access_token = create_access_token(data={"sub": user.email, "role": user.role})
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": user
+    }
 
 # -------------------- Social Callback Routes --------------------
 
@@ -110,7 +114,8 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
             "grant_type": "authorization_code",
         })
         token_data = res.json()
-        if "error" in token_data:
+        if res.status_code != 200:
+            logger.error(f"Google Token Error: {token_data}")
             raise HTTPException(status_code=400, detail=token_data.get("error_description"))
 
         profile = await client.get(
@@ -337,21 +342,23 @@ async def get_chat_history(
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
 
-BUILD_DIR = os.path.join(os.getcwd(), "frontend", "build")
+BUILD_DIR = os.path.join(os.getcwd(), "frontend", "dist")
 
-# 1. Mount the React static files (JS, CSS)
-if os.path.exists(os.path.join(BUILD_DIR, "static")):
-    app.mount("/static", StaticFiles(directory=os.path.join(BUILD_DIR, "static")), name="static")
+# Mount Static Assets (CSS/JS)
+if os.path.exists(os.path.join(BUILD_DIR, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(BUILD_DIR, "assets")), name="assets")
 
-# 2. Catch-all for Frontend Routes
 @app.get("/{catchall:path}")
 async def serve_react_app(catchall: str):
-    # This prevents the 404 on /auth/callback/google
-    # We send the index.html for any route that doesn't start with /api
+    # Don't let the catchall swallow missing API calls
+    if catchall.startswith("api"):
+        raise HTTPException(status_code=404)
+        
     index_path = os.path.join(BUILD_DIR, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return {"message": "API is running, but index.html was not found in frontend/build."}
+        
+    return {"message": "Speedy API is running. Frontend build not found."}
 
 @app.on_event("startup")
 async def startup():

@@ -43,16 +43,6 @@ const handleSocialLogin = (provider) => {
           redirect_uri: `${REDIRECT_URI}/facebook`,
           scope: "email,public_profile",
         }
-      },
-      Apple: {
-        url: "https://appleid.apple.com/auth/authorize",
-        params: {
-          client_id: "YOUR_APPLE_SERVICE_ID",
-          redirect_uri: `${REDIRECT_URI}/apple`,
-          response_type: "code",
-          scope: "name email",
-          response_mode: "form_post"
-        }
       }
     };
 
@@ -199,13 +189,6 @@ const handleSocialLogin = (provider) => {
             
             >
               <FaFacebook className="w-5 h-5 text-[#4267B2]" />
-            </button>
-            <button
-              onClick={() => handleSocialLogin('Apple')}
-              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
-              
-            >
-              <FaApple className="w-5 h-5 text-black" />
             </button>
           </div>
 

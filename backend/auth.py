@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 import os
+import time
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
@@ -28,6 +29,25 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
+
+
+# ===================== Apple Security Utility =====================
+def generate_apple_client_secret():
+    """Generates a JWT secret for Apple OAuth"""
+    headers = {'kid': os.environ.get('APPLE_KEY_ID')}
+    payload = {
+        'iss': os.environ.get('APPLE_TEAM_ID'),
+        'iat': int(time.time()),
+        'exp': int(time.time()) + 86400 * 180,
+        'aud': 'https://appleid.apple.com',
+        'sub': os.environ.get('APPLE_SERVICE_ID'),
+    }
+    return jwt.encode(
+        payload, 
+        os.environ.get('APPLE_PRIVATE_KEY', "").replace('\\n', '\n'), 
+        algorithm='ES256', 
+        headers=headers
+    )
 
 # ===================== JWT Utilities =====================
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

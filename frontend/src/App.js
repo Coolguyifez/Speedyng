@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "./components/ui/sonner";
+
+// Pages
 import HomePage from "./pages/HomePage";
 import CarsPage from "./pages/CarsPage";
 import CarDetailsPage from "./pages/CarDetailsPage";
@@ -9,48 +11,86 @@ import ContactPage from "./pages/ContactPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
+import AuthCallback from './pages/AuthCallback';
+
+// Components
 import ProtectedRoute from './components/ProtectedRoute';
 import ChatWidget from './components/ChatWidget';
-import AuthCallback from './pages/AuthCallback';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [isMounted, setIsMounted] = useState(false); // New: Tracks if we are in the browser
+  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true); // We are now safely in the browser
-    
+  // Sync authentication state from LocalStorage
+  const syncAuth = () => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
       } catch (e) {
         console.error("Auth sync error", e);
+        setUser(null);
       }
+    } else {
+      setUser(null);
     }
+  };
+
+  useEffect(() => {
+    setIsMounted(true);
+    syncAuth();
+
+    // Listen for storage changes (e.g., login from another tab or AuthCallback)
+    window.addEventListener('storage', syncAuth);
+    return () => window.removeEventListener('storage', syncAuth);
   }, []);
 
-  // If we haven't mounted yet, render a blank shell to match the server
   if (!isMounted) {
-    return <div className="App" />;
+    return <div className="min-h-screen bg-white" />;
   }
 
-  
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/Vehicles" element={<ProtectedRoute><CarsPage /> </ProtectedRoute>} />
-          <Route path="/Vehicle/:id" element={<ProtectedRoute><CarDetailsPage /> </ProtectedRoute>} />
-          <Route path="/contact" element={<ProtectedRoute><ContactPage /> </ProtectedRoute>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/admin" element={<AdminPanel />} />
           <Route path="/auth/callback/:provider" element={<AuthCallback />} />
+
+          {/* Protected Agent Routes */}
+          <Route path="/Vehicles" element={
+            <ProtectedRoute>
+              <CarsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/Vehicle/:id" element={
+            <ProtectedRoute>
+              <CarDetailsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/contact" element={
+            <ProtectedRoute>
+              <ContactPage />
+            </ProtectedRoute>
+          } />
+
+          {/* Admin Route - Should technically have an Admin-specific Protected Route */}
+          <Route path="/admin" element={
+            <ProtectedRoute adminOnly={true}>
+              <AdminPanel />
+            </ProtectedRoute>
+          } />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        {user && <ChatWidget />}
+
+        {/* Only show the Speedy Chat Widget if the agent is logged in */}
+        {user && <ChatWidget user={user} />}
       </BrowserRouter>
+
       <Toaster position="top-right" richColors />
     </div>
   );

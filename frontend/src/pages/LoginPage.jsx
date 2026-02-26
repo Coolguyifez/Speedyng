@@ -24,7 +24,7 @@ const LoginPage = () => {
   };
 
 const handleSocialLogin = (provider) => {
-    const REDIRECT_URI = encodeURIComponent("https://speedy-car-agent.vercel.app/auth/callback");
+    const REDIRECT_URI = encodeURIComponent("https://speedy-bsvq.onrender.com/auth/callback");
     
     const configs = {
       Google: {

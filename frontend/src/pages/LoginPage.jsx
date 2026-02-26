@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
@@ -20,6 +21,47 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+const handleSocialLogin = (provider) => {
+    const REDIRECT_URI = encodeURIComponent("https://speedy-car-agent.vercel.app/auth/callback");
+    
+    const configs = {
+      Google: {
+        url: "https://accounts.google.com/o/oauth2/v2/auth",
+        params: {
+          client_id: "YOUR_GOOGLE_ID.apps.googleusercontent.com",
+          redirect_uri: `${REDIRECT_URI}/google`,
+          response_type: "code",
+          scope: "email profile",
+        }
+      },
+      Facebook: {
+        url: "https://www.facebook.com/v12.0/dialog/oauth",
+        params: {
+          client_id: "YOUR_FB_APP_ID",
+          redirect_uri: `${REDIRECT_URI}/facebook`,
+          scope: "email,public_profile",
+        }
+      },
+      Apple: {
+        url: "https://appleid.apple.com/auth/authorize",
+        params: {
+          client_id: "YOUR_APPLE_SERVICE_ID",
+          redirect_uri: `${REDIRECT_URI}/apple`,
+          response_type: "code",
+          scope: "name email",
+          response_mode: "form_post"
+        }
+      }
+    };
+
+    const config = configs[provider];
+    if (config) {
+      toast.info(`Redirecting to ${provider}...`);
+      const query = new URLSearchParams(config.params).toString();
+      window.location.href = `${config.url}?${query}`;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -131,6 +173,41 @@ const LoginPage = () => {
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </form>
+          
+          {/* Social Divider */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          {/* Social Buttons Row */}
+          <div className="grid grid-cols-3 gap-3 mb-8">
+            <button
+              onClick={() => handleSocialLogin('Google')}
+              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+              
+            >
+              <FaGoogle className="w-5 h-5 text-[#DB4437]" />
+            </button>
+            <button
+              onClick={() => handleSocialLogin('Facebook')}
+              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+            
+            >
+              <FaFacebook className="w-5 h-5 text-[#4267B2]" />
+            </button>
+            <button
+              onClick={() => handleSocialLogin('Apple')}
+              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+              
+            >
+              <FaApple className="w-5 h-5 text-black" />
+            </button>
+          </div>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">

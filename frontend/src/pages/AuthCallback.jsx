@@ -4,34 +4,37 @@ import { authAPI } from '../services/api';
 import { toast } from 'sonner';
 
 const AuthCallback = () => {
-  const { provider } = useParams(); // 'google', 'or', 'facebook'
+  const { provider } = useParams(); // 'google' or 'facebook'
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Use a ref to prevent strict-mode double-firing in development
+  // Ref prevents React Strict Mode from running the exchange twice
   const hasCalledAPI = useRef(false);
 
   useEffect(() => {
-    // If we've already started the process, don't run it again
     if (hasCalledAPI.current) return;
 
     const handleCallback = async () => {
-      // 1. Extract 'code' from URL (e.g. ?code=4/0Af...)
       const params = new URLSearchParams(location.search);
-
-      // OPTION A: If backend redirected with ?token=... (The fix we did earlier)
-      const token = params.get('token');
-      if (token) {
+      
+      /**
+       * OPTION A: DIRECT TOKEN REDIRECT
+       * If your backend already verified the user and sent the token in the URL
+       */
+      const directToken = params.get('token');
+      if (directToken) {
         hasCalledAPI.current = true;
-        localStorage.setItem('token', token);
+        localStorage.setItem('token', directToken);
         toast.success("Welcome back to Speedy!");
         return navigate('/dashboard', { replace: true });
       }
 
-      // OPTION B: If backend redirected with ?code=... (Standard OAuth flow)
+      /**
+       * OPTION B: STANDARD OAUTH CODE EXCHANGE
+       * Most common: backend gives us a 'code', we send it back for a JWT
+       */
       const code = params.get('code');
 
-      // 2. Handle missing code (User cancelled or error)
       if (!code) {
         const errorMsg = params.get('error') || "Authorization failed";
         toast.error(`Login Error: ${errorMsg}`);
@@ -41,29 +44,28 @@ const AuthCallback = () => {
       try {
         hasCalledAPI.current = true;
         
-        // 3. Exchange code for JWT through your Render backend
-        // This calls api.get(`/auth/${provider}/callback`, { params: { code } })
+        // Call backend to exchange the temporary 'code' for a permanent 'token'
+        // This hits: GET /api/auth/${provider}/callback?code=...
         const data = await authAPI.socialLogin(provider, code);
         
-        // 4. Success! Data (user & token) are saved in localStorage by authAPI
-        toast.success(`Welcome back to Speedy, ${data.user?.name || 'Agent'}!`);
+        toast.success(`Welcome back, ${data.user?.name || 'Speedy Agent'}!`);
         
-        // 5. Direct to dashboard or homepage
+        // Redirect to dashboard or where they were going
         navigate('/dashboard', { replace: true }); 
-      } catch (err) {
-        console.error("Auth Error:", err);
         
-        // 6. Detailed Error Messaging
+        // Force a reload to ensure all components see the new Auth state
+        window.location.reload();
+      } catch (err) {
+        console.error("Speedy Auth Error:", err);
         const backendMessage = err.response?.data?.detail || "Authentication failed.";
         toast.error(backendMessage);
-        
         navigate('/login', { replace: true });
       }
     };
 
     handleCallback();
   }, [provider, location, navigate]);
-
+  
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
       <div className="relative">

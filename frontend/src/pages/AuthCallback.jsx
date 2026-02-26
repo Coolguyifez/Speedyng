@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { toast } from 'sonner';
 
 const AuthCallback = () => {
-  const { provider } = useParams(); // 'google', 'facebook', or 'apple'
+  const { provider } = useParams(); // 'google', 'or', 'facebook'
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -12,11 +12,23 @@ const AuthCallback = () => {
   const hasCalledAPI = useRef(false);
 
   useEffect(() => {
+    // If we've already started the process, don't run it again
     if (hasCalledAPI.current) return;
 
     const handleCallback = async () => {
       // 1. Extract 'code' from URL (e.g. ?code=4/0Af...)
       const params = new URLSearchParams(location.search);
+
+      // OPTION A: If backend redirected with ?token=... (The fix we did earlier)
+      const token = params.get('token');
+      if (token) {
+        hasCalledAPI.current = true;
+        localStorage.setItem('token', token);
+        toast.success("Welcome back to Speedy!");
+        return navigate('/dashboard', { replace: true });
+      }
+
+      // OPTION B: If backend redirected with ?code=... (Standard OAuth flow)
       const code = params.get('code');
 
       // 2. Handle missing code (User cancelled or error)
@@ -34,7 +46,7 @@ const AuthCallback = () => {
         const data = await authAPI.socialLogin(provider, code);
         
         // 4. Success! Data (user & token) are saved in localStorage by authAPI
-        toast.success(`Welcome back to Speedy, ${data.user.name || 'Agent'}!`);
+        toast.success(`Welcome back to Speedy, ${data.user?.name || 'Agent'}!`);
         
         // 5. Direct to dashboard or homepage
         navigate('/dashboard', { replace: true }); 

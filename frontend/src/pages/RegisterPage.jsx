@@ -51,16 +51,6 @@ const RegisterPage = () => {
         redirect_uri: `${REDIRECT_BASE}/facebook`,
         scope: "email,public_profile",
       }
-    },
-    Apple: {
-      url: "https://appleid.apple.com/auth/authorize",
-      params: {
-        client_id: process.env.REACT_APP_APPLE_ID,
-        redirect_uri: `${REDIRECT_BASE}/apple`,
-        response_type: "code",
-        scope: "name email",
-        response_mode: "form_post" 
-      }
     }
   };
 
@@ -136,13 +126,6 @@ const RegisterPage = () => {
               className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
             >
               <FaFacebook className="w-5 h-5 text-[#4267B2]" />
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSocialRegister('Apple')}
-              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
-            >
-              <FaApple className="w-5 h-5 text-black" />
             </button>
           </div>
 

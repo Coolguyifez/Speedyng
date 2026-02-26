@@ -185,7 +185,7 @@ const CarsPage = () => {
               <Button 
                 variant="outline" 
                 size="icon" 
-                className={`md:hidden transition-colors ${isFilterVisible ? 'bg-red-50 border-red-200 text-red-600' : 'text-gray-600'}`}
+                className={`lg:hidden transition-colors ${isFilterVisible ? 'bg-red-50 border-red-200 text-red-600' : 'text-gray-600'}`}
                 onClick={() => setIsFilterVisible(!isFilterVisible)}
               >
                 <SlidersHorizontal className="w-5 h-5" />
@@ -193,7 +193,7 @@ const CarsPage = () => {
             </div>
 
             {/* Filters Row: Hidden on mobile unless toggled, Always visible on desktop */}
-            <div className={`${isFilterVisible ? 'grid' : 'hidden'} md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-2 duration-200`}>
+            <div className={`${isFilterVisible ? 'grid' : 'hidden'} lg:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in slide-in-from-top-2 duration-200`}>
 
               {/* Category Filter */}
               <Select value={selectedCategory} onValueChange={handleCategoryChange}>

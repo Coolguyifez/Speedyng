@@ -175,7 +175,7 @@ const handleSocialLogin = (provider) => {
           </div>
 
           {/* Social Buttons Row */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
+          <div className="grid grid-cols-2 gap-2 mb-8">
             <button
               onClick={() => handleSocialLogin('Google')}
               className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"

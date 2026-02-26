@@ -6,7 +6,7 @@ from typing import List, Optional
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
@@ -119,7 +119,7 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         token_data = res.json()
         if res.status_code != 200:
             logger.error(f"Google Token Exchange Failed: {token_data}")
-            raise HTTPException(status_code=400, detail=token_data.get("error_description", "Auth failed"))
+            raise HTTPException(status_code=400, detail="Auth failed")
 
         profile_res = await client.get(
             "https://www.googleapis.com/oauth2/v1/userinfo", 
@@ -127,7 +127,11 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         )
         data = profile_res.json()
         
-    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+    auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+    
+    # Send user back to frontend with token
+    frontend_url = "https://speedy-bsvq.onrender.com/login-success"
+    return RedirectResponse(url=f"{frontend_url}?token={auth_data['access_token']}")
 
 @api_router.get("/auth/facebook/callback")
 async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
@@ -145,7 +149,10 @@ async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
         profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={fb_token}")
         data = profile.json()
     
-    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "facebook")
+    auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "facebook")
+    
+    frontend_url = "https://speedy-bsvq.onrender.com/login-success"
+    return RedirectResponse(url=f"{frontend_url}?token={auth_data['access_token']}")
     
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)

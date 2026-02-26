@@ -98,21 +98,32 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
 
 # -------------------- Social Callback Routes --------------------
 
-@api_router.get("/auth/google/callback")
+@api_router.get("/auth/google/callback") 
 async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
     async with httpx.AsyncClient() as client:
+        # 1. Exchange the code for an access token
         res = await client.post("https://oauth2.googleapis.com/token", data={
             "code": code,
             "client_id": os.getenv("GOOGLE_CLIENT_ID"),
             "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-            "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
+            "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"), # This MUST match what's in Google Console
             "grant_type": "authorization_code",
         })
-        profile = await client.get("https://www.googleapis.com/oauth2/v1/userinfo", 
-                                   headers={"Authorization": f"Bearer {res.json()['access_token']}"})
-        data = profile.json()
-    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+        
+        token_data = res.json()
+        if "error" in token_data:
+            logger.error(f"Google Token Error: {token_data}")
+            raise HTTPException(status_code=400, detail=token_data.get("error_description"))
 
+        # 2. Get user info using the token
+        profile = await client.get(
+            "https://www.googleapis.com/oauth2/v1/userinfo", 
+            headers={"Authorization": f"Bearer {token_data['access_token']}"}
+        )
+        data = profile.json()
+        
+    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+    
 @api_router.get("/auth/facebook/callback")
 async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
     async with httpx.AsyncClient() as client:

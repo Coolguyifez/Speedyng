@@ -32,7 +32,7 @@ const RegisterPage = () => {
 
  const handleSocialRegister = (provider) => {
   // Use the same callback routes as Login to keep things simple
-  const REDIRECT_BASE = "https://speedy-car-agent.vercel.app/auth/callback";
+  const REDIRECT_BASE = "https://speedy-bsvq.onrender.com/auth/callback";
   
   const configs = {
     Google: {

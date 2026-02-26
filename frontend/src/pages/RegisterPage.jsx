@@ -32,14 +32,14 @@ const RegisterPage = () => {
 
  const handleSocialRegister = (provider) => {
   // Use the same callback routes as Login to keep things simple
-  const REDIRECT_BASE = "https://speedy-bsvq.onrender.com/auth/callback";
-   const redirectUri = `${REDIRECT_BASE}/${provider.toLowerCase()}`;
+  const REDIRECT_BASE = "https://speedy-backend-fb9s.onrender.com/api/auth";
+   const redirectUri = `${REDIRECT_BASE}/${provider.toLowerCase()}/callback`;
   
   const configs = {
     Google: {
       url: "https://accounts.google.com/o/oauth2/v2/auth",
       params: {
-        client_id: process.env.REACT_APP_GOOGLE_ID || "464436673090-rijnmt8gigm23pa6r9mc1mug1df0f0b1.apps.googleusercontent.com",
+        client_id: "464436673090-rijnmt8gigm23pa6r9mc1mug1df0f0b1.apps.googleusercontent.com",
         redirect_uri: redirectUri,
         response_type: "code",
         scope: "email profile",
@@ -49,7 +49,7 @@ const RegisterPage = () => {
     Facebook: {
       url: "https://www.facebook.com/v12.0/dialog/oauth",
       params: {
-        client_id: process.env.REACT_APP_FB_ID || "1150645627033722",
+        client_id: "1150645627033722",
         redirect_uri: redirectUri,
         scope: "email,public_profile",
         response_type: "code"

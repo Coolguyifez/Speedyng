@@ -8,7 +8,7 @@ from datetime import datetime
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
-    phone: str
+    phone: Optional[str]
     password: str
 
 class UserLogin(BaseModel):
@@ -19,7 +19,7 @@ class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
-    phone: str
+    phone: Optional[str] = None
     role: str
     favorites: List[int] = []
     created_at: datetime

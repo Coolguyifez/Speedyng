@@ -1,4 +1,5 @@
 import os
+import httpx
 import logging
 from datetime import datetime
 from typing import List, Optional
@@ -7,12 +8,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
+from jose import jwt as apple_jwt
 # Import shared components
 from database import get_db, engine, Base
 from models import User, Vehicle, Contact, ChatMessage
 from auth import ( 
     get_password_hash, verify_password, create_access_token, 
-    get_current_user, get_current_admin
+    get_current_user, get_current_admin, generate_apple_client_secret
 )
 from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse,
@@ -72,6 +74,69 @@ def serialize_vehicle(vehicle):
         "created_at": vehicle.created_at.isoformat() if hasattr(vehicle, 'created_at') and vehicle.created_at else None,
         "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None
     }
+
+
+
+# -------------------- Social Auth Helper --------------------
+async def handle_social_user(db: AsyncSession, email: str, name: str, provider: str):
+    result = await db.execute(select(User).filter(User.email == email))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        user = User(
+            name=name, email=email, role="user", 
+            password=f"SOCIAL_AUTH_{provider.upper()}", # Safe placeholder
+            is_active=True
+        )
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+    
+    token = create_access_token(data={"sub": user.email, "role": user.role})
+    return {"access_token": token, "token_type": "bearer", "user": user}
+
+# -------------------- Social Callback Routes --------------------
+
+@api_router.get("/auth/google/callback")
+async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
+    async with httpx.AsyncClient() as client:
+        res = await client.post("https://oauth2.googleapis.com/token", data={
+            "code": code,
+            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+            "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+            "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
+            "grant_type": "authorization_code",
+        })
+        profile = await client.get("https://www.googleapis.com/oauth2/v1/userinfo", 
+                                   headers={"Authorization": f"Bearer {res.json()['access_token']}"})
+        data = profile.json()
+    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+
+@api_router.get("/auth/facebook/callback")
+async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
+    async with httpx.AsyncClient() as client:
+        res = await client.get("https://graph.facebook.com/v12.0/oauth/access_token", params={
+            "client_id": os.getenv("FB_CLIENT_ID"),
+            "client_secret": os.getenv("FB_CLIENT_SECRET"),
+            "redirect_uri": os.getenv("FB_REDIRECT_URI"),
+            "code": code,
+        })
+        profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={res.json()['access_token']}")
+        data = profile.json()
+    return await handle_social_user(db, data['email'], data['name'], "facebook")
+
+@api_router.get("/auth/apple/callback")
+async def apple_callback(code: str, db: AsyncSession = Depends(get_db)):
+    async with httpx.AsyncClient() as client:
+        res = await client.post("https://appleid.apple.com/auth/token", data={
+            "client_id": os.getenv("APPLE_SERVICE_ID"),
+            "client_secret": generate_apple_client_secret(),
+            "code": code,
+            "grant_type": "authorization_code",
+        })
+        decoded = apple_jwt.get_unverified_claims(res.json().get("id_token"))
+    return await handle_social_user(db, decoded['email'], "Apple User", "apple")
+
     
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)
@@ -278,12 +343,8 @@ app.include_router(api_router, prefix="/api")
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-        try:
-            await conn.execute(text("ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS acceleration FLOAT"))
-            await conn.execute(text("ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS color VARCHAR(100)"))
-            logger.info("Database migration successful")
-        except Exception as e:
-            logger.error(f"Migration error: {e}")   
+    logger.info("Database tables created/ready")
+ 
             
             
 

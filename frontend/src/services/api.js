@@ -40,10 +40,8 @@ export const authAPI = {
 
   // NEW: Function to exchange the 'code' from Google/FB/Apple for a Speedy JWT
   socialLogin: async (provider, code) => {
-    // This calls your FastAPI endpoint e.g., /api/auth/google/callback?code=...
-    const response = await api.get(`/auth/${provider}/callback`, {
-      params: { code }
-    });
+    
+    const response = await api.post(`/auth/${provider}/callback`, { code });
     
     if (response.data.access_token) {
       localStorage.setItem('token', response.data.access_token);

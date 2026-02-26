@@ -38,7 +38,6 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://speedy-bsvq.onrender.com",
-        "https://speedy-car-agent.vercel.app", # Vercel Production
         "http://localhost:3000", # Common for React local dev
         "http://localhost:5173"  # Common for Vite local dev
     ],

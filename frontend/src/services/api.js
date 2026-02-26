@@ -40,12 +40,18 @@ export const authAPI = {
 
   // NEW: Function to exchange the 'code' from Google/FB/Apple for a Speedy JWT
   socialLogin: async (provider, code) => {
+    // We change .post to .get and send the code in params
+    const response = await api.get(`/auth/${provider}/callback`, { 
+      params: { code } 
+    });
     
-    const response = await api.post(`/auth/${provider}/callback`, { code });
-    
+    // Check if the backend returned the token directly
     if (response.data.access_token) {
       localStorage.setItem('token', response.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      // Handle potential nested user object from your backend helper
+      const userData = response.data.user || response.data;
+      localStorage.setItem('user', JSON.stringify(userData));
     }
     return response.data;
   },

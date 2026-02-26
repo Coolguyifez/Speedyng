@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight } from 'lucide-react';
+import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
@@ -29,6 +30,46 @@ const RegisterPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+ const handleSocialRegister = (provider) => {
+  // Use the same callback routes as Login to keep things simple
+  const REDIRECT_BASE = "https://speedy-car-agent.vercel.app/auth/callback";
+  
+  const configs = {
+    Google: {
+      url: "https://accounts.google.com/o/oauth2/v2/auth",
+      params: {
+        client_id: process.env.REACT_APP_GOOGLE_ID,
+        redirect_uri: `${REDIRECT_BASE}/google`,
+        response_type: "code",
+        scope: "email profile",
+      }
+    },
+    Facebook: {
+      url: "https://www.facebook.com/v12.0/dialog/oauth",
+      params: {
+        client_id: process.env.REACT_APP_FB_ID,
+        redirect_uri: `${REDIRECT_BASE}/facebook`,
+        scope: "email,public_profile",
+      }
+    },
+    Apple: {
+      url: "https://appleid.apple.com/auth/authorize",
+      params: {
+        client_id: process.env.REACT_APP_APPLE_ID,
+        redirect_uri: `${REDIRECT_BASE}/apple`,
+        response_type: "code",
+        scope: "name email",
+        response_mode: "form_post" 
+      }
+    }
+  };
+
+  const config = configs[provider];
+  if (!config) return toast.error("Provider not configured");
+
+  const query = new URLSearchParams(config.params).toString();
+  window.location.href = `${config.url}?${query}`;
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -78,6 +119,40 @@ const RegisterPage = () => {
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Create Account</h1>
             <p className="text-gray-600">Join Speedy to find your perfect car</p>
+          </div>
+
+          {/* Social Registration Grid */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            <button
+              type="button"
+              onClick={() => handleSocialRegister('Google')}
+              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+            >
+              <FaGoogle className="w-5 h-5 text-[#DB4437]" />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSocialRegister('Facebook')}
+              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+            >
+              <FaFacebook className="w-5 h-5 text-[#4267B2]" />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSocialRegister('Apple')}
+              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
+            >
+              <FaApple className="w-5 h-5 text-black" />
+            </button>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="px-2 bg-white text-gray-500 font-medium">Or register with email</span>
+            </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">

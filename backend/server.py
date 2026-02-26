@@ -5,6 +5,8 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
@@ -350,6 +352,22 @@ async def get_chat_history(
 
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
+
+BUILD_DIR = os.path.join(os.getcwd(), "frontend", "build")
+
+# 1. Mount the React static files (JS, CSS)
+if os.path.exists(os.path.join(BUILD_DIR, "static")):
+    app.mount("/static", StaticFiles(directory=os.path.join(BUILD_DIR, "static")), name="static")
+
+# 2. Catch-all for Frontend Routes
+@app.get("/{catchall:path}")
+async def serve_react_app(catchall: str):
+    # This prevents the 404 on /auth/callback/google
+    # We send the index.html for any route that doesn't start with /api
+    index_path = os.path.join(BUILD_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "API is running, but index.html was not found in frontend/build."}
 
 @app.on_event("startup")
 async def startup():

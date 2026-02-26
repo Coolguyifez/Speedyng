@@ -87,7 +87,7 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
     if not user:
         user = User(
             name=name, email=email, role="user", 
-            password=f"SOCIAL_AUTH_{provider.upper()}", # Safe placeholder
+            password=f"SOCIAL_AUTH_{provider.upper()}",
             is_active=True
         )
         db.add(user)
@@ -95,7 +95,7 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
         await db.refresh(user)
     
     token = create_access_token(data={"sub": user.email, "role": user.role})
-    return {"access_token": token, "token_type": "bearer", "user": user}
+    return token
 
 # -------------------- Social Callback Routes --------------------
 
@@ -107,7 +107,7 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
             "code": code,
             "client_id": os.getenv("GOOGLE_CLIENT_ID"),
             "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-            "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"), # This MUST match what's in Google Console
+            "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
             "grant_type": "authorization_code",
         })
         
@@ -121,12 +121,11 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
             "https://www.googleapis.com/oauth2/v1/userinfo", 
             headers={"Authorization": f"Bearer {token_data['access_token']}"}
         )
-       data = profile.json()
+        data = profile.json()
         
-    # Generate token and redirect back to the frontend dashboard
+    # 3. Handle user and Redirect (Correctly indented outside the 'async with')
     access_token = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
     
-    # Redirect back to your React app with the token in the URL
     frontend_url = "https://speedy-bsvq.onrender.com"
     return RedirectResponse(url=f"{frontend_url}/login?token={access_token}")
     

@@ -128,7 +128,7 @@ class MessageHistory(BaseModel):
 # -------------------- Stats & Category Schemas --------------------
 class StatsResponse(BaseModel):
     total_users: int
-    total_vechicles: int
+    total_vehicles: int
     total_sales: int
 
 class CategoryResponse(BaseModel):

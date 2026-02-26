@@ -6,7 +6,7 @@ from typing import List, Optional
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
@@ -121,9 +121,14 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
             "https://www.googleapis.com/oauth2/v1/userinfo", 
             headers={"Authorization": f"Bearer {token_data['access_token']}"}
         )
-        data = profile.json()
+       data = profile.json()
         
-    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+    # Generate token and redirect back to the frontend dashboard
+    access_token = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+    
+    # Redirect back to your React app with the token in the URL
+    frontend_url = "https://speedy-bsvq.onrender.com"
+    return RedirectResponse(url=f"{frontend_url}/login?token={access_token}")
     
 @api_router.get("/auth/facebook/callback")
 async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
@@ -136,20 +141,9 @@ async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
         })
         profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={res.json()['access_token']}")
         data = profile.json()
-    return await handle_social_user(db, data['email'], data['name'], "facebook")
-
-@api_router.get("/auth/apple/callback")
-async def apple_callback(code: str, db: AsyncSession = Depends(get_db)):
-    async with httpx.AsyncClient() as client:
-        res = await client.post("https://appleid.apple.com/auth/token", data={
-            "client_id": os.getenv("APPLE_SERVICE_ID"),
-            "client_secret": generate_apple_client_secret(),
-            "code": code,
-            "grant_type": "authorization_code",
-        })
-        decoded = apple_jwt.get_unverified_claims(res.json().get("id_token"))
-    return await handle_social_user(db, decoded['email'], "Apple User", "apple")
-
+    
+    access_token = await handle_social_user(db, data['email'], data['name'], "facebook")
+    return RedirectResponse(url=f"https://speedy-bsvq.onrender.com/login?token={access_token}")
     
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)

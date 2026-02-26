@@ -42,7 +42,6 @@ app.add_middleware(
         "http://localhost:5173"  # Common for Vite local dev
     ],
     allow_credentials=True,
-    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )

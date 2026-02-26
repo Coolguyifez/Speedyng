@@ -16,7 +16,7 @@ from database import get_db, engine, Base
 from models import User, Vehicle, Contact, ChatMessage
 from auth import ( 
     get_password_hash, verify_password, create_access_token, 
-    get_current_user, get_current_admin, generate_apple_client_secret
+    get_current_user, get_current_admin
 )
 from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse,

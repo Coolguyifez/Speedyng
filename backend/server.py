@@ -84,7 +84,8 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
     result = await db.execute(select(User).filter(User.email == email))
     user = result.scalar_one_or_none()
     
-   if not user:
+    # Ensure there are exactly 4 spaces before 'if'
+    if not user:
         user = User(
             name=name, 
             email=email, 

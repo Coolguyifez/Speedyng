@@ -14,8 +14,19 @@ import ChatWidget from './components/ChatWidget';
 import AuthCallback from './pages/AuthCallback';
 
 function App() {
-  // Check if user is logged in to show/hide the Speedy Assistant globally
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    // This only runs in the browser, safely after hydration
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (e) {
+        console.error("Auth sync error", e);
+      }
+    }
+  }, []);
 
   
   return (

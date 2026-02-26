@@ -6,7 +6,7 @@ from typing import List, Optional
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
@@ -102,7 +102,6 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
 @api_router.get("/auth/google/callback") 
 async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
     async with httpx.AsyncClient() as client:
-        # 1. Exchange the code for an access token
         res = await client.post("https://oauth2.googleapis.com/token", data={
             "code": code,
             "client_id": os.getenv("GOOGLE_CLIENT_ID"),
@@ -110,25 +109,18 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
             "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
             "grant_type": "authorization_code",
         })
-        
         token_data = res.json()
         if "error" in token_data:
-            logger.error(f"Google Token Error: {token_data}")
             raise HTTPException(status_code=400, detail=token_data.get("error_description"))
 
-        # 2. Get user info using the token
         profile = await client.get(
             "https://www.googleapis.com/oauth2/v1/userinfo", 
             headers={"Authorization": f"Bearer {token_data['access_token']}"}
         )
         data = profile.json()
         
-    # 3. Handle user and Redirect (Correctly indented outside the 'async with')
-    access_token = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
-    
-    frontend_url = "https://speedy-bsvq.onrender.com"
-    return RedirectResponse(url=f"{frontend_url}/login?token={access_token}")
-    
+    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
+
 @api_router.get("/auth/facebook/callback")
 async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
     async with httpx.AsyncClient() as client:
@@ -138,11 +130,11 @@ async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
             "redirect_uri": os.getenv("FB_REDIRECT_URI"),
             "code": code,
         })
-        profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={res.json()['access_token']}")
+        fb_token = res.json().get('access_token')
+        profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={fb_token}")
         data = profile.json()
     
-    access_token = await handle_social_user(db, data['email'], data['name'], "facebook")
-    return RedirectResponse(url=f"https://speedy-bsvq.onrender.com/login?token={access_token}")
+    return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "facebook")
     
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)

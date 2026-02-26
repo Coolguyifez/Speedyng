@@ -24,14 +24,15 @@ const LoginPage = () => {
   };
 
 const handleSocialLogin = (provider) => {
-    const REDIRECT_URI = `https://speedy-bsvq.onrender.com/auth/callback/${provider.toLowerCase()}`;
+    const BACKEND_BASE = "https://speedy-backend-fb9s.onrender.com/api/auth";
+    const redirectUri = `${BACKEND_BASE}/${provider.toLowerCase()}/callback`;
     
     const configs = {
       Google: {
         url: "https://accounts.google.com/o/oauth2/v2/auth",
         params: {
           client_id: "464436673090-rijnmt8gigm23pa6r9mc1mug1df0f0b1.apps.googleusercontent.com",
-          redirect_uri: REDIRECT_URI,
+          redirect_uri: redirectUri,
           response_type: "code",
           scope: "email profile",
           prompt: "select_account"
@@ -41,8 +42,9 @@ const handleSocialLogin = (provider) => {
         url: "https://www.facebook.com/v12.0/dialog/oauth",
         params: {
           client_id: "1150645627033722",
-          redirect_uri: `${REDIRECT_URI}/facebook`,
+          redirect_uri: redirectUri,
           scope: "email,public_profile",
+          response_type: "code"
         }
       }
     };

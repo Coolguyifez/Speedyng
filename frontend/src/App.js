@@ -11,6 +11,7 @@ import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
 import ProtectedRoute from './components/ProtectedRoute';
 import ChatWidget from './components/ChatWidget';
+import AuthCallback from './pages/AuthCallback';
 
 function App() {
   // Check if user is logged in to show/hide the Speedy Assistant globally
@@ -28,6 +29,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/auth/callback/:provider" element={<AuthCallback />} />
         </Routes>
         {user && <ChatWidget />}
       </BrowserRouter>

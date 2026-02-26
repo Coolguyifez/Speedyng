@@ -24,22 +24,23 @@ const LoginPage = () => {
   };
 
 const handleSocialLogin = (provider) => {
-    const REDIRECT_URI = encodeURIComponent("https://speedy-bsvq.onrender.com/auth/callback");
+    const REDIRECT_URI = `https://speedy-bsvq.onrender.com/auth/callback/${provider.toLowerCase()}`;
     
     const configs = {
       Google: {
         url: "https://accounts.google.com/o/oauth2/v2/auth",
         params: {
-          client_id: "YOUR_GOOGLE_ID.apps.googleusercontent.com",
-          redirect_uri: `${REDIRECT_URI}/google`,
+          client_id: "464436673090-rijnmt8gigm23pa6r9mc1mug1df0f0b1.apps.googleusercontent.com",
+          redirect_uri: REDIRECT_URI,
           response_type: "code",
           scope: "email profile",
+          prompt: "select_account"
         }
       },
       Facebook: {
         url: "https://www.facebook.com/v12.0/dialog/oauth",
         params: {
-          client_id: "YOUR_FB_APP_ID",
+          client_id: "1150645627033722",
           redirect_uri: `${REDIRECT_URI}/facebook`,
           scope: "email,public_profile",
         }

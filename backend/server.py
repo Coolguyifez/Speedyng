@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
-from jose import jwt as apple_jwt
+
 # Import shared components
 from database import get_db, engine, Base
 from models import User, Vehicle, Contact, ChatMessage
@@ -84,10 +84,12 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
     result = await db.execute(select(User).filter(User.email == email))
     user = result.scalar_one_or_none()
     
-    if not user:
+   if not user:
         user = User(
-            name=name, email=email, role="user", 
-           password=get_password_hash(f"SOCIAL_AUTH_{provider.upper()}_{email}"),
+            name=name, 
+            email=email, 
+            role="user", 
+            password=get_password_hash(f"SOCIAL_AUTH_{provider.upper()}_{email}"),
             is_active=True
         )
         db.add(user)
@@ -115,14 +117,14 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         })
         token_data = res.json()
         if res.status_code != 200:
-            logger.error(f"Google Token Error: {token_data}")
-            raise HTTPException(status_code=400, detail=token_data.get("error_description"))
+            logger.error(f"Google Token Exchange Failed: {token_data}")
+            raise HTTPException(status_code=400, detail=token_data.get("error_description", "Auth failed"))
 
-        profile = await client.get(
+        profile_res = await client.get(
             "https://www.googleapis.com/oauth2/v1/userinfo", 
             headers={"Authorization": f"Bearer {token_data['access_token']}"}
         )
-        data = profile.json()
+        data = profile_res.json()
         
     return await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
 
@@ -136,6 +138,9 @@ async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
             "code": code,
         })
         fb_token = res.json().get('access_token')
+        if not fb_token:
+            raise HTTPException(status_code=400, detail="Facebook auth failed")
+
         profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={fb_token}")
         data = profile.json()
     

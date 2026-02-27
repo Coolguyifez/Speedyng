@@ -35,9 +35,6 @@ const AuthCallback = () => {
           const finalDestination = savedPath && savedPath !== '/login' ? savedPath : '/';
           console.log("4. Target Destination:", finalDestination);
 
-          // 5. Cleanup
-          sessionStorage.removeItem('redirectAfterLogin');
-
           toast.success(`Welcome back to Speedy, ${decodedUser.name}!`);
 
           // 6. Hard Redirect with slight delay

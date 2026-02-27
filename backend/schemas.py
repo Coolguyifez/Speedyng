@@ -5,6 +5,14 @@ from typing import List, Optional
 from datetime import datetime
 
 # -------------------- User Schemas --------------------
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordSubmit(BaseModel):
+    token: str
+    new_password: str
+
 class UserCreate(BaseModel):
     name: str
     email: EmailStr

@@ -166,8 +166,15 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
     await db.commit()
     
     reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
-    logger.info(f"PASSWORD RESET REQUEST: User {request.email} - Link: {reset_link}")
     
+    # FIXED: Actually calling the function with await
+    try:
+        await send_reset_email(user.email, reset_link)
+        logger.info(f"SUCCESS: Reset email sent to {user.email}")
+    except Exception as e:
+        logger.error(f"ERROR: Failed to send email: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")
+        
     return {"message": "Reset link sent successfully."}
 
 @api_router.post("/auth/reset-password")

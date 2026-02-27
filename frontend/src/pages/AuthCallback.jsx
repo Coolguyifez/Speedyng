@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const AuthCallback = () => {
@@ -12,28 +12,32 @@ const AuthCallback = () => {
 
     const handleCallback = () => {
       const params = new URLSearchParams(location.search);
-      
-      // 1. Get the data we sent from the Python RedirectResponse
       const token = params.get('token');
       const userDataStr = params.get('user');
 
       if (token && userDataStr) {
         hasCalledAPI.current = true;
         try {
-          // 2. Decode the URI-encoded JSON string
           const decodedUser = JSON.parse(decodeURIComponent(userDataStr));
           
-          // 3. Save BOTH to localStorage so the whole app sees you
+          // 1. Save credentials to localStorage
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(decodedUser));
 
+          // 2. GET THE MEMORY: Where was the user before logging in?
+          const savedPath = sessionStorage.getItem('redirectAfterLogin');
+          
+          // 3. DECIDE DESTINATION: 
+          // If a memory exists, use it. Otherwise, default to Home page
+          const finalDestination = savedPath ? savedPath : '/';
+          // 4. CLEAR THE MEMORY: Don't let it linger
+          sessionStorage.removeItem('redirectAfterLogin');
+
           toast.success(`Welcome back, ${decodedUser.name}!`);
           
-          // 4. THE MAGIC TRICK: window.location.href
-          // React 'navigate' doesn't always trigger a re-render of the Navbar.
-          // This forces a fresh load of Speedy with your new credentials.
+          // 5. REDIRECT: Hard reload to the correct path
           setTimeout(() => {
-            window.location.href = '/Vehicles'; 
+            window.location.href = finalDestination; 
           }, 500);
 
         } catch (err) {
@@ -42,7 +46,6 @@ const AuthCallback = () => {
           window.location.href = '/login';
         }
       } else {
-        // Fallback for missing params
         toast.error("Authentication data missing.");
         window.location.href = '/login';
       }
@@ -60,7 +63,7 @@ const AuthCallback = () => {
         </div>
       </div>
       <h2 className="mt-6 text-xl font-semibold text-gray-800">Finalizing your Login...</h2>
-      <p className="mt-2 text-gray-500 italic">Syncing your Speedy Agent profile...</p>
+      <p className="mt-2 text-gray-500 italic">Welcome to Speedy Auto Broker Hub...</p>
     </div>
   );
 };

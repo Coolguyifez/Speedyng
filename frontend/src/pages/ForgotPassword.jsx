@@ -13,12 +13,26 @@ const ForgotPassword = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // This calls your backend: POST /api/auth/forgot-password
-      await authAPI.forgotPassword(email);
+      // FIX: Send an object { email: email } instead of just the string
+      await authAPI.forgotPassword({ email: email }); 
+      
       setIsSent(true);
       toast.success("Reset link sent to your email!");
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Something went wrong.");
+      console.error("Forgot password error:", error);
+      
+      // FIX: Safely parse FastAPI's 422 error detail array
+      const detail = error.response?.data?.detail;
+      let errorMessage = "Something went wrong.";
+
+      if (typeof detail === 'string') {
+        errorMessage = detail;
+      } else if (Array.isArray(detail)) {
+        // Pick the first validation error message from FastAPI
+        errorMessage = detail[0]?.msg || "Invalid email format.";
+      }
+
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

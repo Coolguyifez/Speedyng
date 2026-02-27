@@ -1,8 +1,10 @@
 import os
 import httpx
 import logging
+import json 
 from datetime import datetime
 from typing import List, Optional
+from urllib.parse import quote
 from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -141,7 +143,11 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
     
     # Send user back to frontend with token
     frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/google"
-    return RedirectResponse(url=f"{frontend_url}?token={auth_data['access_token']}")
+    return RedirectResponse(url=f"{frontend_url}?token={token}&user={user_json}")
+
+except Exception as e:
+    logger.error(f"Callback Error: {str(e)}")
+    raise HTTPException(status_code=500, detail="Internal Server Error during Authentication")
 
 @api_router.get("/auth/facebook/callback")
 async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
@@ -163,10 +169,14 @@ async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
     
     user_info = {"id": auth_data['user'].id, "name": auth_data['user'].name, "email": auth_data['user'].email, "role": auth_data['user'].role}
     user_json = quote(json.dumps(user_info))
+    token = auth_data['access_token']
     
     frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/facebook"
-    return RedirectResponse(url=f"{frontend_url}?token={auth_data['access_token']}")
-    
+    return RedirectResponse(url=f"{frontend_url}?token={token}&user={user_json}")
+except Exception as e:
+    logger.error(f"Facebook Callback Error: {str(e)}")
+    raise HTTPException(status_code=500, detail="Facebook Auth Failed")
+
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):

@@ -91,7 +91,7 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
             email=email, 
             role="user", 
             password=get_password_hash(f"SOCIAL_AUTH_{provider.upper()}_{email}"),
-            is_active=True
+           
         )
         db.add(user)
         await db.commit()

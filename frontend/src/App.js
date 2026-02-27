@@ -12,6 +12,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
 import AuthCallback from './pages/AuthCallback';
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -58,6 +60,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/auth/callback/:provider" element={<AuthCallback />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Agent Routes */}
           <Route path="/Vehicles" element={

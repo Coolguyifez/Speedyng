@@ -24,7 +24,8 @@ const LoginPage = () => {
   };
 
 const handleSocialLogin = (provider) => {
-    sessionStorage.setItem('redirectAfterLogin', from);
+    const currentPath = window.location.pathname;
+    sessionStorage.setItem('redirectAfterLogin', currentPath);
   
     const BACKEND_BASE = "https://speedy-backend-fb9s.onrender.com/api/auth";
     const redirectUri = `${BACKEND_BASE}/${provider.toLowerCase()}/callback`;

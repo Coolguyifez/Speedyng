@@ -14,6 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
 
+# NEW: Email Imports
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
+
 # Import shared components
 from database import get_db, engine, Base
 from models import User, Vehicle, Contact, ChatMessage
@@ -48,6 +51,42 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# -------------------- Email Configuration --------------------
+# Set these in your Render Environment Variables for security
+mail_conf = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), # Use your 16-digit Google App Password
+    MAIL_FROM=os.getenv("MAIL_USERNAME"),
+    MAIL_PORT=587,
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True,
+    VALIDATE_CERTS=True
+)
+
+async def send_reset_email(email_to: str, reset_link: str):
+    html = f"""
+    <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+        <h2 style="color: #dc2626; text-align: center;">Speedy Password Reset</h2>
+        <p>Hello Agent,</p>
+        <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{reset_link}" style="background-color: #dc2626; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+        </div>
+        <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+    </div>
+    """
+    message = MessageSchema(
+        subject="Speedy - Reset Your Password",
+        recipients=[email_to],
+        body=html,
+        subtype=MessageType.html
+    )
+    fm = FastMail(mail_conf)
+    await fm.send_message(message)
+    
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
 def serialize_vehicle(vehicle):

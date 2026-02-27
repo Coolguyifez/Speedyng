@@ -154,9 +154,12 @@ const handleSocialLogin = (provider) => {
                 <input type="checkbox" className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500" />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors">
+              <Link 
+                to="/forgot-password" 
+                className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
+              >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <Button

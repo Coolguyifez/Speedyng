@@ -2,10 +2,11 @@ import os
 import httpx
 import logging
 import json 
-from datetime import datetime
+import secrets
+from datetime import datetime, timedelta
 from typing import List, Optional
 from urllib.parse import quote
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
@@ -105,6 +106,54 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
         "token_type": "bearer",
         "user": user
     }
+
+
+# -------------------- Auth Routes --------------------
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(email: str = Body(..., embed=True), db: AsyncSession = Depends(get_db)):
+    """Generates a reset token and simulates sending an email"""
+    result = await db.execute(select(User).filter(User.email == email))
+    user = result.scalar_one_or_none()
+    
+    if not user:
+        # Standard security: don't reveal if email exists
+        return {"message": "If this email is registered, a reset link has been sent."}
+
+    # Generate secure token and expiry (30 mins)
+    token = secrets.token_urlsafe(32)
+    user.reset_token = token
+    user.reset_token_expires = datetime.utcnow() + timedelta(minutes=30)
+    
+    await db.commit()
+    
+    # In production, use an SMTP library here. For now, we log it.
+    reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
+    logger.info(f"PASSWORD RESET REQUEST: User {email} - Link: {reset_link}")
+    
+    return {"message": "Reset link sent successfully."}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(token: str = Body(...), new_password: str = Body(...), db: AsyncSession = Depends(get_db)):
+    """Verifies the token and updates the password"""
+    result = await db.execute(
+        select(User).filter(
+            User.reset_token == token,
+            User.reset_token_expires > datetime.utcnow()
+        )
+    )
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+
+    user.password = get_password_hash(new_password)
+    user.reset_token = None # Clear token after use
+    user.reset_token_expires = None
+    
+    await db.commit()
+    return {"message": "Password updated successfully. You can now login."}
+
 
 # -------------------- Social Callback Routes --------------------
 

@@ -27,7 +27,7 @@ async def seed_database():
         # ----------------- INITIALIZATION CHECK -----------------
         # We check for the Admin. If the Admin exists, it means the 
         # system has been seeded before. We will NOT add cars again.
-        admin_email = "admin@speedyng.com"
+        admin_email = "infospeedyng360@gmail.com"
         admin_check = await session.execute(select(User).where(User.email == admin_email))
         is_already_initialized = admin_check.scalars().first() is not None
 
@@ -39,7 +39,7 @@ async def seed_database():
         users_to_create = [
             {
                 "name": "Admin User",
-                "email": "admin@speedyng.com",
+                "email": "infospeedyng360@gmail.com",
                 "phone": "08135877104",
                 "password": "admin123",
                 "role": "admin"

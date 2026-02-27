@@ -1,0 +1,81 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Mail, ArrowLeft, Send } from 'lucide-react';
+import { toast } from 'sonner';
+import { authAPI } from '../services/api';
+
+const ForgotPassword = () => {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      // This calls your backend: POST /api/auth/forgot-password
+      await authAPI.forgotPassword(email);
+      setIsSent(true);
+      toast.success("Reset link sent to your email!");
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+        {!isSent ? (
+          <>
+            <div className="text-center mb-8">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-red-600" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">Forgot Password?</h1>
+              <p className="text-gray-600 mt-2">No worries! Enter your email and we'll send you a reset link.</p>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <input
+                  type="email"
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none transition-all"
+                  placeholder="agent@speedy.com"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <button
+                disabled={isLoading}
+                type="submit"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg flex items-center justify-center transition-all"
+              >
+                {isLoading ? "Sending..." : "Send Reset Link"}
+                <Send className="ml-2 w-4 h-4" />
+              </button>
+            </form>
+          </>
+        ) : (
+          <div className="text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Send className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900">Check your Email</h2>
+            <p className="text-gray-600 mt-2">We've sent a password reset link to <br/><strong>{email}</strong></p>
+          </div>
+        )}
+
+        <div className="mt-8 text-center">
+          <Link to="/login" className="text-sm text-gray-500 hover:text-red-600 flex items-center justify-center">
+            <ArrowLeft className="mr-2 w-4 h-4" /> Back to Login
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ForgotPassword;

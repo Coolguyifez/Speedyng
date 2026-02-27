@@ -129,8 +129,18 @@ async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
         
     auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
     
+    # --- FIX: Send BOTH token and user object to Frontend ---
+    user_info = {
+        "id": auth_data['user'].id,
+        "name": auth_data['user'].name,
+        "email": auth_data['user'].email,
+        "role": auth_data['user'].role
+    }
+    user_json = quote(json.dumps(user_info))
+    token = auth_data['access_token']
+    
     # Send user back to frontend with token
-    frontend_url = "https://speedy-bsvq.onrender.com/login-success"
+    frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/google"
     return RedirectResponse(url=f"{frontend_url}?token={auth_data['access_token']}")
 
 @api_router.get("/auth/facebook/callback")
@@ -151,7 +161,10 @@ async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
     
     auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "facebook")
     
-    frontend_url = "https://speedy-bsvq.onrender.com/login-success"
+    user_info = {"id": auth_data['user'].id, "name": auth_data['user'].name, "email": auth_data['user'].email, "role": auth_data['user'].role}
+    user_json = quote(json.dumps(user_info))
+    
+    frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/facebook"
     return RedirectResponse(url=f"{frontend_url}?token={auth_data['access_token']}")
     
 # -------------------- Auth Routes --------------------

@@ -63,7 +63,7 @@ async def seed_database():
                     password=get_password_hash(u_data["password"]),
                     role=u_data["role"],
                     reset_token=None,
-                    reset_token_expires=None
+                    reset_token_expires=None,
                     favorites=[]
                 )
                 session.add(new_user)

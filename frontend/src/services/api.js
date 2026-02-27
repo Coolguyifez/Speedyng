@@ -55,7 +55,22 @@ export const authAPI = {
     }
     return response.data;
   },
-  
+
+
+  // Sends the email address to initiate the reset
+  forgotPassword: async (data) => {
+    // Expects { email: '...' }
+    const response = await api.post('/auth/forgot-password', data);
+    return response.data;
+  },
+
+  // Sends the token and the new password to update the DB
+  resetPassword: async (data) => {
+    // Expects { token: '...', new_password: '...' }
+    const response = await api.post('/auth/reset-password', data);
+    return response.data;
+  },
+
 
   // This is the function Header.jsx was missing (fixing your white screen)
   getUser: () => {

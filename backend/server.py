@@ -110,72 +110,72 @@ async def handle_social_user(db: AsyncSession, email: str, name: str, provider: 
 
 @api_router.get("/auth/google/callback") 
 async def google_callback(code: str, db: AsyncSession = Depends(get_db)):
-    async with httpx.AsyncClient() as client:
-        res = await client.post("https://oauth2.googleapis.com/token", data={
-            "code": code,
-            "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-            "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-            "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
-            "grant_type": "authorization_code",
-        })
-        token_data = res.json()
-        if res.status_code != 200:
-            logger.error(f"Google Token Exchange Failed: {token_data}")
-            raise HTTPException(status_code=400, detail="Auth failed")
+    try: 
+        async with httpx.AsyncClient() as client:
+            res = await client.post("https://oauth2.googleapis.com/token", data={
+                "code": code,
+                "client_id": os.getenv("GOOGLE_CLIENT_ID"),
+                "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
+                "redirect_uri": os.getenv("GOOGLE_REDIRECT_URI"),
+                "grant_type": "authorization_code",
+            })
+            token_data = res.json()
+            if res.status_code != 200:
+                logger.error(f"Google Token Exchange Failed: {token_data}")
+                raise HTTPException(status_code=400, detail="Auth failed")
 
-        profile_res = await client.get(
-            "https://www.googleapis.com/oauth2/v1/userinfo", 
-            headers={"Authorization": f"Bearer {token_data['access_token']}"}
-        )
-        data = profile_res.json()
+            profile_res = await client.get(
+                "https://www.googleapis.com/oauth2/v1/userinfo", 
+                headers={"Authorization": f"Bearer {token_data['access_token']}"}
+            )
+            data = profile_res.json()
+            
+        auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
         
-    auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "google")
-    
-    # --- FIX: Send BOTH token and user object to Frontend ---
-    user_info = {
-        "id": auth_data['user'].id,
-        "name": auth_data['user'].name,
-        "email": auth_data['user'].email,
-        "role": auth_data['user'].role
-    }
-    user_json = quote(json.dumps(user_info))
-    token = auth_data['access_token']
-    
-    # Send user back to frontend with token
-    frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/google"
-    return RedirectResponse(url=f"{frontend_url}?token={token}&user={user_json}")
+        user_info = {
+            "id": auth_data['user'].id,
+            "name": auth_data['user'].name,
+            "email": auth_data['user'].email,
+            "role": auth_data['user'].role
+        }
+        user_json = quote(json.dumps(user_info))
+        token = auth_data['access_token']
+        
+        frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/google"
+        return RedirectResponse(url=f"{frontend_url}?token={token}&user={user_json}")
 
-except Exception as e:
-    logger.error(f"Callback Error: {str(e)}")
-    raise HTTPException(status_code=500, detail="Internal Server Error during Authentication")
+    except Exception as e:
+        logger.error(f"Callback Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @api_router.get("/auth/facebook/callback")
 async def facebook_callback(code: str, db: AsyncSession = Depends(get_db)):
-    async with httpx.AsyncClient() as client:
-        res = await client.get("https://graph.facebook.com/v12.0/oauth/access_token", params={
-            "client_id": os.getenv("FB_CLIENT_ID"),
-            "client_secret": os.getenv("FB_CLIENT_SECRET"),
-            "redirect_uri": os.getenv("FB_REDIRECT_URI"),
-            "code": code,
-        })
-        fb_token = res.json().get('access_token')
-        if not fb_token:
-            raise HTTPException(status_code=400, detail="Facebook auth failed")
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get("https://graph.facebook.com/v12.0/oauth/access_token", params={
+                "client_id": os.getenv("FB_CLIENT_ID"),
+                "client_secret": os.getenv("FB_CLIENT_SECRET"),
+                "redirect_uri": os.getenv("FB_REDIRECT_URI"),
+                "code": code,
+            })
+            fb_token = res.json().get('access_token')
+            if not fb_token:
+                raise HTTPException(status_code=400, detail="Facebook auth failed")
 
-        profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={fb_token}")
-        data = profile.json()
-    
-    auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "facebook")
-    
-    user_info = {"id": auth_data['user'].id, "name": auth_data['user'].name, "email": auth_data['user'].email, "role": auth_data['user'].role}
-    user_json = quote(json.dumps(user_info))
-    token = auth_data['access_token']
-    
-    frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/facebook"
-    return RedirectResponse(url=f"{frontend_url}?token={token}&user={user_json}")
-except Exception as e:
-    logger.error(f"Facebook Callback Error: {str(e)}")
-    raise HTTPException(status_code=500, detail="Facebook Auth Failed")
+            profile = await client.get(f"https://graph.facebook.com/me?fields=email,name&access_token={fb_token}")
+            data = profile.json()
+        
+        auth_data = await handle_social_user(db, data['email'], data.get('name', 'Speedy Agent'), "facebook")
+        
+        user_info = {"id": auth_data['user'].id, "name": auth_data['user'].name, "email": auth_data['user'].email, "role": auth_data['user'].role}
+        user_json = quote(json.dumps(user_info))
+        token = auth_data['access_token']
+        
+        frontend_url = "https://speedy-bsvq.onrender.com/auth/callback/facebook"
+        return RedirectResponse(url=f"{frontend_url}?token={token}&user={user_json}")
+    except Exception as e:
+        logger.error(f"Facebook Callback Error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Facebook Auth Failed")
 
 # -------------------- Auth Routes --------------------
 @api_router.post("/auth/register", response_model=TokenResponse)

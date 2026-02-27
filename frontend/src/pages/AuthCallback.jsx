@@ -5,55 +5,67 @@ import { toast } from 'sonner';
 const AuthCallback = () => {
   const { provider } = useParams();
   const location = useLocation();
-  const hasCalledAPI = useRef(false);
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    if (hasCalledAPI.current) return;
+    // Prevent double-execution in React Strict Mode
+    if (hasProcessed.current) return;
 
     const handleCallback = () => {
+      console.log("1. AuthCallback initiated. URL Path:", location.search);
+      
       const params = new URLSearchParams(location.search);
       const token = params.get('token');
       const userDataStr = params.get('user');
 
       if (token && userDataStr) {
-        hasCalledAPI.current = true;
+        hasProcessed.current = true;
         try {
+          // 2. Decode the URI-encoded JSON string from the backend
           const decodedUser = JSON.parse(decodeURIComponent(userDataStr));
-          
-          // 1. Save credentials to localStorage
+          console.log("2. Decoded User Data:", decodedUser);
+
+          // 3. Save to LocalStorage
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(decodedUser));
+          console.log("3. Data saved to LocalStorage");
 
-          // 2. GET THE MEMORY: Where was the user before logging in?
+          // 4. Determine Destination (Memory check)
           const savedPath = sessionStorage.getItem('redirectAfterLogin');
-          
-          // 3. DECIDE DESTINATION: 
-          // If a memory exists, use it. Otherwise, default to Home page
-          const finalDestination = savedPath ? savedPath : '/';
-          // 4. CLEAR THE MEMORY: Don't let it linger
+          const finalDestination = savedPath && savedPath !== '/login' ? savedPath : '/';
+          console.log("4. Target Destination:", finalDestination);
+
+          // 5. Cleanup
           sessionStorage.removeItem('redirectAfterLogin');
 
-          toast.success(`Welcome back, ${decodedUser.name}!`);
-          
-          // 5. REDIRECT: Hard reload to the correct path
+          toast.success(`Welcome back to Speedy, ${decodedUser.name}!`);
+
+          // 6. Hard Redirect with slight delay
+          // This delay ensures the browser finishes writing to storage 
+          // before the page refreshes and the App reads the auth state.
           setTimeout(() => {
+            console.log("5. Performing redirect now...");
             window.location.href = finalDestination; 
-          }, 500);
+          }, 800);
 
         } catch (err) {
-          console.error("Speedy Auth Parsing Error:", err);
+          console.error("CRITICAL: Speedy Auth Parsing Error:", err);
           toast.error("Failed to sync your profile.");
           window.location.href = '/login';
         }
       } else {
+        console.warn("ERROR: Missing token or user in URL");
         toast.error("Authentication data missing.");
-        window.location.href = '/login';
+        // If we stay on login, it's because this 'else' block was hit.
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 1000);
       }
     };
 
     handleCallback();
   }, [location]);
-
+  
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
       <div className="relative">

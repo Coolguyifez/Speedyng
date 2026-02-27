@@ -16,6 +16,8 @@ class User(Base):
     password = Column(String(255), nullable=False)
     role = Column(String(20), default="user", nullable=False)
     favorites = Column(ARRAY(Integer), default=[])  # stores car IDs
+    reset_token = Column(String, nullable=True)
+    reset_token_expires = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

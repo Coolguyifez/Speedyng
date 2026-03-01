@@ -55,9 +55,9 @@ app.add_middleware(
 # -------------------- Email Configuration --------------------
 # Set these in your Render Environment Variables for security
 mail_conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), # Use your 16-digit Google App Password
-    MAIL_FROM=os.getenv("MAIL_USERNAME"),
+    MAIL_USERNAME="infospeedyng360@gmail.com",
+    MAIL_PASSWORD="hprfnhregyroyozi", # Use your 16-digit Google App Password
+    MAIL_FROM="infospeedyng360@gmail.com",
     MAIL_PORT=465,
     MAIL_SERVER="smtp.gmail.com",
     MAIL_STARTTLS=False,

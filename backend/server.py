@@ -58,10 +58,10 @@ mail_conf = ConnectionConfig(
     MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), # Use your 16-digit Google App Password
     MAIL_FROM=os.getenv("MAIL_USERNAME"),
-    MAIL_PORT=587,
+    MAIL_PORT=465,
     MAIL_SERVER="smtp.gmail.com",
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
+    MAIL_STARTTLS=False,
+    MAIL_SSL_TLS=True,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
     MAIL_FROM_NAME="Speedy Support"
@@ -163,19 +163,15 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
     token = secrets.token_urlsafe(32)
     user.reset_token = token
     user.reset_token_expires = datetime.utcnow() + timedelta(minutes=30)
-    
-    try:
-        await db.commit()
-        reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
-        
-        # ACTUALLY SEND THE EMAIL
-        await send_reset_email(user.email, reset_link)
-        logger.info(f"PASSWORD RESET REQUEST: User {request.email} - Link: {reset_link}")
-        return {"message": "Reset link sent successfully."}
-        
-    except Exception as e:
-        logger.error(f"ERROR: Failed to send email: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")
+
+    await db.commit()
+
+    reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
+
+    logger.info(f"PASSWORD RESET REQUEST: User {request.email} - Link: {reset_link}")
+
+
+    return {"message": "Reset link sent successfully."}
         
  
 

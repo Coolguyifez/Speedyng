@@ -55,16 +55,17 @@ app.add_middleware(
 # -------------------- Email Configuration --------------------
 # Set these in your Render Environment Variables for security
 mail_conf = ConnectionConfig(
-    MAIL_USERNAME="infospeedyng360@gmail.com",
-    MAIL_PASSWORD="hprfnhregyroyozi", # Use your 16-digit Google App Password
-    MAIL_FROM="infospeedyng360@gmail.com",
-    MAIL_PORT=465,
+   MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), 
+    MAIL_FROM=os.getenv("MAIL_USERNAME"),
+    MAIL_PORT=587,
     MAIL_SERVER="smtp.gmail.com",
-    MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=True,
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
-    MAIL_FROM_NAME="Speedy Support"
+    MAIL_FROM_NAME="Speedy Support",
+    TIMEOUT=30
 )
 
 async def send_reset_email(email_to: str, reset_link: str):

@@ -14,8 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import text
 
-# NEW: Email Imports
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
+import resend
 
 # Import shared components
 from database import get_db, engine, Base
@@ -52,27 +51,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# -------------------- Email Configuration --------------------
-# Set these in your Render Environment Variables for security
-mail_conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), 
-    MAIL_FROM=os.getenv("MAIL_USERNAME"),
-    MAIL_PORT=587,
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
-    USE_CREDENTIALS=True,
-    VALIDATE_CERTS=True,
-    MAIL_FROM_NAME="Speedy Support",
-    TIMEOUT=30
-)
+# -------------------- Email Setup (Resend) --------------------
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 async def send_reset_email(email_to: str, reset_link: str):
-    html = f"""
+    html_content = f"""
     <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
         <h2 style="color: #dc2626; text-align: center;">Speedy Password Reset</h2>
-        <p>Hello Agent,</p>
+        <p>Hello User,</p>
         <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
         <div style="text-align: center; margin: 30px 0;">
             <a href="{reset_link}" style="background-color: #dc2626; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
@@ -80,14 +66,19 @@ async def send_reset_email(email_to: str, reset_link: str):
         <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
     </div>
     """
-    message = MessageSchema(
-        subject="Speedy - Reset Your Password",
-        recipients=[email_to],
-        body=html,
-        subtype=MessageType.html
-    )
-    fm = FastMail(mail_conf)
-    await fm.send_message(message)
+    try:
+        # Note: 'from' must be 'onboarding@resend.dev' on the Free Tier
+        params = {
+            "from": "Speedy Support <infospeedyng360@gmail.com>",
+            "to": [email_to],
+            "subject": "Speedy - Reset Your Password",
+            "html": html_content,
+        }
+        resend.Emails.send(params)
+        logger.info(f"Resend Success: Reset email triggered for {email_to}")
+    except Exception as e:
+        logger.error(f"Resend Error: {str(e)}")
+        raise e
     
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
@@ -171,16 +162,13 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
 
     try:
         await send_reset_email(user.email, reset_link)
-        logger.info(f"SUCCESS: Reset email sent to {user.email}")
+        return {"message": "Reset link sent successfully."}
     except Exception as e:
         # If the email fails, we log the error but the link is still in the logs as a backup
         logger.error(f"MAIL ERROR: Could not send to {user.email}. Error: {str(e)}")
         logger.info(f"BACKUP RESET PASSWORD LINK: {reset_link}")
         raise HTTPException(status_code=500, detail="Mail server connection failed")
 
-    return {"message": "Reset link sent successfully."}
-        
- 
 
 @api_router.post("/auth/reset-password")
 async def reset_password(data: ResetPasswordSubmit, db: AsyncSession = Depends(get_db)):

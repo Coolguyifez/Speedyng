@@ -168,8 +168,14 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
 
     reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
 
-    logger.info(f"PASSWORD RESET REQUEST: User {request.email} - Link: {reset_link}")
-
+    try:
+        await send_reset_email(user.email, reset_link)
+        logger.info(f"SUCCESS: Reset email sent to {user.email}")
+    except Exception as e:
+        # If the email fails, we log the error but the link is still in the logs as a backup
+        logger.error(f"MAIL ERROR: Could not send to {user.email}. Error: {str(e)}")
+        logger.info(f"BACKUP LINK FOR AGENT: {reset_link}")
+        raise HTTPException(status_code=500, detail="Mail server connection failed")
 
     return {"message": "Reset link sent successfully."}
         

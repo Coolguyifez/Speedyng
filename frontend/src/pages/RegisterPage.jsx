@@ -114,7 +114,7 @@ const RegisterPage = () => {
 
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-gray-600">Join Speedy to find your perfect car</p>
+            <p className="text-gray-600">Join Speedy to find your perfect Vehicle</p>
           </div>
 
           {/* Social Registration Grid */}
@@ -139,8 +139,8 @@ const RegisterPage = () => {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="px-2 bg-white text-gray-500 font-medium">Or enter your your details</span>
+            <div className="relative flex justify-center text-xs">
+              <span className="px-2 bg-white text-gray-500 font-medium">Or</span>
             </div>
           </div>
 

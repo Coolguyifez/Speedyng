@@ -174,7 +174,7 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
     except Exception as e:
         # If the email fails, we log the error but the link is still in the logs as a backup
         logger.error(f"MAIL ERROR: Could not send to {user.email}. Error: {str(e)}")
-        logger.info(f"BACKUP LINK FOR AGENT: {reset_link}")
+        logger.info(f"BACKUP RESET PASSWORD LINK: {reset_link}")
         raise HTTPException(status_code=500, detail="Mail server connection failed")
 
     return {"message": "Reset link sent successfully."}

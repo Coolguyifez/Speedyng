@@ -58,25 +58,12 @@ async def send_reset_email(email_to: str, reset_link: str):
     html_content = f"""
     <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
         <table width="100%" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td align="center">
-                    <div style="position: relative; display: inline-block; width: 54px; height: 54px;">
-                        <div style="width: 48px; height: 48px; background-color: #dc2626; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                            <span style="color: #ffffff; font-weight: bold; font-size: 24px; font-family: Arial, sans-serif;">S</span>
-                        </div>
-                        <div style="position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; background-color: #000000; border-radius: 50%; border: 2px solid #ffffff;">
-                            <table width="100%" height="100%" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td align="center" valign="middle">
-                                        <div style="width: 8px; height: 8px; background-color: #ffffff; border-radius: 50%;"></div>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <tr>
+            <td align="center" style="padding-bottom: 20px;">
+                <img src="https://i.imgur.com/niaQKv1.png" width="60" height="60" alt="Speedy Logo" style="display: block; border: 0; outline: none; text-decoration: none;">
+            </td>
+        </tr>
+    </table>
         <h2 style="text-align: center;">Password Reset</h2>
         <p>Hello User,</p>
         <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
@@ -85,6 +72,7 @@ async def send_reset_email(email_to: str, reset_link: str):
         </div>
         <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
     </div>
+    <div style="text-align: center;">© 2026 Speedy Auto Broker Hub.</div>
     """
     try:
         # Note: 'from' must be 'onboarding@resend.dev' on the Free Tier

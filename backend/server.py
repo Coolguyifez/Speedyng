@@ -69,7 +69,7 @@ async def send_reset_email(email_to: str, reset_link: str):
     try:
         # Note: 'from' must be 'onboarding@resend.dev' on the Free Tier
         params = {
-            "from": "Speedy Support <infospeedyng360@gmail.com>",
+            "from": "Speedy Support <onboarding@resend.dev>",
             "to": [email_to],
             "subject": "Speedy - Reset Your Password",
             "html": html_content,

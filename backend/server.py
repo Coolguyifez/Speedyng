@@ -55,7 +55,7 @@ app.add_middleware(
 # -------------------- Email Configuration --------------------
 # Set these in your Render Environment Variables for security
 mail_conf = ConnectionConfig(
-   MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
     MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"), 
     MAIL_FROM=os.getenv("MAIL_USERNAME"),
     MAIL_PORT=587,

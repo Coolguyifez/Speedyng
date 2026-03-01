@@ -65,16 +65,17 @@ const AuthCallback = () => {
   
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-      <div className="relative">
-        <div className="w-18 h-18 border-4 border-gray-200 border-t-red-600 rounded-full animate-spin"></div>
-        <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
-          <span className="text-white font-bold text-2x1">S</span>
-        </div>
-        <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
-          <div className="w-3 h-3 bg-white rounded-full"></div>
+      <div className="relative flex items-center justify-center w-24 h-24">
+        <div className="absolute w-20 h-20 border-4 border-gray-200 border-t-red-600 rounded-full animate-spin"></div>
+        <div className="relative">
+          <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-2xl">S</span>
+          </div>
+          <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center border-2 border-white">
+            <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+          </div>
         </div>
       </div>
-      
     </div>
   );
 };

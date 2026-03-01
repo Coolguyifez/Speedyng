@@ -66,13 +66,12 @@ const AuthCallback = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
       <div className="relative">
-        <div className="w-16 h-16 border-4 border-gray-200 border-t-red-600 rounded-full animate-spin"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <span className="text-xs font-bold text-red-600 uppercase">S</span>
+        <div className="w-18 h-18 border-4 border-gray-200 border-t-red-600 rounded-full animate-spin"></div>
+        <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
+          <span className="text-white font-bold text-2x1">S</span>
         </div>
       </div>
-      <h2 className="mt-6 text-xl font-semibold text-gray-800">Finalizing your Login...</h2>
-      <p className="mt-2 text-gray-500 italic">Welcome to Speedy Auto Broker Hub...</p>
+      
     </div>
   );
 };

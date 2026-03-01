@@ -170,8 +170,7 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
         
         # ACTUALLY SEND THE EMAIL
         await send_reset_email(user.email, reset_link)
-        logger.info(f"SUCCESS: Reset email sent to {user.email}")
-        logger.info(f"PASSWORD RESET REQUEST: User {request.email} - Link: {reset_link}")
+        logger.info(f"SUCCESS: Reset email sent to {user.email} and the link {reset_link} ")
         return {"message": "Reset link sent successfully."}
         
     except Exception as e:

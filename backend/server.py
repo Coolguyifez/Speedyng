@@ -56,23 +56,35 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 
 async def send_reset_email(email_to: str, reset_link: str):
     html_content = f"""
-    <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; border: 1px solid #eee; padding: 40px; border-radius: 12px; background-color: #ffffff;">
         <table width="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr>
-            <td align="center" style="padding-bottom: 20px;">
-                <img src="https://i.imgur.com/niaQKv1.png" width="60" height="60" alt="Speedy Logo" style="display: block; border: 0; outline: none; text-decoration: none;">
-            </td>
-        </tr>
-    </table>
-        <h2 style="text-align: center;">Password Reset</h2>
-        <p>Hello User,</p>
-        <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{reset_link}" style="background-color: #dc2626; color: white; padding: 12px 25px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+            <tr>
+                <td align="center" style="padding-bottom: 20px;">
+                    <img src="https://i.imgur.com/niaQKv1.png" width="80" height="80" alt="Speedy Logo" style="display: block; border: 0;">
+                </td>
+            </tr>
+        </table>
+        
+        <h2 style="text-align: center; color: #111827; font-size: 24px; margin-top: 0;">Password Reset</h2>
+        
+        <div style="text-align: center; color: #4b5563; font-size: 16px; line-height: 1.6;">
+            <p>Hello Agent,</p>
+            <p>We received a request to reset your password for the <strong>Speedy Auto Broker Hub</strong>. Click the button below to choose a new one. This link expires in 30 minutes.</p>
         </div>
-        <p style="color: #666; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+    
+        <div style="text-align: center; margin: 35px 0;">
+            <a href="{reset_link}" style="background-color: #dc2626; color: #ffffff; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+                Reset Password
+            </a>
+        </div>
+    
+        <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px;">
+            If you didn't request this, you can safely ignore this email.
+        </p>
     </div>
-    <div style="text-align: center;">© 2026 Speedy Auto Broker Hub.</div>
+    <div style="text-align: center; color: #9ca3af; font-size: 12px; font-family: Arial, sans-serif; margin-bottom: 20px;">
+        © 2026 Speedy Auto Broker Hub.
+    </div>
     """
     try:
         # Note: 'from' must be 'onboarding@resend.dev' on the Free Tier

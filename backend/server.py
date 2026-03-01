@@ -178,7 +178,7 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
         logger.error(f"ERROR: Failed to send email: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")
         
-    return {"message": "Reset link sent successfully."}
+ 
 
 @api_router.post("/auth/reset-password")
 async def reset_password(data: ResetPasswordSubmit, db: AsyncSession = Depends(get_db)):

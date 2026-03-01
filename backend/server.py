@@ -57,7 +57,48 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 async def send_reset_email(email_to: str, reset_link: str):
     html_content = f"""
     <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-        <h2 style="color: #dc2626; text-align: center;">Speedy Password Reset</h2>
+        <div style="position: relative; display: inline-block; width: 48px; height: 48px;">
+            <div style="
+                width: 48px; 
+                height: 48px; 
+                background-color: #dc2626; 
+                background-image: linear-gradient(to bottom right, #dc2626, #b91c1c); 
+                border-radius: 8px; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+            ">
+                <span style="
+                    color: #ffffff; 
+                    font-weight: bold; 
+                    font-size: 24px; 
+                    font-family: Arial, sans-serif;
+                    line-height: 1;
+                ">S</span>
+            </div>
+            
+            <div style="
+                position: absolute; 
+                right: -4px; 
+                bottom: -4px; 
+                width: 20px; 
+                height: 20px; 
+                background-color: #000000; 
+                border-radius: 50%; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+            ">
+                <div style="
+                    width: 12px; 
+                    height: 12px; 
+                    background-color: #ffffff; 
+                    border-radius: 50%;
+                "></div>
+            </div>
+        </div>
+        <br>
+        <h2 style="text-align: center;">Password Reset</h2>
         <p>Hello User,</p>
         <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>
         <div style="text-align: center; margin: 30px 0;">

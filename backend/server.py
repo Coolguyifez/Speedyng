@@ -56,35 +56,69 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 
 async def send_reset_email(email_to: str, reset_link: str):
     html_content = f"""
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; border: 1px solid #eee; padding: 40px; border-radius: 12px; background-color: #ffffff;">
-        <table width="100%" border="0" cellpadding="0" cellspacing="0">
-            <tr>
-                <td align="center" style="padding-bottom: 20px;">
+    <!DOCTYPE html>
+    <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="x-apple-disable-message-reformatting">
+      <meta name="color-scheme" content="light dark">
+      <meta name="supported-color-schemes" content="light dark">
+      <title>Speedy Password Reset</title>
+      <style>
+        :root {{
+          color-scheme: light dark;
+          supported-color-schemes: light dark;
+        }}
+        /* Forces Dark Mode users to see a dark background but keeps our card white or legible */
+        @media (prefers-color-scheme: dark) {{
+          .email-body {{ background-color: #1a1a1a !important; }}
+          .email-card {{ background-color: #2d2d2d !important; border-color: #444444 !important; }}
+          .text-main {{ color: #ffffff !important; }}
+          .text-muted {{ color: #a1a1a1 !important; }}
+        }}
+      </style>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f9fafb;" class="email-body">
+      <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td align="center" style="padding: 40px 10px;">
+            <div class="email-card" style="font-family: Arial, sans-serif; max-width: 600px; width: 100%; border: 1px solid #eeeeee; padding: 40px; border-radius: 12px; background-color: #ffffff; text-align: center;">
+              
+              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom: 25px;">
                     <img src="https://i.imgur.com/niaQKv1.png" width="80" height="80" alt="Speedy Logo" style="display: block; border: 0;">
-                </td>
-            </tr>
-        </table>
-        
-        <h2 style="text-align: center; color: #111827; font-size: 24px; margin-top: 0;">Password Reset</h2>
-        
-        <div style="text-align: center; color: #4b5563; font-size: 16px; line-height: 1.6;">
-            <p>Hello Agent,</p>
-            <p>We received a request to reset your password for the <strong>Speedy Auto Broker Hub</strong>. Click the button below to choose a new one. This link expires in 30 minutes.</p>
-        </div>
+                  </td>
+                </tr>
+              </table>
+              
+              <h2 class="text-main" style="color: #111827; font-size: 24px; margin: 0 0 20px 0;">Password Reset</h2>
+              
+              <div class="text-main" style="color: #4b5563; font-size: 16px; line-height: 1.6;">
+                <p>Hello User,</p>
+                <p>We received a request to reset your password for <strong>Speedy Auto Broker Hub</strong>. Click the button below to choose a new one.</p>
+              </div>
     
-        <div style="text-align: center; margin: 35px 0;">
-            <a href="{reset_link}" style="background-color: #dc2626; color: #ffffff; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
-                Reset Password
-            </a>
-        </div>
+              <div style="margin: 35px 0;">
+                <a href="{reset_link}" style="background-color: #dc2626; color: #ffffff; padding: 14px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block;">
+                    Reset Password
+                </a>
+              </div>
     
-        <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px;">
-            If you didn't request this, you can safely ignore this email.
-        </p>
-    </div>
-    <div style="text-align: center; color: #9ca3af; font-size: 12px; font-family: Arial, sans-serif; margin-bottom: 20px;">
-        © 2026 Speedy Auto Broker Hub.
-    </div>
+              <p class="text-muted" style="color: #9ca3af; font-size: 12px; margin-top: 30px;">
+                If you didn't request this, you can safely ignore this email. This link expires in 30 minutes.
+              </p>
+            </div>
+    
+            <div class="text-muted" style="text-align: center; color: #9ca3af; font-size: 12px; font-family: Arial, sans-serif; padding-top: 20px;">
+                © 2026 Speedy Auto Broker Hub.
+            </div>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
     """
     try:
         # Note: 'from' must be 'onboarding@resend.dev' on the Free Tier

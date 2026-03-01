@@ -64,6 +64,7 @@ mail_conf = ConnectionConfig(
     MAIL_SSL_TLS=False,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True
+    MAIL_FROM_NAME="Speedy Support"
 )
 
 async def send_reset_email(email_to: str, reset_link: str):
@@ -163,14 +164,16 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
     user.reset_token = token
     user.reset_token_expires = datetime.utcnow() + timedelta(minutes=30)
     
-    await db.commit()
-    
-    reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
-    
-    # FIXED: Actually calling the function with await
     try:
+        await db.commit()
+        reset_link = f"https://speedy-bsvq.onrender.com/reset-password?token={token}"
+        
+        # ACTUALLY SEND THE EMAIL
         await send_reset_email(user.email, reset_link)
         logger.info(f"SUCCESS: Reset email sent to {user.email}")
+        logger.info(f"PASSWORD RESET REQUEST: User {request.email} - Link: {reset_link}")
+        return {"message": "Reset link sent successfully."}
+        
     except Exception as e:
         logger.error(f"ERROR: Failed to send email: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")

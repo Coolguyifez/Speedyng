@@ -57,14 +57,26 @@ resend.api_key = os.getenv("RESEND_API_KEY")
 async def send_reset_email(email_to: str, reset_link: str):
     html_content = f"""
     <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 20px; border-radius: 10px;">
-        <div style="position: relative; display: inline-block; width: 48px; height: 48px; margin-bottom: 20px;">
-            <div style="width: 48px; height: 48px; background-color: #dc2626; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <span style="color: #ffffff; font-weight: bold; font-size: 24px; font-family: Arial, sans-serif;">S</span>
-            </div>
-            <div style="position: absolute; right: -4px; bottom: -4px; width: 20px; height: 20px; background-color: #000000; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <div style="width: 12px; height: 12px; background-color: #ffffff; border-radius: 50%;"></div>
-            </div>
-        </div>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td align="center">
+                    <div style="position: relative; display: inline-block; width: 54px; height: 54px;">
+                        <div style="width: 48px; height: 48px; background-color: #dc2626; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #ffffff; font-weight: bold; font-size: 24px; font-family: Arial, sans-serif;">S</span>
+                        </div>
+                        <div style="position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; background-color: #000000; border-radius: 50%; border: 2px solid #ffffff;">
+                            <table width="100%" height="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" valign="middle">
+                                        <div style="width: 8px; height: 8px; background-color: #ffffff; border-radius: 50%;"></div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
         <h2 style="text-align: center;">Password Reset</h2>
         <p>Hello User,</p>
         <p>We received a request to reset your password. Click the button below to choose a new one. This link expires in 30 minutes.</p>

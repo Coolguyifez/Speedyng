@@ -163,11 +163,9 @@ async def forgot_password(request: ForgotPasswordRequest, db: AsyncSession = Dep
     try:
         await send_reset_email(user.email, reset_link)
         return {"message": "Reset link sent successfully."}
-    except Exception as e:
-        # If the email fails, we log the error but the link is still in the logs as a backup
-        logger.error(f"MAIL ERROR: Could not send to {user.email}. Error: {str(e)}")
+    except Exception:
         logger.info(f"BACKUP RESET PASSWORD LINK: {reset_link}")
-        raise HTTPException(status_code=500, detail="Mail server connection failed")
+        raise HTTPException(status_code=500, detail="Mail not sent")
 
 
 @api_router.post("/auth/reset-password")

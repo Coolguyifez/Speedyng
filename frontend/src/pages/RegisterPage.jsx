@@ -99,22 +99,19 @@ const RegisterPage = () => {
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
       
       {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
-      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden">
+      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12">
         <img 
           src="https://images.unsplash.com/photo-1493238507154-203698ad0a1f?auto=format&fit=crop&q=80&w=1920" 
           alt="Performance Car" 
           className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
         />
-        <Link to="/" className="flex items-center justify-center space-x-2 mb-8">
-            <div className="relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">S</span>
-              </div>
-              <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full"></div>
-              </div>
+        <div className="relative z-10 max-w-lg text-white">
+          <div className="flex items-center space-x-3 mb-8">
+            <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl">
+              <span className="text-white font-bold text-3xl">S</span>
             </div>
-          </Link>
+            <span className="text-5xl font-black tracking-tighter">Speedy</span>
+          </div>
           <h2 className="text-4xl font-bold mb-4 leading-tight">
             Find the vehicle you’ve always wanted.
           </h2>
@@ -124,21 +121,19 @@ const RegisterPage = () => {
         </div>
       </div>
 
-      {/* RIGHT SIDE: Register Form (Fits 100% on Mobile) */}
+      {/* RIGHT SIDE: Register Form */}
       <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
         <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8">
           
           {/* Logo for Mobile only */}
-          <Link to="/" className="flex items-center justify-center space-x-2 mb-8">
-            <div className="relative">
+          <div className="lg:hidden flex justify-center mb-8">
+            <Link to="/" className="flex items-center space-x-2">
               <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-2xl">S</span>
               </div>
-              <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full"></div>
-              </div>
-            </div>
-          </Link>
+              <span className="text-3xl font-bold text-black">Speedy</span>
+            </Link>
+          </div>
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
@@ -147,26 +142,27 @@ const RegisterPage = () => {
 
           {/* Social Registration Grid */}
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <button type="button" onClick={() => handleSocialRegister('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
-              <FaGoogle className="text-red-500 mr-2" /> 
+            <button type="button" onClick={() => handleSocialRegister('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+              <FaGoogle className="text-red-500 w-5 h-5" /> 
             </button>
-            <button type="button" onClick={() => handleSocialRegister('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
-              <FaFacebook className="text-blue-600 mr-2" /> 
+            <button type="button" onClick={() => handleSocialRegister('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+              <FaFacebook className="text-blue-600 w-5 h-5" /> 
             </button>
           </div>
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
-            <div className="relative flex justify-center text-xs  tracking-widest font-bold text-gray-400">
-              <span className="px-4 bg-white">Or</span>
+            <div className="relative flex justify-center text-xs tracking-widest font-bold text-gray-400">
+              <span className="px-4 bg-white uppercase">Or</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Input Fields */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                 <input
                   type="text" name="name" value={formData.name} onChange={handleChange} required
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
@@ -178,7 +174,7 @@ const RegisterPage = () => {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                 <input
                   type="email" name="email" value={formData.email} onChange={handleChange} required
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
@@ -190,7 +186,7 @@ const RegisterPage = () => {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
               <div className="relative group">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                 <input
                   type="tel" name="phone" value={formData.phone} onChange={handleChange} required
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
@@ -203,7 +199,7 @@ const RegisterPage = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                   <input
                     type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required
                     className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
@@ -218,7 +214,7 @@ const RegisterPage = () => {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm</label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                   <input
                     type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required
                     className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
@@ -231,7 +227,7 @@ const RegisterPage = () => {
               </div>
             </div>
 
-            <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95 mt-2">
+            <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg mt-2">
               {isLoading ? 'Creating Account...' : 'Create Account'}
               {!isLoading && <ArrowRight className="ml-2 w-5 h-5" />}
             </Button>
@@ -239,12 +235,12 @@ const RegisterPage = () => {
 
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 hover:text-red-700 font-medium transition-colors">Sign in</Link>
+              Already have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 hover:text-red-700 font-bold">Sign in</Link>
             </p>
           </div>
           <div className="mt-6">
             <Link to="/">
-              <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-800 transition-colors">
+              <Button variant="ghost" className="w-full text-gray-500 hover:text-gray-900">
                 Back to Home
               </Button>
             </Link>

@@ -84,11 +84,11 @@ const RegisterPage = () => {
         password: formData.password
       });
       
-      toast.success('Account created successfully!');
+      toast.success('Account created successfully! Welcome to Speedy.');
       navigate(from, { replace: true }); // Redirect to home/dashboard
     } catch (error) {
       console.error('Registration error:', error);
-      const message = error.response?.data?.detail || 'Registration failed. Try a different email.';
+      const message = error.response?.data?.detail || 'Registration failed.';
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -96,10 +96,39 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-none shadow-2xl">
-        <CardContent className="p-8">
-          {/* Logo */}
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
+      
+      {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
+      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1493238507154-203698ad0a1f?auto=format&fit=crop&q=80&w=1920" 
+          alt="Performance Car" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
+        />
+        <Link to="/" className="flex items-center justify-center space-x-2 mb-8">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-2xl">S</span>
+              </div>
+              <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+            </div>
+          </Link>
+          <h2 className="text-4xl font-bold mb-4 leading-tight">
+            Find the vehicle you’ve always wanted.
+          </h2>
+          <p className="text-gray-300 text-lg">
+            Join Speedy today to browse thousands of verified listings and connect with our agents who will handle the hard work for you.
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE: Register Form (Fits 100% on Mobile) */}
+      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
+        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8">
+          
+          {/* Logo for Mobile only */}
           <Link to="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
@@ -109,177 +138,119 @@ const RegisterPage = () => {
                 <div className="w-3 h-3 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-3xl font-bold text-black">Speedy</span>
           </Link>
 
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-gray-600">Join Speedy to find your perfect Vehicle</p>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
+            <p className="text-gray-500">Join Speedy to find your perfect vehicle</p>
           </div>
 
           {/* Social Registration Grid */}
-          <div className="grid grid-cols-2 gap-2 mb-6">
-            <button
-              type="button"
-              onClick={() => handleSocialRegister('Google')}
-              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
-            >
-              <FaGoogle className="w-5 h-5 text-[#DB4437]" />
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <button type="button" onClick={() => handleSocialRegister('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
+              <FaGoogle className="text-red-500 mr-2" /> 
             </button>
-            <button
-              type="button"
-              onClick={() => handleSocialRegister('Facebook')}
-              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
-            >
-              <FaFacebook className="w-5 h-5 text-[#4267B2]" />
+            <button type="button" onClick={() => handleSocialRegister('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
+              <FaFacebook className="text-blue-600 mr-2" /> 
             </button>
           </div>
 
-          <div className="relative mb-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500 font-medium">Or</span>
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
+            <div className="relative flex justify-center text-xs  tracking-widest font-bold text-gray-400">
+              <span className="px-4 bg-white">Or</span>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
+              <div className="relative group">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                 <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
-                  placeholder="Your full name"
+                  type="text" name="name" value={formData.name} onChange={handleChange} required
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                  placeholder="John Doe"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                  type="email" name="email" value={formData.email} onChange={handleChange} required
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
                   placeholder="your@email.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Phone Number
-              </label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
+              <div className="relative group">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                 <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
-                  placeholder="08154675347"
+                  type="tel" name="phone" value={formData.phone} onChange={handleChange} required
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                  placeholder="08135877104"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                  <input
+                    type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required
+                    className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                    placeholder="••••••••"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm</label>
+                <div className="relative group">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required
+                    className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                    placeholder="••••••••"
+                  />
+                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              size="lg"
-              className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg"
-            >
+            <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95 mt-2">
               {isLoading ? 'Creating Account...' : 'Create Account'}
               {!isLoading && <ArrowRight className="ml-2 w-5 h-5" />}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link 
-                to="/login" 
-                state={{ from: location.state?.from }} // Passes the original destination back to Login
-                className="text-red-600 hover:text-red-700 font-medium transition-colors">
-                Sign in
-              </Link>
+              Already have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 hover:text-red-700 font-medium transition-colors">Sign in</Link>
             </p>
           </div>
-
           <div className="mt-6">
             <Link to="/">
-              <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-900">
+              <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-800 transition-colors">
                 Back to Home
               </Button>
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

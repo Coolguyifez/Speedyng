@@ -113,7 +113,6 @@ const RegisterPage = () => {
             <div className="absolute -right-1 -bottom-1 w-7 h-7 bg-black rounded-full flex items-center justify-center">
               <div className="w-4 h-4 bg-white rounded-full"></div>
             </div>
-            <span className="text-5xl font-black tracking-tighter">Speedy</span>
           </div>
           <h2 className="text-4xl font-bold mb-4 leading-tight">
             Find the vehicle you’ve always wanted.
@@ -137,7 +136,6 @@ const RegisterPage = () => {
               <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
                 <div className="w-3 h-3 bg-white rounded-full"></div>
               </div>
-              <span className="text-3xl font-bold text-black">Speedy</span>
             </Link>
           </div>
 

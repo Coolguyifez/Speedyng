@@ -56,6 +56,7 @@ const Footer = () => {
                 { label: 'Browse Buses', to: '/vehicles?type=Bus' },
                 { label: 'Browse Motocycles', to: '/vehicles?type=Motorcycle' },
                 { label: 'Browse Tricycles', to: '/vehicles?type=Tricycle' },
+                { label: 'About Us', to: '/' }
                 { label: 'Contact Us', to: '/contact' }
               ].map((link) => (
                 <li key={link.label}>
@@ -85,7 +86,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-semibold mb-6">Contact Us</h3>
+            <h3 className="text-white font-semibold mb-6">Brief Contact</h3>
             <ul className="space-y-4 text-sm">
               <li className="flex gap-3">
                 <MapPin className="w-5 h-5 text-red-500 shrink-0" />

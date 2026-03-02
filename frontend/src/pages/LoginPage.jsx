@@ -84,10 +84,10 @@ const handleSocialLogin = (provider) => {
 
   // ... (Your existing Return/JSX design code stays exactly the same)
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
+    <div className="min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
       
       {/* LEFT SIDE: Brand Image & Marketing */}
-      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12">
+      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden h-full">
         <img 
           src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1920" 
           alt="Luxury Car" 
@@ -98,6 +98,9 @@ const handleSocialLogin = (provider) => {
             <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl">
               <span className="text-white font-bold text-3xl">S</span>
             </div>
+            <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+              </div>
             <span className="text-5xl font-black tracking-tighter">Speedy</span>
           </div>
           <h2 className="text-4xl font-bold mb-4 leading-tight">
@@ -110,8 +113,8 @@ const handleSocialLogin = (provider) => {
       </div>
 
       {/* RIGHT SIDE: Login Form */}
-      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50">
-        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
+      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
+        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-auto">
           
           {/* Logo for Mobile */}
           <div className="lg:hidden flex justify-center mb-8">

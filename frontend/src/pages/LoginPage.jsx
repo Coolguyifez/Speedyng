@@ -84,10 +84,39 @@ const handleSocialLogin = (provider) => {
 
   // ... (Your existing Return/JSX design code stays exactly the same)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md border-none shadow-2xl">
-        <CardContent className="p-8">
-          {/* Logo */}
+   <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
+      
+      {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
+      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1920" 
+          alt="Luxury Car" 
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+        />
+        <Link to="/" className="flex items-center justify-center space-x-2 mb-8">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-2xl">S</span>
+              </div>
+              <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+              </div>
+            </div>
+          </Link>
+          <h2 className="text-4xl font-bold mb-4 leading-tight">
+            The ultimate platform for auto agents.
+          </h2>
+          <p className="text-gray-300 text-lg">
+            Manage your deals, connect with clients, and accelerate your business on Speedy.
+          </p>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE: Login Form (Fits 100% on Mobile) */}
+      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50">
+        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100">
+          
+          {/* Logo for Mobile only */}
           <Link to="/" className="flex items-center justify-center space-x-2 mb-8">
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
@@ -97,132 +126,86 @@ const handleSocialLogin = (provider) => {
                 <div className="w-3 h-3 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-3xl font-bold text-black">Speedy</span>
           </Link>
-
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-600">Login to your account to continue</p>
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold text-gray-900">Welcome Back</h2>
+            <p className="text-gray-500">Sign in to your account to continue</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                  type="email" name="email" value={formData.email} onChange={handleChange} required
+                  className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
                   placeholder="your@email.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300"
+                  type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required
+                  className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
                   placeholder="••••••••"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                >
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input type="checkbox" className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500" />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors"
-              >
+              <Link to="/forgot-password" size="sm" className="text-sm font-bold text-red-600 hover:text-red-700">
                 Forgot password?
               </Link>
             </div>
 
-            <Button
-              disabled={isLoading}
-              type="submit"
-              size="lg"
-              className="w-full bg-red-600 hover:bg-red-700 text-white transition-all duration-300 hover:shadow-lg"
-            >
+            <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95">
               {isLoading ? 'Signing In...' : 'Sign In'}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </form>
-          
-          {/* Social Divider */}
+
           <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Or continue with</span>
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
+            <div className="relative flex justify-center text-xs uppercase tracking-widest font-bold text-gray-400">
+              <span className="px-4 bg-white">Or continue with</span>
             </div>
           </div>
 
-          {/* Social Buttons Row */}
-          <div className="grid grid-cols-2 gap-2 mb-8">
-            <button
-              onClick={() => handleSocialLogin('Google')}
-              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
-              
-            >
-              <FaGoogle className="w-5 h-5 text-[#DB4437]" />
+          <div className="grid grid-cols-2 gap-4">
+            <button onClick={() => handleSocialLogin('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
+              <FaGoogle className="text-red-500 mr-2" /> Google
             </button>
-            <button
-              onClick={() => handleSocialLogin('Facebook')}
-              className="flex justify-center items-center py-2.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-all"
-            
-            >
-              <FaFacebook className="w-5 h-5 text-[#4267B2]" />
+            <button onClick={() => handleSocialLogin('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
+              <FaFacebook className="text-blue-600 mr-2" /> Facebook
             </button>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link 
-                to="/register" 
-                state={{ from: location.state?.from }} 
-                className="text-red-600 hover:text-red-700 font-medium transition-colors"
-              >
-                Sign up
-              </Link>
+              Don't have an account? <Link to="/register" state={{ from: location.state?.from }} className="text-red-600 font-bold hover:underline">Sign up</Link>
             </p>
           </div>
-
           <div className="mt-6">
             <Link to="/">
-              <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-900">
+              <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-800 transition-colors">
                 Back to Home
               </Button>
             </Link>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

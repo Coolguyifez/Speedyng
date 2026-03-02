@@ -58,7 +58,7 @@ const ForgotPassword = () => {
                   type="email"
                   required
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none transition-all"
-                  placeholder="infospeedyng360@gmail.com"
+                  placeholder="your@email.com"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>

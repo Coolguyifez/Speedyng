@@ -66,7 +66,7 @@ const handleSocialLogin = (provider) => {
     try {
       // Logic for real login
       const data = await authAPI.login(formData);
-      toast.success('Login successful!');
+      toast.success('Login successful! Welcome back to Speedy.');
       
       // Check if admin or user to redirect correctly
       if (data.user && data.user.role === 'admin') {
@@ -185,10 +185,10 @@ const handleSocialLogin = (provider) => {
 
           <div className="grid grid-cols-2 gap-4">
             <button onClick={() => handleSocialLogin('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
-              <FaGoogle className="text-red-500 mr-2" /> Google
+              <FaGoogle className="text-red-500 mr-2" />
             </button>
             <button onClick={() => handleSocialLogin('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium text-gray-700">
-              <FaFacebook className="text-blue-600 mr-2" /> Facebook
+              <FaFacebook className="text-blue-600 mr-2" />
             </button>
           </div>
 

@@ -56,7 +56,7 @@ const Footer = () => {
                 { label: 'Browse Buses', to: '/vehicles?type=Bus' },
                 { label: 'Browse Motocycles', to: '/vehicles?type=Motorcycle' },
                 { label: 'Browse Tricycles', to: '/vehicles?type=Tricycle' },
-                { label: 'About Us', to: '/' }
+                { label: 'About Us', to: '/' }, 
                 { label: 'Contact Us', to: '/contact' }
               ].map((link) => (
                 <li key={link.label}>

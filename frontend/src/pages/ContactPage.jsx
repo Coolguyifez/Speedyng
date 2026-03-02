@@ -31,7 +31,7 @@ const ContactPage = () => {
       ...formData,
       access_key: "0447b582-799c-4790-a398-1e9173b7598a", 
       subject: `Customer Inquiry: ${formData.name}`,
-      from_name: "Speedy Vehicle Broker Platform"
+      from_name: "Speedy Auto Broker Hub"
     };
 
     try {

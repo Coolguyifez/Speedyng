@@ -101,7 +101,7 @@ const RegisterPage = () => {
       {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
       <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12 h-full">
         <img 
-          src="https://plus.unsplash.com/premium_photo-1737623478661-3b01e851dfcd?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+          src="https://images.unsplash.com/photo-1708788104655-f252fe9addd2?q=80&w=1107&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
           alt="Performance Car" 
           className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
         />

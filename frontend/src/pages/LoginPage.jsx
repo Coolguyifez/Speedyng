@@ -104,10 +104,10 @@ const handleSocialLogin = (provider) => {
             </div>
           </Link>
           <h2 className="text-4xl font-bold mb-4 leading-tight">
-            The ultimate platform for auto agents.
+            The ultimate platform for auto broker hub vehicle market.
           </h2>
           <p className="text-gray-300 text-lg">
-            Manage your deals, connect with clients, and accelerate your business on Speedy.
+            Sign in to access your our listed verifed dealer's vehicles, track your inquiries, and pick up right where you left off.
           </p>
         </div>
       </div>

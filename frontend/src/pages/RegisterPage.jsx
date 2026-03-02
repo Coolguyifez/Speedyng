@@ -96,10 +96,10 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
+    <div className="min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
       
       {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
-      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12">
+      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12 h-full">
         <img 
           src="https://images.unsplash.com/photo-1493238507154-203698ad0a1f?auto=format&fit=crop&q=80&w=1920" 
           alt="Performance Car" 
@@ -122,8 +122,8 @@ const RegisterPage = () => {
       </div>
 
       {/* RIGHT SIDE: Register Form */}
-      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
-        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8">
+      <div className="flex flex-col items-center justify-start lg:justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto h-full">
+        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8 lg:my-0">
           
           {/* Logo for Mobile only */}
           <div className="lg:hidden flex justify-center mb-8">

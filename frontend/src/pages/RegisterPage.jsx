@@ -127,9 +127,15 @@ const RegisterPage = () => {
       </div>
 
       {/* RIGHT SIDE: Register Form */}
-      <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-gray-50/50">
-        <div className="min-h-full flex items-center justify-center p-4 sm:p-12">
-          <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-4">
+      <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-white lg:bg-gray-50/50"
+        style={{
+          msOverflowStyle: 'none',  /* Internet Explorer and Edge */
+          scrollbarWidth: 'none',   /* Firefox */
+          WebkitScrollbar: { display: 'none' } /* Chrome, Safari and Opera */
+        }}
+      >
+        <div className="min-h-full flex flex-col justify-center p-6 sm:p-12">
+          <div className="w-full w-full lg:max-w-md lg:bg-white lg:p-10 lg:rounded-3xl lg:shadow-xl lg:border lg:border-gray-100 lg:my-auto mx-auto">
             
             {/* Logo for Mobile only */}
             <div className="lg:hidden flex justify-center mb-8">

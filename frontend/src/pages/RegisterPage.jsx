@@ -99,19 +99,21 @@ const RegisterPage = () => {
     <div className="min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
       
       {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
-      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12">
+      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden h-full">
         <img 
           src="https://images.unsplash.com/photo-1708788104655-f252fe9addd2?q=80&w=1107&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
           alt="Performance Car" 
           className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
         />
         <div className="relative z-10 max-w-lg text-white">
-          <div className="flex items-center space-x-3 mb-8">
-            <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl">
-              <span className="text-white font-bold text-3xl">S</span>
-            </div>
-            <div className="absolute -right-1 -bottom-1 w-7 h-7 bg-black rounded-full flex items-center justify-center">
-              <div className="w-4 h-4 bg-white rounded-full"></div>
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="relative">
+              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-900/50">
+                <span className="text-white font-bold text-3xl">S</span>
+              </div>
+              <div className="absolute -right-1 -bottom-1 w-6 h-6 bg-black rounded-full flex items-center justify-center border-2 border-white lg:border-black">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
+              </div>
             </div>
             <span className="text-5xl font-black tracking-tighter">Speedy</span>
           </div>
@@ -125,22 +127,23 @@ const RegisterPage = () => {
       </div>
 
       {/* RIGHT SIDE: Register Form */}
-      <div className="flex flex-col items-center justify-start lg:justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
-        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8 lg:my-0">
+      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
+        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8">
           
           {/* Logo for Mobile only */}
           <div className="lg:hidden flex justify-center mb-8">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">S</span>
+            <Link to="/" className="flex items-center space-x-3">
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-2xl">S</span>
+                </div>
+                <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center border-2 border-white">
+                  <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                </div>
               </div>
-              <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
-                <div className="w-3 h-3 bg-white rounded-full"></div>
-              </div>
-              <span className="text-3xl font-bold text-black">Speedy</span>
+              <span className="text-3xl font-bold text-gray-900 tracking-tight">Speedy</span>
             </Link>
           </div>
-
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
             <p className="text-gray-500">Join Speedy to find your perfect vehicle</p>

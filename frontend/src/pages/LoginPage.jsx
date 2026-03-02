@@ -107,7 +107,7 @@ const handleSocialLogin = (provider) => {
             The ultimate platform for auto broker hub vehicle market.
           </h2>
           <p className="text-gray-300 text-lg">
-            Sign in to access your our listed verifed dealer's vehicles, track your inquiries, and pick up right where you left off.
+            Sign in to access our listed verifed dealer's vehicles, track your inquiries, and pick up right where you left off.
           </p>
         </div>
       </div>

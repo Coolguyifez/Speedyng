@@ -101,7 +101,7 @@ const RegisterPage = () => {
       {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
       <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden p-12 h-full">
         <img 
-          src="https://images.unsplash.com/photo-1493238507154-203698ad0a1f?auto=format&fit=crop&q=80&w=1920" 
+          src="https://plus.unsplash.com/premium_photo-1737623478661-3b01e851dfcd?q=80&w=715&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
           alt="Performance Car" 
           className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
         />
@@ -109,6 +109,9 @@ const RegisterPage = () => {
           <div className="flex items-center space-x-3 mb-8">
             <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl">
               <span className="text-white font-bold text-3xl">S</span>
+            </div>
+            <div className="absolute -right-1 -bottom-1 w-7 h-7 bg-black rounded-full flex items-center justify-center">
+              <div className="w-4 h-4 bg-white rounded-full"></div>
             </div>
             <span className="text-5xl font-black tracking-tighter">Speedy</span>
           </div>
@@ -130,6 +133,9 @@ const RegisterPage = () => {
             <Link to="/" className="flex items-center space-x-2">
               <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-2xl">S</span>
+              </div>
+              <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
+                <div className="w-3 h-3 bg-white rounded-full"></div>
               </div>
               <span className="text-3xl font-bold text-black">Speedy</span>
             </Link>

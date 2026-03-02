@@ -96,16 +96,16 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen lg:h-screen grid grid-cols-1 lg:grid-cols-2 font-sans bg-white">
+    <div className="flex h-screen w-full font-sans bg-white overflow-hidden">
       
       {/* LEFT SIDE: Brand Image & Marketing (Visible only on Laptop/Large Screens) */}
-      <div className="hidden lg:flex relative bg-black items-center justify-center overflow-hidden h-full">
+      <div className="hidden lg:block lg:w-1/2 relative bg-black">
         <img 
           src="https://images.unsplash.com/photo-1708788104655-f252fe9addd2?q=80&w=1107&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
           alt="Performance Car" 
           className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform duration-1000 hover:scale-105"
         />
-        <div className="relative z-10 max-w-lg text-white">
+        <div className="relative z-10 flex flex-col justify-center h-full p-12 text-white">
           <div className="flex items-center space-x-4 mb-8">
             <div className="relative">
               <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-900/50">
@@ -127,132 +127,134 @@ const RegisterPage = () => {
       </div>
 
       {/* RIGHT SIDE: Register Form */}
-      <div className="flex items-center justify-center p-6 sm:p-12 bg-gray-50/50 overflow-y-auto">
-        <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-8">
-          
-          {/* Logo for Mobile only */}
-          <div className="lg:hidden flex justify-center mb-8">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-2xl">S</span>
+      <div className="w-full lg:w-1/2 h-full overflow-y-auto bg-gray-50/50">
+        <div className="min-h-full flex items-center justify-center p-4 sm:p-12">
+          <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-gray-100 my-4">
+            
+            {/* Logo for Mobile only */}
+            <div className="lg:hidden flex justify-center mb-8">
+              <Link to="/" className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+                    <span className="text-white font-bold text-2xl">S</span>
+                  </div>
+                  <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center border-2 border-white lg:border-black">
+                    <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                  </div>
                 </div>
-                <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center border-2 border-white">
-                  <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
-                </div>
-              </div>
-              <span className="text-3xl font-bold text-gray-900 tracking-tight">Speedy</span>
-            </Link>
-          </div>
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
-            <p className="text-gray-500">Join Speedy to find your perfect vehicle</p>
-          </div>
-
-          {/* Social Registration Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            <button type="button" onClick={() => handleSocialRegister('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
-              <FaGoogle className="text-red-500 w-5 h-5" /> 
-            </button>
-            <button type="button" onClick={() => handleSocialRegister('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
-              <FaFacebook className="text-blue-600 w-5 h-5" /> 
-            </button>
-          </div>
-
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
-            <div className="relative flex justify-center text-xs tracking-widest font-bold text-gray-400">
-              <span className="px-4 bg-white uppercase">Or</span>
+                <span className="text-3xl font-bold text-gray-900 tracking-tight">Speedy</span>
+              </Link>
             </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Input Fields */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
-              <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
-                <input
-                  type="text" name="name" value={formData.name} onChange={handleChange} required
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                  placeholder="John Doe"
-                />
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
+              <p className="text-gray-500">Join Speedy to find your perfect vehicle</p>
+            </div>
+  
+            {/* Social Registration Grid */}
+            <div className="grid grid-cols-2 gap-4 mb-8">
+              <button type="button" onClick={() => handleSocialRegister('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+                <FaGoogle className="text-red-500 w-5 h-5" /> 
+              </button>
+              <button type="button" onClick={() => handleSocialRegister('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
+                <FaFacebook className="text-blue-600 w-5 h-5" /> 
+              </button>
+            </div>
+  
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
+              <div className="relative flex justify-center text-xs tracking-widest font-bold text-gray-400">
+                <span className="px-4 bg-white uppercase">Or</span>
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
-                <input
-                  type="email" name="email" value={formData.email} onChange={handleChange} required
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                  placeholder="your@email.com"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
-              <div className="relative group">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
-                <input
-                  type="tel" name="phone" value={formData.phone} onChange={handleChange} required
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                  placeholder="08135877104"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Input Fields */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Full Name</label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                   <input
-                    type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required
-                    className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                    placeholder="••••••••"
+                    type="text" name="name" value={formData.name} onChange={handleChange} required
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                    placeholder="John Doe"
                   />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
                 </div>
               </div>
-
+  
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
                   <input
-                    type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required
-                    className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                    placeholder="••••••••"
+                    type="email" name="email" value={formData.email} onChange={handleChange} required
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                    placeholder="your@email.com"
                   />
-                  <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
                 </div>
               </div>
-            </div>
-
-            <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg mt-2">
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-              {!isLoading && <ArrowRight className="ml-2 w-5 h-5" />}
-            </Button>
-          </form>
-
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 hover:text-red-700 font-bold">Sign in</Link>
-            </p>
-          </div>
-          <div className="mt-6">
-            <Link to="/">
-              <Button variant="ghost" className="w-full text-gray-500 hover:text-gray-900">
-                Back to Home
+  
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Phone Number</label>
+                <div className="relative group">
+                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
+                  <input
+                    type="tel" name="phone" value={formData.phone} onChange={handleChange} required
+                    className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                    placeholder="08135877104"
+                  />
+                </div>
+              </div>
+  
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+                  <div className="relative group">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
+                    <input
+                      type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required
+                      className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+  
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Confirm</label>
+                  <div className="relative group">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 w-5 h-5" />
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required
+                      className="w-full pl-12 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+  
+              <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg mt-2">
+                {isLoading ? 'Creating Account...' : 'Create Account'}
+                {!isLoading && <ArrowRight className="ml-2 w-5 h-5" />}
               </Button>
-            </Link>
+            </form>
+  
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-600">
+                Already have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 hover:text-red-700 font-bold">Sign in</Link>
+              </p>
+            </div>
+            <div className="mt-6">
+              <Link to="/">
+                <Button variant="ghost" className="w-full text-gray-500 hover:text-gray-900">
+                  Back to Home
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

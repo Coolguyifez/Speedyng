@@ -108,10 +108,10 @@ const RegisterPage = () => {
         <div className="relative z-10 flex flex-col justify-center h-full p-12 text-white">
           <div className="flex items-center space-x-4 mb-8">
             <div className="relative">
-              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-900/50">
+              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-900/50 transform rotate-3 hover:rotate-0 transition-transform duration-300">
                 <span className="text-white font-bold text-3xl">S</span>
               </div>
-              <div className="absolute -right-1 -bottom-1 w-6 h-6 bg-black rounded-full flex items-center justify-center border-2 border-white lg:border-black">
+              <div className="absolute -right-1 -bottom-1 w-6 h-6 bg-black rounded-full flex items-center justify-center">
                 <div className="w-3 h-3 bg-white rounded-full"></div>
               </div>
             </div>
@@ -139,12 +139,12 @@ const RegisterPage = () => {
             
             {/* Logo for Mobile only */}
             <div className="lg:hidden flex justify-center mb-8">
-              <Link to="/" className="flex items-center space-x-3">
+              <Link to="/" className="flex items-center space-x-3 shrink-0">
                 <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md transform rotate-3 hover:rotate-0 transition-transform duration-300">
                     <span className="text-white font-bold text-2xl">S</span>
                   </div>
-                  <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center border-2 border-white lg:border-black">
+                  <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
                     <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
                   </div>
                 </div>
@@ -249,16 +249,12 @@ const RegisterPage = () => {
               </Button>
             </form>
   
-            <div className="mt-8 text-center">
-              <p className="text-sm text-gray-600">
-                Already have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 hover:text-red-700 font-bold">Sign in</Link>
+            <div className="mt-8 text-center space-y-4">
+              <p className="text-sm text-gray-400">
+                Don't have an account? <Link to="/login" state={{ from: location.state?.from }} className="text-red-600 font-bold hover:underline">Sign in</Link>
               </p>
-            </div>
-            <div className="mt-6">
-              <Link to="/">
-                <Button variant="ghost" className="w-full text-gray-500 hover:text-gray-900">
-                  Back to Home
-                </Button>
+              <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+                Back to Home
               </Link>
             </div>
           </div>

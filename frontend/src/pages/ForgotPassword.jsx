@@ -54,13 +54,16 @@ const ForgotPassword = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
-                <input
-                  type="email"
-                  required
-                  className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
-                  placeholder="your@email.com"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <div className="relative group">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
+                  <input
+                    type="email"
+                    required
+                    className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
+                    placeholder="your@email.com"
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
               </div>
               <button
                 disabled={isLoading}
@@ -68,7 +71,7 @@ const ForgotPassword = () => {
                 className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95 flex items-center justify-center"
               >
                 {isLoading ? "Sending..." : "Send Reset Link"}
-                <Send className="ml-2 w-4 h-4" />
+                <Send className="ml-2 w-5 h-5" />
               </button>
             </form>
           </>

@@ -206,7 +206,7 @@ const handleSocialLogin = (provider) => {
             </div>
   
             <div className="mt-8 text-center space-y-4">
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-450">
                 Don't have an account? <Link to="/register" state={{ from: location.state?.from }} className="text-red-600 font-bold hover:underline">Sign up</Link>
               </p>
               <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">

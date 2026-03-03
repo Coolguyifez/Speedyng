@@ -7,9 +7,7 @@ import { TbBrandLinkedin } from "react-icons/tb";
 
 const Footer = () => {
   const footerCategories = [
-    "Subcompact Sedan", "Compact Sedan", "Mid-size Sedan", "Full-Size Sedan", "Luxury Sedan",
-    "Sport Sedan", "Subcompact SUV", "Compact SUV", "Mid-size SUV", "Full-size SUV",
-    "Coupe SUV", "CUV", "Luxury SUV", "Sport Compact", "Hatchback", "Exotic", "Box Truck", 
+    "Sedan", "SUV", "Hatchback", "Exotic", "Box Truck", 
     "Dump Truck", "Flatbed Truck", "Tanker Truck", "Refrigerator Truck", "Tow Truck", 
     "Trailer Head", "Single Cabin Pickup", "Double Cabin Pickup", "Compact Pickup", 
     "Full-Size Pickup", "Heavy-Duty Pickup (Dually)", "Off-Road Pickup", "Mini-Bus", 
@@ -24,13 +22,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           
           {/* Company Info */}
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center transform rotate-3">
-                <span className="text-white font-bold text-xl">S</span>
-              </div>
-              <span className="text-2xl font-bold text-white">Speedy</span>
-            </div>
+          
+            <h2 className="text-white font-bold mb-6 text-lg">Speedy</h2>
+           
             <p className="text-sm text-gray-400 leading-relaxed">
               Fast, reliable, and customer-focused Automotive marketplace in Nigeria. Your trusted broker for quality vehicles.
             </p>
@@ -46,18 +40,14 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-semibold mb-6">Quick Links</h3>
+            <h3 className="text-white font-bold mb-6 text-lg">Platforms</h3>
             <ul className="grid grid-cols-1 gap-3">
               {[
-                { label: 'Browse Vehicles', to: '/vehicles' },
-                { label: 'Browse Cars', to: '/vehicles?type=Car' },
-                { label: 'Browse Trucks', to: '/vehicles?type=Truck' },
-                { label: 'Browse Vans', to: '/vehicles?type=Van' },
-                { label: 'Browse Buses', to: '/vehicles?type=Bus' },
-                { label: 'Browse Motocycles', to: '/vehicles?type=Motorcycle' },
-                { label: 'Browse Tricycles', to: '/vehicles?type=Tricycle' },
+                { label: 'All Vehicles', to: '/vehicles' },
                 { label: 'About Us', to: '/' }, 
-                { label: 'Contact Us', to: '/contact' }
+                { label: 'Help Center', to: '/contact' },
+                { label: 'Privacy Policy', to: '/privacy' },
+                { label: 'Terms of Services', to: '/terms' }
               ].map((link) => (
                 <li key={link.label}>
                   <Link to={link.to} className="text-sm hover:text-red-500 transition-colors">
@@ -71,14 +61,20 @@ const Footer = () => {
           {/* Categories - Scrollable Section */}
           <div>
             <h3 className="text-white font-semibold mb-6">Categories</h3>
-            <div className="max-h-60 overflow-y-auto pr-4 custom-scrollbar space-y-2">
+            <div className="max-h-60 overflow-y-auto pr-4 custom-scrollbar space-y-2"
+              style={{
+                msOverflowStyle: 'none',  /* Internet Explorer and Edge */
+                scrollbarWidth: 'none',   /* Firefox */
+                WebkitScrollbar: { display: 'none' } /* Chrome, Safari and Opera */
+              }}
+            >
               {footerCategories.map((cat) => (
                 <Link 
                   key={cat}
                   to={`/vehicles?category=${encodeURIComponent(cat)}`}
-                  className="text-sm text-gray-400 hover:text-red-500 transition-colors block py-1 border-b border-gray-800/50"
+                  className="text-sm hover:text-red-500 transition-colors"
                 >
-                  {cat}
+                  {cat}s
                 </Link>
               ))}
             </div>
@@ -86,15 +82,11 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-semibold mb-6">Brief Contact</h3>
+            <h3 className="text-white font-bold mb-6 text-lg">Our Contact</h3>
             <ul className="space-y-4 text-sm">
-              <li className="flex gap-3">
+              <li className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-red-500 shrink-0" />
-                <span>Suite 13, Goodluck Shopping Centre, Effurun/Sapele Rd. Warri, Nigeria</span>
-              </li>
-              <li className="flex gap-3">
-                <MapPin className="w-5 h-5 text-red-500 shrink-0" />
-                <span>Km8, Edebiri Complex, Lagos Rd. Ugbowo-Benin, Nigeria</span>
+                <span className="text-gray-400">Warri & Benin City, Nigeria</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-red-500 shrink-0" />
@@ -107,7 +99,7 @@ const Footer = () => {
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-red-500 shrink-0" />
                 <a href="mailto:infospeedyng360@gmail.com" className="hover:text-red-500 truncate">
-                  infospeedyng360@gmail.com
+                  Email Support
                 </a>
               </li>
             </ul>

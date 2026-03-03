@@ -96,10 +96,10 @@ const handleSocialLogin = (provider) => {
         <div className="relative z-10 flex flex-col justify-center h-full p-12 text-white">
           <div className="flex items-center space-x-4 mb-8">
             <div className="relative">
-              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-900/50">
+              <div className="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-red-900/50 transform rotate-3 hover:rotate-0 transition-transform duration-300">
                 <span className="text-white font-bold text-3xl">S</span>
               </div>
-              <div className="absolute -right-1 -bottom-1 w-6 h-6 bg-black rounded-full flex items-center justify-center border-2 border-white lg:border-black">
+              <div className="absolute -right-1 -bottom-1 w-6 h-6 bg-black rounded-full flex items-center justify-center">
                 <div className="w-3 h-3 bg-white rounded-full"></div>
               </div>
             </div>
@@ -127,12 +127,12 @@ const handleSocialLogin = (provider) => {
             
             {/* Logo for Mobile */}
             <div className="lg:hidden flex justify-center mb-8">
-              <Link to="/" className="flex items-center space-x-3">
+              <Link to="/" className="flex items-center space-x-3 shrink-0">
                 <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-md transform rotate-3 hover:rotate-0 transition-transform duration-300">
                     <span className="text-white font-bold text-2xl">S</span>
                   </div>
-                  <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center border-2 border-white lg:border-black">
+                  <div className="absolute -right-1 -bottom-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
                     <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
                   </div>
                 </div>
@@ -140,14 +140,14 @@ const handleSocialLogin = (provider) => {
               </Link>
             </div>
   
-            <div className="mb-10 text-left">
-              <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Welcome Back</h2>
-              <p className="text-gray-500 font-medium">Enter your credentials to access your account.</p>
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900">Welcome Back</h2>
+              <p className="text-gray-500">Enter your credentials to access your account.</p>
             </div>
   
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
                 <div className="relative group">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                   <input
@@ -159,7 +159,7 @@ const handleSocialLogin = (provider) => {
               </div>
   
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
                 <div className="relative group">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-red-500 transition-colors w-5 h-5" />
                   <input
@@ -192,7 +192,7 @@ const handleSocialLogin = (provider) => {
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100"></div></div>
               <div className="relative flex justify-center text-xs uppercase tracking-widest font-bold text-gray-400">
-                <span className="px-4 bg-white">Or continue with</span>
+                <span className="px-4 bg-white">Or</span>
               </div>
             </div>
   
@@ -206,10 +206,10 @@ const handleSocialLogin = (provider) => {
             </div>
   
             <div className="mt-8 text-center space-y-4">
-              <p className="text-sm text-gray-600 font-medium">
+              <p className="text-sm text-gray-400">
                 Don't have an account? <Link to="/register" state={{ from: location.state?.from }} className="text-red-600 font-bold hover:underline">Sign up</Link>
               </p>
-              <Link to="/" className="block text-sm text-gray-400 hover:text-gray-900 transition-colors font-medium">
+              <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
                 Back to Home
               </Link>
             </div>

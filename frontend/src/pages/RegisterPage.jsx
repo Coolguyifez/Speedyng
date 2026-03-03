@@ -243,7 +243,7 @@ const RegisterPage = () => {
                 </div>
               </div>
   
-              <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg mt-2">
+              <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95">
                 {isLoading ? 'Creating Account...' : 'Create Account'}
                 {!isLoading && <ArrowRight className="ml-2 w-5 h-5" />}
               </Button>

@@ -182,7 +182,7 @@ const HomePage = () => {
             {categories.map((category, index) => {
               // CALCULATE LIVE COUNT:
               // This filters the vehicles already fetched from your database
-              const actualCount = vehicles.filter(car => car.category === category.name).length;
+              const actualCount = vehicles.filter(v => v.category === category.name).length;
       
               return (
                 <Link key={index} to={`/vehicles?category=${encodeURIComponent(category.name)}`}>

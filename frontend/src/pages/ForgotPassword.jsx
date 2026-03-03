@@ -53,11 +53,11 @@ const ForgotPassword = () => {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
                 <input
                   type="email"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 outline-none transition-all"
+                  className="w-full pl-12 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-500 outline-none transition-all"
                   placeholder="your@email.com"
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -65,7 +65,7 @@ const ForgotPassword = () => {
               <button
                 disabled={isLoading}
                 type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg flex items-center justify-center transition-all"
+                className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95"
               >
                 {isLoading ? "Sending..." : "Send Reset Link"}
                 <Send className="ml-2 w-4 h-4" />

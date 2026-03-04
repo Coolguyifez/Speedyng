@@ -46,7 +46,7 @@ const categories = [
 ];
 const locations = ['All Locations', 'Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 const conditions = ['All Conditions', 'Brand New', 'Foreign Used', 'Nigerian Used'];
-const types = ['All Types', 'Car', 'Truck', 'Van', 'Bus', 'Motorcycle', 'Tricycle'];
+const types = ['All Types', 'Car', 'Truck', 'Pick up', 'Van', 'Bus', 'Motorcycle', 'Tricycle'];
 const services = ['All Services', 'For sale', 'For Rent', 'For Lease', 'For Budget Sale', 'Under Inspection', 'Sold'];
 
 const CarsPage = () => {

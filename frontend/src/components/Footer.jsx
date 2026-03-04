@@ -73,7 +73,7 @@ const Footer = () => {
                 <Link 
                   key={cat}
                   to={`/vehicles?category=${encodeURIComponent(cat)}`}
-                  className="text-sm hover:text-red-500 hover:translate-x-1 transition-all duration-200 block hover:text-red-500 pl-0 hover:pl-3"
+                  className="text-sm hover:text-red-500 block hover:text-red-500 transition-colors pl-0 hover:pl-3"
                 >
                   {cat}s
                 </Link>

@@ -23,7 +23,7 @@ const Footer = () => {
           
           {/* Company Info */}
           <div className="space-y-6">
-            <h2 className="text-white font-bold mb-6 text-lg tracking-tight">Speedy</h2>
+            <h2 className="text-white font-bold mb-6 text-xl tracking-tight">Speedy</h2>
            
             <p className="text-sm text-gray-400 leading-relaxed">
               Fast, reliable, and customer-focused Automotive marketplace in Nigeria. Your trusted broker for quality vehicles.
@@ -40,7 +40,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Platforms</h3>
+            <h3 className="text-white font-bold mb-6 text-xl tracking-tight">Platforms</h3>
             <ul className="grid grid-cols-1 gap-3">
               {[
                 { label: 'Our Inventory', to: '/vehicles' },
@@ -61,7 +61,7 @@ const Footer = () => {
 
           {/* Categories - Scrollable Section */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Categories</h3>
+            <h3 className="text-white font-bold mb-6 text-xl tracking-tight">Categories</h3>
             <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-2.5"
               style={{
                 msOverflowStyle: 'none',  /* Internet Explorer and Edge */
@@ -83,7 +83,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Our Contact</h3>
+            <h3 className="text-white font-bold mb-6 text-xl tracking-tight">Our Contact</h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-red-500 shrink-0" />

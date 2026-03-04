@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2, CircleGauge } from 'lucide-react';
+import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2, CircleGauge, Search, Filter } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../components/ui/dialog';
@@ -50,6 +50,8 @@ const AdminPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCondition, setFilterCondition] = useState('All');
   
   const [formData, setFormData] = useState({
     name: '',
@@ -171,6 +173,14 @@ const AdminPanel = () => {
     }
   };
 
+  const filteredVehicles = vehicles.filter((v) => {
+    const searchLower = searchQuery.toLowerCase();
+    const matchesSearch = v.name.toLowerCase().includes(searchLower) || 
+                          (v.owner_name && v.owner_name.toLowerCase().includes(searchLower));
+    const matchesCondition = filterCondition === 'All' || v.condition === filterCondition;
+    return matchesSearch && matchesCondition;
+  });
+
  const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -283,6 +293,7 @@ const AdminPanel = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
+        
         {/* Dashboard Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="border-none shadow-lg">
@@ -347,31 +358,33 @@ const AdminPanel = () => {
             </CardContent>
           </Card>
 
-          <Card className="border-none shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Categories</p>
-                  <p className="text-3xl font-bold text-gray-900">{categories.length}</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <LayoutDashboard className="w-6 h-6 text-purple-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Vehicles Management */}
-        <Card className="border-none shadow-lg">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Manage Vehicles</h2>
-              <Dialog open={isDialogOpen} onOpenChange={(open) => {
-                setIsDialogOpen(open);
-                if (!open) resetForm();
-              }}>
-                <DialogTrigger asChild>
+          <Card className="border-none shadow-xl overflow-hidden">
+            <CardContent className="p-0">
+              <div className="p-6 border-b border-gray-100 bg-white">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Inventory Management</h2>
+                    <p className="text-sm text-gray-500">Search and manage your active listings</p>
+                  </div>
+          
+                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                    {/* SEARCH INPUT */}
+                    <div className="relative w-full sm:w-64">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <input
+                        type="text"
+                        placeholder="Search car, agent, or city..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-sm"
+                      />
+                    </div>
+          
+                    <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                      setIsDialogOpen(open);
+                      if (!open) resetForm();
+                    }}>
+                      <DialogTrigger asChild>
                   <Button className="bg-red-600 hover:bg-red-700 text-white transition-all duration-300">
                     <Plus className="w-4 h-4 mr-2" />
                     Add New Vehicle

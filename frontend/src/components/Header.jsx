@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, Home, Car, Contact, ChevronDown } from 'lucide-react';
+import { MdOutlineSell } from "react-icons/md";
 import { FiUserCheck } from "react-icons/fi";
 import { Button } from './ui/button';
 import { authAPI } from '../services/api';
@@ -135,6 +136,15 @@ const Header = () => {
               </div>
             </div>
             <Link
+              to="/sell"
+              className={`text-sm font-medium transition-colors hover:text-red-600 ${
+                isActive('/contact') ? 'text-red-600' : 'text-gray-700'
+              }`}
+            >
+              Sell Your Vehicle 
+            </Link>
+            
+            <Link
               to="/contact"
               className={`text-sm font-medium transition-colors hover:text-red-600 ${
                 isActive('/contact') ? 'text-red-600' : 'text-gray-700'
@@ -214,11 +224,12 @@ const Header = () => {
                 <Link
                   to="/"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
+                  className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors hover:text-red-600 ${
                     isActive('/') ? 'text-red-600 bg-red-50' : 'text-gray-700'
                   }`}
                 >
-                  Home
+                  <Home size={20} />
+                  <span>Home</span>
                 </Link>
                   
                 {vehicleTypes.map((type) => (
@@ -226,22 +237,35 @@ const Header = () => {
                     key={type.slug}
                     to={`/vehicles?type=${type.slug}`}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
+                    className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors hover:text-red-600 ${
                       isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
                     }`}
                   >
-                    {type.name}
+                    <Car size={20} />
+                    <span>{type.name}</span>
                   </Link>
                 ))}
+
+                <Link
+                  to="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors hover:text-red-600 ${
+                    isActive('/contact') ? 'text-red-600 bg-red-50' : 'text-gray-700'
+                  }`}
+                >
+                  <MdOutlineSell size={20} />
+                  <span>Sell Your Vehicle</span>
+                </Link>
     
                 <Link
                   to="/contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`py-3 px-2 text-base font-medium rounded-md transition-colors hover:text-red-600 ${
+                  className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors hover:text-red-600 ${
                     isActive('/contact') ? 'text-red-600 bg-red-50' : 'text-gray-700'
                   }`}
                 >
-                  Contact
+                  <Contact size={20} />
+                  <span>Contact</span>
                 </Link>
   
                 <div className="pt-4 space-y-4 px-2 border-t border-gray-50 mt-2">

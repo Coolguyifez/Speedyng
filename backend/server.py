@@ -148,6 +148,8 @@ def serialize_vehicle(vehicle):
         "location": getattr(vehicle, 'location', 'Unknown'),
         "acceleration": getattr(vehicle, 'acceleration', None), 
         "color": getattr(vehicle, 'color', 'Unknown'),
+        "make": getattr(vehicle, 'color', 'Unknown'),
+        "model": getattr(vehicle, 'color', 'Unknown'),
         "owner_name": getattr(vehicle, 'owner_name', ''),
         "address": getattr(vehicle, 'address', ''),          
         "phone_number": getattr(vehicle, 'phone_number', ''),

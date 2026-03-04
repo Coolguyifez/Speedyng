@@ -246,7 +246,7 @@ const Header = () => {
                       isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
                     }`}
                   >
-                    <Icon size={20}/>
+                    <icon size={20}/>
                     <span>{type.name}</span>
                   </Link>
                 ))}

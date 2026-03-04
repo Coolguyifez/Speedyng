@@ -23,7 +23,7 @@ const Footer = () => {
           
           {/* Company Info */}
           <div className="space-y-6">
-            <h2 className="text-white font-bold mb-6 text-lg">Speedy</h2>
+            <h2 className="text-white font-bold mb-6 text-lg tracking-tight">Speedy</h2>
            
             <p className="text-sm text-gray-400 leading-relaxed">
               Fast, reliable, and customer-focused Automotive marketplace in Nigeria. Your trusted broker for quality vehicles.
@@ -40,7 +40,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg">Platforms</h3>
+            <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Platforms</h3>
             <ul className="grid grid-cols-1 gap-3">
               {[
                 { label: 'All Vehicles', to: '/vehicles' },
@@ -60,8 +60,8 @@ const Footer = () => {
 
           {/* Categories - Scrollable Section */}
           <div>
-            <h3 className="text-white font-semibold mb-6">Categories</h3>
-            <div className="max-h-60 overflow-y-auto pr-4 custom-scrollbar space-y-2"
+            <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Categories</h3>
+            <div className="max-h-60 overflow-y-auto pr-2 custom-scrollbar flex flex-col gap-2.5"
               style={{
                 msOverflowStyle: 'none',  /* Internet Explorer and Edge */
                 scrollbarWidth: 'none',   /* Firefox */
@@ -72,7 +72,7 @@ const Footer = () => {
                 <Link 
                   key={cat}
                   to={`/vehicles?category=${encodeURIComponent(cat)}`}
-                  className="text-sm hover:text-red-500 transition-colors"
+                  className="text-sm hover:text-red-500 hover:translate-x-1 transition-all duration-200 block hover:text-red-500 pl-0 hover:pl-3"
                 >
                   {cat}s
                 </Link>
@@ -82,7 +82,7 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div>
-            <h3 className="text-white font-bold mb-6 text-lg">Our Contact</h3>
+            <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Our Contact</h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-red-500 shrink-0" />

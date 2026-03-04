@@ -18,6 +18,7 @@ const RegisterPage = () => {
     password: '',
     confirmPassword: ''
   });
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,6 +66,20 @@ const RegisterPage = () => {
   const query = new URLSearchParams(config.params).toString();
   window.location.href = `${config.url}?${query}`;
 };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // --- ADDED VALIDATION CHECK ---
+    if (!agreedToTerms) {
+      toast.error('You must agree to the Terms of Service');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match!');
+      return;
+    }
   const handleSubmit = async (e) => {
     e.preventDefault();
     

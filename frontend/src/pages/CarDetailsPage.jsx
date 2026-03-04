@@ -37,15 +37,54 @@ const CarDetailsPage = () => {
   fetchVehicle();
 }, [id]);
 
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem('speedy_favorites') || '[]');
+    setIsFavorite(savedFavorites.includes(id));
+  }, [id]);
+
   const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast.success(isFavorite ? 'Removed from favorites' : 'Added to favorites');
+  const savedFavorites = JSON.parse(localStorage.getItem('speedy_favorites') || '[]');
+  let updatedFavorites;
+
+  if (isFavorite) {
+    // Remove from favorites
+    updatedFavorites = savedFavorites.filter(favId => favId !== id);
+    toast.success('Removed from favorites');
+  } else {
+    // Add to favorites
+    updatedFavorites = [...savedFavorites, id];
+    toast.success('Added to favorites!');
+  }
+
+  localStorage.setItem('speedy_favorites', JSON.stringify(updatedFavorites));
+  setIsFavorite(!isFavorite);
+  
+  // OPTIONAL: If you have a backend endpoint for this:
+  // vehicleAPI.toggleFavorite(id); 
+};
+
+  const handleShare = async () => {
+  const shareData = {
+    title: `Check out this ${v.name} on Speedy`,
+    text: `I found this ${v.name} in ${v.location} for ₦${Number(v.price).toLocaleString()}. What do you think?`,
+    url: window.location.href,
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success('Link copied to clipboard!');
-  };
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+      toast.success('Shared successfully!');
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      await navigator.clipboard.writeText(window.location.href);
+      toast.success('Link copied to clipboard!');
+    }
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      toast.error('Could not share link');
+    }
+  }
+};
 
     
 

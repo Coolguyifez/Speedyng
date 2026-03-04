@@ -182,7 +182,7 @@ const AdminPanel = () => {
     data.append('type', formData.type);
     data.append('service', formData.service);
     data.append('category', formData.category);
-    data.append('price', parseInt(formData.price)); // Ensure it's an integer for schema
+    data.append('price', parseInt(formData.price.toString().replace(/,/g, ''))); // Ensure it's an integer for schema
     data.append('condition', formData.condition);
     data.append('location', formData.location);
     data.append('year', parseInt(formData.year));

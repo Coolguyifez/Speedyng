@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Truck, Camera, MapPin, ChevronRight, ChevronLeft, CheckCircle2, Loader2, X, Plus } from 'lucide-react';
+import { TbCurrencyNaira } from "react-icons/tb";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
@@ -33,26 +34,38 @@ const SellVehiclePage = () => {
     e.preventDefault();
     if (images.length === 0) return toast.error("Please upload at least one vehicle photo.");
     setLoading(true);
+
     const formData = new FormData(e.currentTarget);
+    
+    // Add images to the same key name
     images.forEach((imgObj) => {
-      formData.append("fi-file-vehicle_photos[]", imgObj.file);
+      formData.append("photos", imgObj.file);
     });
 
     try {
-      const response = await fetch(`https://forminit.com/f/${FORMINIT_ID}`, {
+      const response = await fetch(`https://forminit.com/f/6hcg5d1pqeb`, {
         method: 'POST',
         body: formData,
-        headers: { 'Accept': 'application/json' }
+        headers: { 
+          'Accept': 'application/json' 
+          // Note: DO NOT set Content-Type here, the browser does it for FormData
+        }
       });
-      if (response.ok) setStep(4);
-      else toast.error("Submission failed.");
+
+      if (response.ok) {
+        setStep(4);
+      } else {
+        const errorData = await response.json();
+        console.error("Forminit Error:", errorData);
+        toast.error("Submission failed. Check dashboard settings.");
+      }
     } catch (error) {
       toast.error("Connection error.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
@@ -77,7 +90,7 @@ const SellVehiclePage = () => {
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                       <Truck className="text-red-600"/> Vehicle Photos
                     </h2>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{images.length}/5</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{images.length}/10</span>
                   </div>
                   
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -99,8 +112,10 @@ const SellVehiclePage = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                    <input name="fi-text-make" placeholder="Vehicle Make" className="input-field" required />
-                    <input name="fi-text-model" placeholder="Vehicle Model" className="input-field" required />
+                    <input name="make" placeholder="Vehicle Make" className="input-field" required />
+                    <input name="model" placeholder="Vehicle Model" className="input-field" required />
+                    <input name="year" placeholder="Vehicle Year" className="input-field" required />
+                    <input name="vin" placeholder="Vehicle Vin Number" className="input-field" required />
                   </div>
                   <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200">
                     Next: Location & Price <ChevronRight className="ml-2"/>
@@ -111,10 +126,10 @@ const SellVehiclePage = () => {
               {/* ... STEP 2 & 3 remain the same ... */}
               {step === 2 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                  <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="text-red-600"/> Location & Price</h2>
-                  <input name="fi-number-price" type="number" placeholder="Asking Price (₦)" className="input-field" required />
-                  <input name="fi-text-location" placeholder="City / State" className="input-field" required />
-                  <textarea name="fi-text-condition" placeholder="Vehicle condition..." className="input-field h-32" />
+                  <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="text-red-600"/> Location & <TbCurrencyNaira className="text-red-600"/> Price</h2>
+                  <input name="price" type="number" placeholder="Asking Price (₦)" className="input-field" required />
+                  <input name="location" placeholder="City / State" className="input-field" required />
+                  <textarea name="condition" placeholder="Vehicle condition..." className="input-field h-32" />
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6">Back</Button>
                     <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6">Next</Button>
@@ -126,9 +141,11 @@ const SellVehiclePage = () => {
               {step === 3 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <h2 className="text-2xl font-bold">Seller Contact</h2>
-                  <input name="fi-sender-fullName" placeholder="Full Name" className="input-field" required />
-                  <input name="fi-sender-phone" placeholder="WhatsApp / Phone Number" className="input-field" required />
-                  <input name="fi-sender-email" type="email" placeholder="Email Address" className="input-field" required />
+                  <input name="name" placeholder="Full Name" className="input-field" required />
+                  <input name="phone" placeholder="WhatsApp / Phone Number" className="input-field" required />
+                  <input name="email" type="email" placeholder="Email Address" className="input-field" required />
+                  {/* Add this hidden field for spam protection */}
+                  <input type="text" name="_gotcha" style={{ display: 'none' }} />
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(2)} className="w-1/3 py-6">Back</Button>
                     <Button disabled={loading} type="submit" className="w-2/3 bg-red-600 py-6 font-bold">

@@ -81,6 +81,7 @@ function App() {
            <Route path="/sell" element={
             <ProtectedRoute>
               <SellVehiclePage />
+            </ProtectedRoute>
           } />   
           <Route path="/Vehicle/:id" element={
             <ProtectedRoute>

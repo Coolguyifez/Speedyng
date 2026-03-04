@@ -10,6 +10,7 @@ import AboutPage from "./pages/AboutPage";
 import CarsPage from "./pages/CarsPage";
 import CarDetailsPage from "./pages/CarDetailsPage";
 import ContactPage from "./pages/ContactPage";
+import SellVehiclePage from './pages/SellVehicle';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
@@ -65,6 +66,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/sell" element={<SellVehiclePage />} />
           <Route path="/auth/callback/:provider" element={<AuthCallback />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />

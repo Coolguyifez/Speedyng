@@ -255,17 +255,7 @@ const CarDetailsPage = () => {
 
                 {/* Contact Info */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-sm text-gray-600 mb-2">Need help? Chat with our AI assistant</p>
-                  <p className="text-sm text-gray-500">
-                    <MapPin className="w-4 h-4 inline mr-1" />
-                    Suite 13, Goodluck Shopping Centre, adjacent to the Old Effurn Garden park, Effurun/Sapele Rd.Warri, Nigeria
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    <MapPin className="w-4 h-4 inline mr-1" />
-                    Km8, Edebiri Complex Obayuwana Str.,
-                    Lagos Rd. Ugbowo-Benin, Nigeria
-                  </p>
-                  
+                  <p className="text-sm text-gray-600 mb-2">Need help? Chat with our AI assistant or call our Agent</p>
                 </div>
               </CardContent>
             </Card>

@@ -243,7 +243,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Browse by Category</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-500">
-            {categories.map((category, index) => {
+            {displayedCategories.map((category, index) => {
               // CALCULATE LIVE COUNT:
               // This filters the vehicles already fetched from your database
               const actualCount = vehicles.filter(v => v.category === category.name).length;
@@ -254,7 +254,7 @@ const HomePage = () => {
                 >
                   <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group h-full">
                     <CardContent className="p-6 text-center flex flex-col items-center justify-center">
-                      <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-red-100 transition-colors duration-300">
+                      <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-3 group-hover:bg-red-100 transition-colors duration-300">
                         <div className="text-gray-700 group-hover:text-red-600 transition-colors duration-300 scale-90">
                           {getCategoryIcon(category.icon)}
                         </div>

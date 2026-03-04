@@ -44,7 +44,7 @@ const Footer = () => {
             <ul className="grid grid-cols-1 gap-3">
               {[
                 { label: 'All Vehicles', to: '/vehicles' },
-                { label: 'About Us', to: '/' }, 
+                { label: 'About Us', to: '/about' }, 
                 { label: 'Help Center', to: '/contact' },
                 { label: 'Privacy Policy', to: '/privacy' },
                 { label: 'Terms of Services', to: '/terms' }

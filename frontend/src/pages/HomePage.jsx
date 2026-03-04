@@ -60,7 +60,7 @@ const HomePage = () => {
   const slides = [
     
     {
-      image: "https://images.unsplash.com/photo-1566895454896-dd7b13b1e917?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      image: "https://i.imgur.com/gxcdCoo.png",
       title: "The Ultimate Vehicle Hub ",
       highlight: "Your Journey Starts Here",
       text: "Nigeria's most trusted brokerage for cars, trucks, and commercial fleets. We verify so you can drive."
@@ -73,7 +73,7 @@ const HomePage = () => {
     },
     {
       image: "https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Able Duty Trucks",
+      title: "Able High Duty Trucks",
       highlight: "Power Your Business",
       text: "Reliable haulage and construction trucks inspected for maximum performance."
     },

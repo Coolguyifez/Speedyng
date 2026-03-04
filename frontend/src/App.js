@@ -6,6 +6,7 @@ import { Toaster } from "./components/ui/sonner";
 
 // Pages
 import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
 import CarsPage from "./pages/CarsPage";
 import CarDetailsPage from "./pages/CarDetailsPage";
 import ContactPage from "./pages/ContactPage";
@@ -61,6 +62,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/auth/callback/:provider" element={<AuthCallback />} />

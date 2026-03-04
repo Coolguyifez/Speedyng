@@ -52,6 +52,8 @@ class VehicleBase(BaseModel):
     location: str
     acceleration: Optional[float] = None
     color: Optional[str] = None
+    make: Optional[str] = None
+    model: Optional[str] = None
     owner_name: Optional[str] = None
     address: Optional[str] = None       
     phone_number: Optional[str] = None
@@ -78,6 +80,8 @@ class VehicleUpdate(BaseModel):
     location: Optional[str]
     acceleration: Optional[float]
     color: Optional[str]
+    make: Optional[str]
+    model: Optional[str]
     owner_name: Optional[str]
     address: Optional[str]      
     phone_number: Optional[str]

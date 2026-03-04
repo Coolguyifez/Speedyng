@@ -53,6 +53,8 @@ const AdminPanel = () => {
   
   const [formData, setFormData] = useState({
     name: '',
+    make: '',
+    model: '',
     type: 'Car',          
     service: 'For Sale',
     category: 'Sedan',
@@ -109,6 +111,8 @@ const AdminPanel = () => {
     setEditingVehicle(null);
     setFormData({
       name: '',
+      make: '',
+      model: '',
       type: 'Car',           
       service: 'For Sale',
       category: 'Sedan',
@@ -210,6 +214,8 @@ const AdminPanel = () => {
     setEditingVehicle(v);
     setFormData({
       ...v,
+      make: v.make || '',
+      model: v.model || '',
       acceleration: v.acceleration || '',
       color: v.color || '',
       address: v.address || '',
@@ -365,7 +371,7 @@ const AdminPanel = () => {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle model</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Name</label>
                         <input
                           type="text"
                           name="name"
@@ -374,6 +380,30 @@ const AdminPanel = () => {
                           required
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                           placeholder="Toyota Camry 2024"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Make</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.make}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="Toyota"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle model</label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.model}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                          placeholder="Camry"
                         />
                       </div>
                       <div>

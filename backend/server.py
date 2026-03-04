@@ -368,107 +368,83 @@ async def get_vehicles(
     category: Optional[str] = Query(None),
     v_type: Optional[str] = Query(None, alias="type"),
     service: Optional[str] = Query(None),
-    color: Optional[str] = Query(None),
-    make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
-    try:
-        query = select(Vehicle)
-        if category: query = query.filter(Vehicle.category == category)
-        if v_type: query = query.filter(Vehicle.type == v_type)
-        if service: query = query.filter(Vehicle.service == service)
-        if color: query = query.filter(Vehicle.color.ilike(f"%{color}%"))
-        if make: query = query.filter(Vehicle.make == make)
-        
-        query = query.order_by(Vehicle.id.desc())
-        result = await db.execute(query)
-        vehicles = result.scalars().all()
-        return [serialize_vehicle(v) for v in vehicles]
-    except Exception as e:
-        logger.error(f"Search error: {e}")
-        raise HTTPException(status_code=500, detail="Database error")
+    query = select(Vehicle)
+    if category: query = query.filter(Vehicle.category == category)
+    if v_type: query = query.filter(Vehicle.type == v_type)
+    if service: query = query.filter(Vehicle.service == service)
+    
+    result = await db.execute(query.order_by(Vehicle.id.desc()))
+    return [serialize_vehicle(v) for v in result.scalars().all()]
 
 @api_router.post("/vehicles", response_model=VehicleResponse)
-async def create_Vehicle(
-    name: str = Form(...),
-    type: str = Form(...),
-    service: str = Form(...),
-    category: str = Form(...),
-    price: int = Form(...),
-    condition: str = Form(...),
-    location: str = Form(...),
-    year: int = Form(...),
-    make: Optional[str] = Form(None),
-    model: Optional[str] = Form(None),
-    acceleration: Optional[float] = Form(None),
-    color: Optional[str] = Form(None),
-    owner_name: Optional[str] = Form(None),
-    address: Optional[str] = Form(None),
-    phone_number: Optional[str] = Form(None),
-    mileage: Optional[str] = Form(None),
-    transmission: Optional[str] = Form(None),
-    fuel_type: Optional[str] = Form(None),
-    description: Optional[str] = Form(None),
-    features: str = Form("[]"), 
-    image: Optional[UploadFile] = File(None),
-    images: List[UploadFile] = File([]),
-    current_admin: User = Depends(get_current_admin),
-    db: AsyncSession = Depends(get_db)
+async def create_vehicle(
+    name: str = Form(...), type: str = Form(...), service: str = Form(...),
+    category: str = Form(...), price: int = Form(...), condition: str = Form(...),
+    location: str = Form(...), year: int = Form(...), make: str = Form(None),
+    model: str = Form(None), features: str = Form("[]"), 
+    image: Optional[UploadFile] = File(None), images: List[UploadFile] = File([]),
+    db: AsyncSession = Depends(get_db), current_admin: User = Depends(get_current_admin)
 ):
-    try:
-        # Define the directory inside the function to be safe
-        upload_path = "static/uploads"
-        os.makedirs(upload_path, exist_ok=True)
+    main_image_url = "/assets/default-car.jpg"
+    if image and image.filename:
+        unique_name = f"{secrets.token_hex(8)}_{image.filename}"
+        path = os.path.join(UPLOAD_DIR, unique_name)
+        with open(path, "wb") as f: f.write(await image.read())
+        main_image_url = f"/static/uploads/{unique_name}"
 
-        # 1. Process Main Image
-        main_image_url = "/assets/default-car.jpg"
-        if image and image.filename:
-            file_ext = image.filename.split(".")[-1]
-            unique_name = f"{secrets.token_hex(8)}.{file_ext}"
-            full_file_path = os.path.join(upload_path, unique_name)
-            
-            content = await image.read()
-            with open(full_file_path, "wb") as f:
-                f.write(content)
-            main_image_url = f"/static/uploads/{unique_name}"
+    gallery = []
+    for img in images:
+        if img.filename:
+            u_name = f"{secrets.token_hex(8)}_{img.filename}"
+            with open(os.path.join(UPLOAD_DIR, u_name), "wb") as f: f.write(await img.read())
+            gallery.append(f"/static/uploads/{u_name}")
 
-        # 2. Process Gallery Images
-        gallery_urls = []
-        for img in images:
-            if img and img.filename:
-                ext = img.filename.split(".")[-1]
-                u_name = f"{secrets.token_hex(8)}.{ext}"
-                p = os.path.join(upload_path, u_name)
-                c = await img.read()
-                with open(p, "wb") as f:
-                    f.write(c)
-                gallery_urls.append(f"/static/uploads/{u_name}")
+    try: f_list = json.loads(features)
+    except: f_list = []
 
-        # 3. Parse Features
-        try:
-            features_list = json.loads(features)
-        except:
-            features_list = []
+    new_v = Vehicle(
+        name=name, type=type, service=service, category=category, price=price,
+        condition=condition, location=location, year=year, make=make, model=model,
+        features=f_list, image=main_image_url, images=gallery, verified=True
+    )
+    db.add(new_v)
+    await db.commit()
+    await db.refresh(new_v)
+    return serialize_vehicle(new_v)
 
-        # 4. Save to DB
-        new_vehicle = Vehicle(
-            name=name, type=type, service=service, category=category,
-            price=price, condition=condition, location=location,
-            year=year, make=make, model=model, acceleration=acceleration,
-            color=color, owner_name=owner_name, address=address,
-            phone_number=phone_number, mileage=mileage, 
-            transmission=transmission, fuel_type=fuel_type,
-            description=description, features=features_list,
-            image=main_image_url, images=gallery_urls, verified=True
-        )
-        
-        db.add(new_vehicle)
-        await db.commit()
-        await db.refresh(new_vehicle)
-        return serialize_vehicle(new_vehicle)
-    except Exception as e:
-        logger.error(f"Critical Upload Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+@api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
+async def update_vehicle(
+    v_id: int, name: str = Form(None), price: int = Form(None),
+    image: Optional[UploadFile] = File(None), db: AsyncSession = Depends(get_db),
+    current_admin: User = Depends(get_current_admin)
+):
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle: raise HTTPException(status_code=404, detail="Not found")
+
+    if name: vehicle.name = name
+    if price: vehicle.price = price
+    if image and image.filename:
+        u_name = f"{secrets.token_hex(8)}_{image.filename}"
+        with open(os.path.join(UPLOAD_DIR, u_name), "wb") as f: f.write(await image.read())
+        vehicle.image = f"/static/uploads/{u_name}"
+
+    await db.commit()
+    return serialize_vehicle(vehicle)
+
+@api_router.delete("/vehicles/{v_id}")
+async def delete_vehicle(
+    v_id: int, db: AsyncSession = Depends(get_db), 
+    current_admin: User = Depends(get_current_admin)
+):
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle: raise HTTPException(status_code=404, detail="Not found")
+    await db.delete(vehicle)
+    await db.commit()
+    return {"message": "Deleted"}
     
 
 # -------------------- Chat Routes --------------------

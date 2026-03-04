@@ -388,7 +388,11 @@ async def get_vehicles(
             
         # 4. Filter by Color (e.g., Black, Red, White)
         if color:
-            query = query.filter(Vehicle.color.ilike(f"%{color}%"))    
+            query = query.filter(Vehicle.color.ilike(f"%{color}%"))
+
+        # 5. Filter by Make ( Toyota, BMW, Lexus)
+        if make:
+            query = query.filter(Vehicle.make == make)
             
         # Order by newest first so Speedy always looks fresh
         query = query.order_by(Vehicle.id.desc())

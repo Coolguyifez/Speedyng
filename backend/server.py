@@ -365,118 +365,89 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
 # -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])
 async def get_vehicles(
-    category: Optional[str] = Query(None), # Handles ?type=Luxury Sedan
-    v_type: Optional[str] = Query(None, alias="type"), # Handles ?type=Truck
-    service: Optional[str] = Query(None),             # Handles ?service=Rent
-    color: Optional[str] = Query(None), 
+    category: Optional[str] = Query(None),
+    v_type: Optional[str] = Query(None, alias="type"),
+    service: Optional[str] = Query(None),
+    color: Optional[str] = Query(None),
     make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
     try:
         query = select(Vehicle)
+        if category: query = query.filter(Vehicle.category == category)
+        if v_type: query = query.filter(Vehicle.type == v_type)
+        if service: query = query.filter(Vehicle.service == service)
+        if color: query = query.filter(Vehicle.color.ilike(f"%{color}%"))
+        if make: query = query.filter(Vehicle.make == make)
         
-        # 1. Filter by Category (e.g., Luxury Sedan, Compact SUV)
-        if category:
-            query = query.filter(Vehicle.category == category)
-            
-        # 2. Filter by Type (e.g., Car, Truck, Bus, Motorcycle)
-        if v_type:
-            query = query.filter(Vehicle.type == v_type)
-            
-        # 3. Filter by Service (e.g., Sales, Rent, Auction)
-        if service:
-            query = query.filter(Vehicle.service == service)
-            
-        # 4. Filter by Color (e.g., Black, Red, White)
-        if color:
-            query = query.filter(Vehicle.color.ilike(f"%{color}%"))
-
-        # 5. Filter by Make ( Toyota, BMW, Lexus)
-        if make:
-            query = query.filter(Vehicle.make == make)
-            
-        # Order by newest first so Speedy always looks fresh
         query = query.order_by(Vehicle.id.desc())
-        
         result = await db.execute(query)
         vehicles = result.scalars().all()
-        
         return [serialize_vehicle(v) for v in vehicles]
-        
     except Exception as e:
-        logger.error(f"Error fetching vehicles with filters: {e}")
-        raise HTTPException(status_code=500, detail="Database connection failed")
-
-# .......SINGLE Admin Vehicle Creation Route.................
+        logger.error(f"Search error: {e}")
+        raise HTTPException(status_code=500, detail="Database error")
 
 @api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_Vehicle(
-    vehicle_data: VehicleCreate, 
+    name: str = Form(...),
+    type: str = Form(...),
+    price: float = Form(...),
+    make: str = Form(...),
+    model: str = Form(...),
+    year: int = Form(...),
+    service: str = Form("Sales"),
+    category: str = Form("Uncategorized"),
+    mileage: str = Form("0"),
+    condition: str = Form("Used"),
+    location: str = Form("Unknown"),
+    color: str = Form("Unknown"),
+    transmission: str = Form("Automatic"),
+    fuel_type: str = Form("Petrol"),
+    description: str = Form(""),
+    features: str = Form("[]"), # Frontend sends JSON.stringify string
+    image: Optional[UploadFile] = File(None),
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        # 1. Convert the incoming schema to a dictionary
-        vehicle_dict = vehicle_data.dict()
+        # Default image if none provided
+        image_url = f"https://placehold.co/600x400?text={make}+{model}"
         
-        # 2. Remove 'verified' if it exists in the incoming data to avoid conflicts
-        vehicle_dict.pop('verified', None)
-        
-        # 3. Create the Vehicle with the dictionary and explicitly set verified=True
-        new_vehicle = Vehicle(**vehicle_dict, verified=True)
-        
+        # In a production environment, you would save the file to a folder/S3 here
+        if image:
+            image_url = f"/assets/uploads/{image.filename}"
+
+        # Parse features from string to list
+        try:
+            parsed_features = json.loads(features)
+        except:
+            parsed_features = []
+
+        new_vehicle = Vehicle(
+            name=name, type=type, price=price, make=make, model=model,
+            year=year, service=service, category=category, mileage=mileage,
+            condition=condition, location=location, color=color,
+            transmission=transmission, fuel_type=fuel_type,
+            description=description, features=parsed_features,
+            image=image_url, verified=True
+        )
         db.add(new_vehicle)
         await db.commit()
         await db.refresh(new_vehicle)
         return serialize_vehicle(new_vehicle)
     except Exception as e:
         logger.error(f"Creation error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))        
-
-@api_router.get("/vehicles/{vehicle_id}", response_model=VehicleResponse)
-async def get_vehicle(vehicle_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
-    vehicle = result.scalar_one_or_none()
-    if not vehicle:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
-    return serialize_vehicle(vehicle)
-
-# -------------------- Vehicle Management (Admin Only) --------------------
-
-@api_router.put("/vehicles/{vehicle_id}", response_model=VehicleResponse)
-async def update_vehicle(
-    vehicle_id: int, 
-    vehicle_data: VehicleUpdate, 
-    current_admin: User = Depends(get_current_admin),
-    db: AsyncSession = Depends(get_db)
-):
-    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
-    vehicle = result.scalar_one_or_none()
-    if not vehicle:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
-
-    for key, value in vehicle_data.dict(exclude_unset=True).items():
-        setattr(vehicle, key, value)
-    
-    vehicle.updated_at = datetime.utcnow()
-    await db.commit()
-    await db.refresh(vehicle)
-    return serialize_vehicle(vehicle)
+        raise HTTPException(status_code=400, detail=str(e))
 
 @api_router.delete("/vehicles/{vehicle_id}")
-async def delete_vehicle(
-    vehicle_id: int, 
-    current_admin: User = Depends(get_current_admin),
-    db: AsyncSession = Depends(get_db)
-):
+async def delete_vehicle(vehicle_id: int, current_admin: User = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
     vehicle = result.scalar_one_or_none()
-    if not vehicle:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
-    
+    if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
     await db.delete(vehicle)
     await db.commit()
-    return {"message": "Vehicle deleted successfully"}
+    return {"message": "Vehicle deleted"}
     
 
 # -------------------- Chat Routes --------------------

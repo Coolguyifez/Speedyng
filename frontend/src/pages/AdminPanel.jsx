@@ -135,11 +135,9 @@ const AdminPanel = () => {
     });
   };
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handler for Single Main Image
   const handleMainImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setFormData({ ...formData, image: e.target.files[0] });
@@ -148,92 +146,73 @@ const AdminPanel = () => {
 
   const handleGalleryChange = (e) => {
     if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-      setFormData({ ...formData, images: [...formData.images, ...selectedFiles] });
+      setFormData({ ...formData, images: [...formData.images, ...Array.from(e.target.files)] });
     }
   };
-  
-  const removeMainImage = () => {
-    setFormData({ ...formData, image: null });
-  };
 
+  const removeMainImage = () => setFormData({ ...formData, image: null });
+  
   const removeGalleryImage = (indexToRemove) => {
     setFormData({
       ...formData,
       images: formData.images.filter((_, index) => index !== indexToRemove)
     });
   };
-  
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this vehicle from Speedy?")) {
+      try {
+        await vehicleAPI.delete(id);
+        toast.success("Vehicle removed");
+        fetchInventory();
+      } catch (error) {
+        toast.error("Delete failed");
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Initialize FormData for multipart/form-data upload
     const data = new FormData();
 
-    // 1. Append all standard fields from state
     Object.keys(formData).forEach(key => {
-    if (key !== 'image' && key !== 'images' && key !== 'features') {
-      let value = formData[key];
-
-      // Clean numbers: strip commas/letters if user typed them (e.g., "1,200,000" -> 1200000)
-      if (key === 'price' || key === 'year' || key === 'acceleration') {
-        const stringVal = String(value).replace(/[^0-9.]/g, '');
-        value = key === 'year' ? parseInt(stringVal) : parseFloat(stringVal);
-      }
-      
-      // Ensure mileage is sent as a clean number if your backend requires it
-      if (key === 'mileage') {
-        value = String(value).replace(/[^0-9]/g, ''); 
-      }
-
-      if (value !== null && value !== undefined) {
+      if (key !== 'image' && key !== 'images' && key !== 'features') {
+        let value = formData[key];
+        if (['price', 'year', 'acceleration'].includes(key)) {
+          value = String(value).replace(/[^0-9.]/g, '');
+        }
         data.append(key, value);
       }
-    }
-  });
+    });
+    
+    // 2. Handle Features (FastAPI List[str] style)
+    const featureArray = typeof formData.features === 'string' 
+      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
+      : formData.features;
+    data.append('features', JSON.stringify(featureArray));
 
-  // 2. Handle Features (FastAPI List[str] style)
-  const featureArray = typeof formData.features === 'string' 
-    ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-    : Array.isArray(formData.features) ? formData.features : [];
-  
-  featureArray.forEach(feature => data.append('features', feature));
+    // Image handling
+    if (formData.image instanceof File) data.append('image', formData.image);
+    formData.images.forEach((file) => {
+      if (file instanceof File) data.append('images', file);
+    });
 
-  // 3. Handle Images
-  if (formData.image instanceof File) data.append('image', formData.image);
-  formData.images.forEach((file) => {
-    if (file instanceof File) data.append('images', file);
-  });
-
-  data.append('verified', 'true');
-
-  try {
-    if (editingVehicle) {
-      await vehicleAPI.update(editingVehicle.id, data);
-      toast.success('Vehicle Updated!');
-    } else {
-      await vehicleAPI.create(data);
-      toast.success('Vehicle Added!');
-    }
-    setIsDialogOpen(false);
-    fetchInventory();
-    resetForm();
-  } catch (error) {
-    // --- CRITICAL DEBUGGING SECTION ---
-    console.error("FULL ERROR OBJECT:", error);
-    if (error.response && error.response.data) {
-      console.log("BACKEND SAYS:", error.response.data);
-      // This maps the specific FastAPI error so you can see it in a toast
-      const details = error.response.data.detail;
-      if (Array.isArray(details)) {
-        const errorMsgs = details.map(err => `${err.loc[1]}: ${err.msg}`).join(", ");
-        toast.error(`Validation Error: ${errorMsgs}`);
+    try {
+      if (editingVehicle) {
+        await vehicleAPI.update(editingVehicle.id, data);
+        toast.success('Vehicle Updated!');
       } else {
-        toast.error(error.response.data.detail || "Submission Failed");
+        await vehicleAPI.create(data);
+        toast.success('Vehicle Added to Speedy!');
       }
+      setIsDialogOpen(false);
+      fetchInventory();
+      resetForm();
+    } catch (error) {
+      console.error("Submission Error:", error.response?.data);
+      toast.error(error.response?.data?.detail || "Operation failed");
     }
-  }
-};
+  };
 
   const handleEdit = (v) => {
     setEditingVehicle(v);
@@ -246,10 +225,7 @@ const AdminPanel = () => {
       address: v.address || '',
       phone_number: v.phone_number || '',
       fuel_type: v.fuel_type || 'Petrol',
-      // Features: Join array back to string for the textarea
       features: Array.isArray(v.features) ? v.features.join(', ') : v.features,
-      // Images: Keep existing URLs in the array so previews work
-      image: v.image || null,
       images: Array.isArray(v.images) ? v.images : []
     });
     setIsDialogOpen(true);

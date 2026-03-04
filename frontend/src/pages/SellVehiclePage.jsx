@@ -150,7 +150,7 @@ const SellVehiclePage = () => {
             </form>
             {step < 4 && (
                 <div className="mt-8 text-center border-t border-gray-50 pt-8">
-                    <Link to="/" className="text-sm text-gray-500 hover:text-red-600 transition-colors font-medium">
+                    <Link to="/" className="text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
                         Cancel and return home
                     </Link>
                 </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Truck, Camera, MapPin, ChevronRight, ChevronLeft, CheckCircle2, Loader2, X, Plus } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -104,11 +105,6 @@ const SellVehiclePage = () => {
                   <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200">
                     Next: Location & Price <ChevronRight className="ml-2"/>
                   </Button>
-                   <div className="mt-8 text-center space-y-4">
-                    <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
-                      Back to Home
-                    </Link>
-                  </div>
                 </div>
               )}
 
@@ -123,11 +119,7 @@ const SellVehiclePage = () => {
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6">Back</Button>
                     <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6">Next</Button>
                   </div>
-                   <div className="mt-8 text-center space-y-4">
-                    <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
-                      Back to Home
-                    </Link>
-                  </div>
+                   
                 </div>
               )}
 
@@ -143,11 +135,7 @@ const SellVehiclePage = () => {
                       {loading ? <Loader2 className="animate-spin" /> : "Submit Vehicle Listing"}
                     </Button>
                   </div>
-                  <div className="mt-8 text-center space-y-4">
-                    <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
-                      Back to Home
-                    </Link>
-                  </div>
+                  
                 </div>
               )}
 
@@ -160,6 +148,13 @@ const SellVehiclePage = () => {
                 </div>
               )}
             </form>
+            {step < 4 && (
+                <div className="mt-8 text-center border-t border-gray-50 pt-8">
+                    <Link to="/" className="text-sm text-gray-500 hover:text-red-600 transition-colors font-medium">
+                        Cancel and return home
+                    </Link>
+                </div>
+            )}
           </CardContent>
         </Card>
       </div>

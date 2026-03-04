@@ -7,6 +7,7 @@ import { TbCarSuv } from "react-icons/tb";
 import { PiCarProfileLight } from "react-icons/pi";
 import { MdOutlineCarRental } from "react-icons/md";
 import { PiMotorcycleLight } from "react-icons/pi";
+import { GiRaceCar } from "react-icons/gi";
 import { PiVan } from "react-icons/pi";
 import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from '../components/ui/button';
@@ -127,6 +128,7 @@ const HomePage = () => {
       PiMotorcycleLight: PiMotorcycleLight,
       PiVan: PiVan,
       MdOutlineCarRental: MdOutlineCarRental,
+      GiRaceCar: GiRaceCar,
     };
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);
     return <Icon className="w-8 h-8" />;

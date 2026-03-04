@@ -211,7 +211,7 @@ const handleSocialLogin = (provider) => {
               </p>
               <div className="pt-4 border-t border-gray-100">
                 <p className="text-[10px] tracking-widest text-gray-400 leading-relaxed">
-                  By logging in, you agree to the Speedy <br />
+                  By logging in, you agree to Speedy's <br />
                   <Link to="/terms" className="text-gray-600 hover:text-red-600 underline">Terms of Service</Link> & <Link to="/privacy" className="text-gray-600 hover:text-red-600 underline">Privacy Policy</Link>
                 </p>
               </div>

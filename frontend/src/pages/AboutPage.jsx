@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { MdOutlineSell } from "react-icons/md";
-import { ShieldCheck, Users, Zap, CheckCircle, Car, MessageSquare } from 'lucide-react';
+import { ShieldCheck, Users, Zap, CheckCircle, Wrench, Target, Briefcase, Car, Search, Eye, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AboutPage = () => {
@@ -29,8 +29,34 @@ const AboutPage = () => {
           </p>
         </div>
       </section>
+      
+      {/* Our Mission & Vision Statement */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="p-10 rounded-[2.5rem] bg-red-600 text-white shadow-2xl shadow-red-200 relative overflow-hidden group">
+              <Target className="absolute -right-4 -bottom-4 w-32 h-32 text-red-500 opacity-50 group-hover:scale-110 transition-transform" />
+              <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                Our Mission
+              </h3>
+              <p className="text-red-50 text-lg leading-relaxed relative z-10">
+                To bridge the trust gap in the Nigerian automotive industry by providing an agent-vetted ecosystem where quality is guaranteed and transactions are seamless.
+              </p>
+            </div>
+            <div className="p-10 rounded-[2.5rem] bg-slate-900 text-white shadow-2xl shadow-slate-200 relative overflow-hidden group">
+              <Eye className="absolute -right-4 -bottom-4 w-32 h-32 text-slate-800 opacity-50 group-hover:scale-110 transition-transform" />
+              <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                Our Vision
+              </h3>
+              <p className="text-slate-300 text-lg leading-relaxed relative z-10">
+                To become Africa's most trusted automotive brokerage, defined by our integrity, technological innovation, and the expertise of our elite agent network.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Our Story / Mission */}
+      {/* The Brokerage Difference */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-12">
@@ -66,12 +92,56 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Key Stats / Why Us */}
+       {/* Our Services */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">Professional Services</h2>
+            <p className="text-gray-500">How our agents add value to your journey.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { 
+                icon: <Search className="text-red-600" />, 
+                title: "Custom Sourcing", 
+                desc: "Tell us what you want, and our agents will find it, vet it, and bring it to you." 
+              },
+              { 
+                icon: <Wrench className="text-red-600" />, 
+                title: "Physical Vetting", 
+                desc: "We don't trust words; we trust inspections. Every Vehicle undergoes a 150-point diagnostic report for absolute peace of mind." 
+              },
+              { 
+                icon: <Briefcase className="text-red-600" />, 
+                title: "Corporate Fleet", 
+                desc: "Professional liquidation and acquisition services for businesses and organizations." 
+              },
+              { 
+                icon: <MdOutlineSell className="text-red-600 w-6 h-6" />, 
+                title: "Managed Sales", 
+                desc: "Let our agents handle the calls, vetting, and negotiations while you sit back." 
+              }
+            ].map((service, i) => (
+              <div key={i} className="bg-white p-8 rounded-3xl border border-gray-100 hover:shadow-xl transition-all group">
+                <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                  {service.icon}
+                </div>
+                <h4 className="font-bold text-xl mb-3">{service.title}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+    
+
+      {/* Key Stats / Why Us */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Why Choose Speedy?</h2>
-            <div className="w-20 h-1 bg-red-600 mx-auto"></div>
+            <div className="w-20 h-1.5 bg-red-600 mx-auto rounded-full"></div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -82,7 +152,7 @@ const AboutPage = () => {
               </div>
               <h3 className="text-xl font-bold mb-4">Rigorous Vetting</h3>
               <p className="text-gray-500 leading-relaxed">
-                Our agents physically inspect every engine, transmission, and body panel before a car is cleared for our website.
+                Our agents physically inspect every engine, transmission, and body panel before a Vehicle is cleared for our platforms.
               </p>
             </div>
 
@@ -112,26 +182,25 @@ const AboutPage = () => {
       </section>
 
       {/* Our Process Diagram Flow */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-slate-900 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-12">How We Work</h2>
+          <h2 className="text-3xl font-bold mb-16"> Our Work Process</h2>
           
           <div className="flex flex-col md:flex-row justify-center items-start gap-8 md:gap-4">
             {[
-              { icon: <Car />, title: "Sourcing", desc: "Agents find the best vehicles across the country." },
-              { icon: <MdOutlineSell />, title: "Selling", desc: "Our Agents recieves your vehicle details and vet it before listing." },
-              { icon: <ShieldCheck />, title: "Vetting", desc: "Rigorous mechanical and legal background checks." },
-              { icon: <MessageSquare />, title: "Matching", desc: "AI and Agents help you find the right fit." },
-              { icon: <CheckCircle />, title: "Closing", desc: "Secure payment and handover of ownership." }
+              { icon: <Car />, title: "Sourcing" },
+              { icon: <MdOutlineSell />, title: "Selling" },
+              { icon: <ShieldCheck />, title: "Vetting" },
+              { icon: <MessageSquare />, title: "Matching" },
+              { icon: <CheckCircle />, title: "Closing" }
             ].map((step, index) => (
-              <div key={index} className="flex-1 px-4 relative">
-                <div className="w-16 h-16 bg-slate-900 text-white rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-600">
+              <div key={index} className="flex-1 px-4 relative group">
+                <div className="w-16 h-16 bg-white text-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-600 group-hover:scale-110 transition-transform">
                   {step.icon}
                 </div>
                 <h4 className="font-bold text-lg mb-2">{step.title}</h4>
-                <p className="text-sm text-gray-500">{step.desc}</p>
-                {index < 3 && (
-                  <div className="hidden md:block absolute top-8 -right-4 w-8 border-t-2 border-dashed border-gray-300"></div>
+                {index < 4 && (
+                    <div className="hidden lg:block absolute top-8 -right-4 w-8 border-t-2 border-dashed border-red-600/30"></div>
                 )}
               </div>
             ))}

@@ -151,7 +151,7 @@ def serialize_vehicle(vehicle):
         "owner_name": getattr(vehicle, 'owner_name', ''),
         "address": getattr(vehicle, 'address', ''),          
         "phone_number": getattr(vehicle, 'phone_number', ''),
-        "image": getattr(vehicle, 'image', null),
+        "image": getattr(vehicle, 'image', None),
         # Ensures these return [] if None to prevent .map() errors in React
         "images": getattr(vehicle, 'images', []) or [],
         "features": getattr(vehicle, 'features', []) or [],

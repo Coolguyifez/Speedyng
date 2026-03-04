@@ -64,8 +64,8 @@ const AdminPanel = () => {
     owner_name: '',
     address: '',       
     phone_number: '',
-    image: '',
-    images: '',
+    image: null,
+    images: [],
     year: new Date().getFullYear(),
     mileage: '',
     transmission: 'Automatic',
@@ -120,8 +120,8 @@ const AdminPanel = () => {
       owner_name: '',
       address: '',
       phone_number: '',
-      image: '',
-      images: '',
+      image: null,
+      images: [],
       year: new Date().getFullYear(),
       mileage: '',
       transmission: 'Automatic',
@@ -131,55 +131,78 @@ const AdminPanel = () => {
     });
   };
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    const processedData = {
-      ...formData,
-      // Ensure these are numbers for the database
-      price: parseFloat(formData.price),
-      year: parseInt(formData.year),
-      acceleration: formData.acceleration ? parseFloat(formData.acceleration) : null,
-      verified: true,
-      images: typeof formData.images === 'string' 
-        ? formData.images.split(',').map(img => img.trim()).filter(img => img !== "") 
-        : formData.images,
-      // Ensure features is an array, as backend expects a list
-      features: typeof formData.features === 'string' 
-        ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 
-        : formData.features
-    };
-  
-    try {
-      if (editingVehicle) {
-        await vehicleAPI.update(editingVehicle.id, processedData);
-        toast.success('Vehicle Updated successful!');
-      } else {
-        await vehicleAPI.create(processedData);
-        toast.success('Vehicle added to inventory!');
-      }
-      setIsDialogOpen(false);
-      fetchInventory(); // Refreshes your table
-      resetForm();
-    } catch (error) {
-      // This will now catch the 500 or CORS error and show details
-      console.error("Submission error details:", error.response?.data);
-      toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
+  // Handler for Single Main Image
+  const handleMainImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({ ...formData, image: e.target.files[0] });
+    }
+  };
+
+  const handleGalleryChange = (e) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
+      setFormData({ ...formData, images: [...formData.images, ...selectedFiles] });
     }
   };
   
-  const handleDelete = async (id) => {
-    if (window.confirm('Permanently delete this vehicle?')) {
-      try {
-        await vehicleAPI.delete(id);
-        toast.success('Vehicle removed from database');
-        setVehicles(vehicles.filter(v => v.id !== id));
-      } catch (error) {
-        toast.error("Delete failed");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Initialize FormData for multipart/form-data upload
+    const data = new FormData();
+
+    // 1. Append all standard fields from state
+    Object.keys(formData).forEach(key => {
+      // Skip images and features for custom handling below
+      if (key !== 'image' && key !== 'images' && key !== 'features') {
+        // Handle numbers explicitly
+        if (key === 'price') data.append(key, parseFloat(formData.price) || 0);
+        else if (key === 'year') data.append(key, parseInt(formData.year) || new Date().getFullYear());
+        else if (key === 'acceleration') data.append(key, formData.acceleration ? parseFloat(formData.acceleration) : 0);
+        else data.append(key, formData[key]);
       }
+    });
+
+    data.append('verified', 'true');
+
+    // 2. Handle Features (convert comma-string to individual items)
+    const featureArray = typeof formData.features === 'string' 
+      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
+      : formData.features;
+    featureArray.forEach(feature => data.append('features', feature));
+
+    // 3. Handle Main Image (Single)
+    if (formData.image instanceof File) {
+      data.append('image', formData.image);
+    }
+
+    // 4. Handle Gallery Images (Multiple)
+    // We only append new File objects. Existing URLs are handled by the backend.
+    formData.images.forEach((file) => {
+      if (file instanceof File) {
+        data.append('images', file);
+      }
+    });
+
+    try {
+      if (editingVehicle) {
+        // Send the FormData 'data', NOT 'processedData'
+        await vehicleAPI.update(editingVehicle.id, data);
+        toast.success('Vehicle Updated successfully!');
+      } else {
+        await vehicleAPI.create(data);
+        toast.success('Vehicle added to inventory!');
+      }
+      setIsDialogOpen(false);
+      fetchInventory();
+      resetForm();
+    } catch (error) {
+      console.error("Submission error details:", error.response?.data);
+      toast.error(error.response?.data?.detail?.[0]?.msg || "Submission Failed: Check backend connection");
     }
   };
 
@@ -189,11 +212,14 @@ const AdminPanel = () => {
       ...v,
       acceleration: v.acceleration || '',
       color: v.color || '',
-      address: v.address || '',           // Ensure value is captured
-      phone_number: v.phone_number || '', // Ensure value is captured
-      fuel_type: v.fuel_type || 'Petrol', // Mapping to match state
+      address: v.address || '',
+      phone_number: v.phone_number || '',
+      fuel_type: v.fuel_type || 'Petrol',
+      // Features: Join array back to string for the textarea
       features: Array.isArray(v.features) ? v.features.join(', ') : v.features,
-      images: Array.isArray(v.images) ? v.images.join(', ') : v.images
+      // Images: Keep existing URLs in the array so previews work
+      image: v.image || null,
+      images: Array.isArray(v.images) ? v.images : []
     });
     setIsDialogOpen(true);
   };
@@ -407,6 +433,7 @@ const AdminPanel = () => {
                           <SelectContent>
                             <SelectItem value="Car">Car</SelectItem>
                             <SelectItem value="Truck">Truck</SelectItem>
+                            <SelectItem value="Pickup">Pickup</SelectItem>
                             <SelectItem value="Van">Van</SelectItem>
                             <SelectItem value="Bus">Bus</SelectItem>
                             <SelectItem value="Motorcycle">Motorcycle</SelectItem>
@@ -563,32 +590,49 @@ const AdminPanel = () => {
                       </Select>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
-                      <input
-                        type="url"
-                        name="image"
-                        value={formData.image}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="https://example.com/image.jpg"
-                      />
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Image</label>
+                      <div className="flex items-center space-x-4">
+                        {formData.image && (
+                          <img 
+                            src={typeof formData.image === 'string' ? formData.image : URL.createObjectURL(formData.image)} 
+                            className="w-16 h-16 object-cover rounded-lg border" 
+                            alt="Preview" 
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Images URL</label>
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Images</label>
                       <input
-                        type="url"
-                        name="images"
-                        value={formData.images}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                        placeholder="https://example.com/image.jpg, https://example.com/image.jpg "
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files);
+                          setFormData({ ...formData, images: [...formData.images, ...files] });
+                        }}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
                       />
+                      {/* Small Preview Thumbnails */}
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {formData.images.map((img, index) => (
+                          <div key={index} className="relative w-12 h-12">
+                            <img 
+                              src={typeof img === 'string' ? img : URL.createObjectURL(img)} 
+                              className="w-full h-full object-cover rounded border" 
+                              alt="multiple-preview" 
+                            />
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    
-
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                       <textarea

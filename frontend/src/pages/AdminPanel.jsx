@@ -386,7 +386,7 @@ const AdminPanel = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Make</label>
                         <input
                           type="text"
-                          name="name"
+                          name="make"
                           value={formData.make}
                           onChange={handleChange}
                           required
@@ -398,7 +398,7 @@ const AdminPanel = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle model</label>
                         <input
                           type="text"
-                          name="name"
+                          name="model"
                           value={formData.model}
                           onChange={handleChange}
                           required

@@ -37,7 +37,6 @@ const PrivacyPolicy = () => {
                 <h3 className="font-bold text-gray-900 uppercase tracking-wider text-sm">Contents</h3>
                 <nav className="flex flex-col gap-2 border-l-2 border-gray-200 pl-4">
                   <a href="#collection" className="text-gray-500 hover:text-red-600 transition-colors">Data Collection</a>
-                  <a href="#usage" className="text-gray-500 hover:text-red-600 transition-colors">How We Use Data</a>
                   <a href="#ai" className="text-gray-500 hover:text-red-600 transition-colors">AI Chat Logs</a>
                   <a href="#security" className="text-gray-500 hover:text-red-600 transition-colors">Security & Tokens</a>
                 </nav>

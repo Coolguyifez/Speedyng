@@ -53,11 +53,11 @@ const TermsOfService = () => {
                 <ul className="space-y-3 text-sm text-gray-600">
                   <li className="flex items-start gap-2">
                     <span className="text-red-600 font-bold">•</span>
-                    <span><strong>No Obligation:</strong> Payment of an inspection fee does not mandate a full purchase of the vehicle, but it does guarantee a professional walkthrough of the vehicle's condition (e.g features, mileage, etc.) and verifying vehicle documentation.</span>
+                    <span><strong>Inspection Fee:</strong> A non-refundable inspection fee may apply based on your location and the vehicle's location (as stored in our database). This fee covers the logistics of the Speedy Agent and securing the viewing slot. </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-red-600 font-bold">•</span>
-                    <span><strong>Inspection Fee:</strong> A non-refundable inspection fee may apply based on your location and the vehicle's location (as stored in our database). This fee covers the logistics of the Speedy Agent and securing the viewing slot. </span>
+                    <span><strong>No Obligation:</strong> Payment of an inspection fee does not mandate a full purchase of the vehicle, but it does guarantee a professional walkthrough of the vehicle's condition (e.g features, mileage, etc.) and verifying vehicle documentation.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-red-600 font-bold">•</span>
@@ -107,7 +107,7 @@ const TermsOfService = () => {
               <div>
                 <h2 className="text-2xl font-bold mb-3">4. User Accounts</h2>
                 <p className="text-gray-600 leading-relaxed text-sm">
-                  User accounts are intended for personal use to track <strong>Favorites</strong> and <strong>Inspection History</strong>. Any attempt to use account features for data scraping or fraudulent inquiries will lead to immediate termination.
+                  User accounts are intended for personal use to provide <strong>personal</strong>,<strong>authentic Ai chat interactions</strong> and <strong>view our Inventory</strong> within our platform. Any attempt to use account features for data scraping or fraudulent inquiries will lead to immediate termination.
                 </p>
               </div>
             </div>

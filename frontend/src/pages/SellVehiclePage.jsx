@@ -61,7 +61,7 @@ const SellVehiclePage = () => {
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href="/"}>
             {/* Replace /logo.png with your actual path */}
             <img src="https://i.imgur.com/niaQKv1.png" alt="Speedy Logo" className="h-10 w-auto" />
-            <span className="text-2xl font-black tracking-tighter text-slate-900">SpeedY</span>
+            <span className="text-2xl font-bold tracking-tighter text-slate-900">Speedy</span>
           </div>
         </div>
 
@@ -104,6 +104,11 @@ const SellVehiclePage = () => {
                   <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200">
                     Next: Location & Price <ChevronRight className="ml-2"/>
                   </Button>
+                   <div className="mt-8 text-center space-y-4">
+                    <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+                      Back to Home
+                    </Link>
+                  </div>
                 </div>
               )}
 
@@ -117,6 +122,11 @@ const SellVehiclePage = () => {
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6">Back</Button>
                     <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6">Next</Button>
+                  </div>
+                   <div className="mt-8 text-center space-y-4">
+                    <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+                      Back to Home
+                    </Link>
                   </div>
                 </div>
               )}
@@ -132,6 +142,11 @@ const SellVehiclePage = () => {
                     <Button disabled={loading} type="submit" className="w-2/3 bg-red-600 py-6 font-bold">
                       {loading ? <Loader2 className="animate-spin" /> : "Submit Vehicle Listing"}
                     </Button>
+                  </div>
+                  <div className="mt-8 text-center space-y-4">
+                    <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
+                      Back to Home
+                    </Link>
                   </div>
                 </div>
               )}

@@ -66,7 +66,6 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/sell" element={<SellVehiclePage />} />
           <Route path="/auth/callback/:provider" element={<AuthCallback />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -79,6 +78,10 @@ function App() {
               <CarsPage />
             </ProtectedRoute>
           } />
+           <Route path="/sell" element={
+            <ProtectedRoute>
+              <SellVehiclePage />
+          } />   
           <Route path="/Vehicle/:id" element={
             <ProtectedRoute>
               <CarDetailsPage />

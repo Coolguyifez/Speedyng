@@ -10,7 +10,7 @@ import AboutPage from "./pages/AboutPage";
 import CarsPage from "./pages/CarsPage";
 import CarDetailsPage from "./pages/CarDetailsPage";
 import ContactPage from "./pages/ContactPage";
-import SellVehiclePage from './pages/SellVehicle';
+import SellVehiclePage from './pages/SellVehiclePage';
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";

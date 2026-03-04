@@ -391,55 +391,54 @@ async def get_vehicles(
 @api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_Vehicle(
     name: str = Form(...),
-    type: str = Form(...),
-    price: float = Form(...),
     make: str = Form(...),
     model: str = Form(...),
+    type: str = Form("Car"),
+    service: str = Form("For Sale"),
+    category: str = Form("Sedan"),
+    price: float = Form(...),
+    condition: str = Form("Foreign Used"),
+    location: str = Form("Lagos"),
     year: int = Form(...),
-    service: str = Form("Sales"),
-    category: str = Form("Uncategorized"),
-    mileage: str = Form("0"),
-    condition: str = Form("Used"),
-    location: str = Form("Unknown"),
-    color: str = Form("Unknown"),
     transmission: str = Form("Automatic"),
     fuel_type: str = Form("Petrol"),
     description: str = Form(""),
-    features: str = Form("[]"), # Frontend sends JSON.stringify string
+    features: str = Form("[]"), # Sent as a stringified list from JS
+    owner_name: str = Form(""),
+    address: str = Form(""),
+    phone_number: str = Form(""),
+    acceleration: Optional[float] = Form(None),
+    color: Optional[str] = Form(None),
+    mileage: Optional[str] = Form("0"),
     image: Optional[UploadFile] = File(None),
     images: List[UploadFile] = File([]),
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        # Default image if none provided
-        image_url = f"https://placehold.co/600x400?text={make}+{model}"
+        # 1. Parse features back into a list
+        features_list = json.loads(features) if features else []
+
+        # 2. Handle Image Upload logic here (saving to Cloudinary/S3/Local)
+        # For now, we'll just use a placeholder string to ensure text data saves
+        main_image_url = "placeholder.jpg" 
         
-        # In a production environment, you would save the file to a folder/S3 here
-        if image:
-            image_url = f"/assets/uploads/{image.filename}"
-
-        # Parse features from string to list
-        try:
-            parsed_features = json.loads(features)
-        except:
-            parsed_features = []
-
         new_vehicle = Vehicle(
-            name=name, type=type, price=price, make=make, model=model,
-            year=year, service=service, category=category, mileage=mileage,
-            condition=condition, location=location, color=color,
-            transmission=transmission, fuel_type=fuel_type,
-            description=description, features=parsed_features,
-            image=image_url, verified=True
+            name=name, make=make, model=model, type=type, service=service,
+            category=category, price=price, condition=condition, location=location,
+            year=year, transmission=transmission, fuel_type=fuel_type,
+            description=description, features=features_list, owner_name=owner_name,
+            address=address, phone_number=phone_number, acceleration=acceleration,
+            color=color, mileage=mileage, image=main_image_url, verified=True
         )
+        
         db.add(new_vehicle)
         await db.commit()
         await db.refresh(new_vehicle)
         return serialize_vehicle(new_vehicle)
     except Exception as e:
         logger.error(f"Creation error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)))
 
 @api_router.delete("/vehicles/{vehicle_id}")
 async def delete_vehicle(vehicle_id: int, current_admin: User = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):

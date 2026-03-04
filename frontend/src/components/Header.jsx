@@ -21,7 +21,7 @@ const Header = () => {
   const vehicleTypes = [
     { name: 'Cars', slug: 'Car', icon: Car },
     { name: 'Trucks', slug: 'Truck', icon: Truck },
-    { name: 'Vans', slug: 'Pickup', icon: FaTruckPickup },
+    { name: 'Pickups', slug: 'Pickup', icon: FaTruckPickup },
     { name: 'Vans', slug: 'Van', icon: PiVan },
     { name: 'Buses', slug: 'Bus', icon: Bus },
     { name: 'Motorcycles', slug: 'Motorcycle', icon: FaMotorcycle },
@@ -237,25 +237,28 @@ const Header = () => {
                   <span>Home</span>
                 </Link>
                   
-                {vehicleTypes.map((type) => (
-                  <Link
-                    key={type.slug}
-                    to={`/vehicles?type=${type.slug}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors hover:text-red-600 ${
-                      isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
-                    }`}
-                  >
-                    <icon size={20}/>
-                    <span>{type.name}</span>
-                  </Link>
-                ))}
+                {vehicleTypes.map((type) => {
+                  const Icon = type.icon;
+                  return (
+                    <Link
+                      key={type.slug}
+                      to={`/vehicles?type=${type.slug}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors ${
+                        isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
+                      }`}
+                    >
+                      <Icon size={20} />
+                      <span>{type.name}</span>
+                    </Link>
+                  );
+                })}
 
                 <Link
-                  to="/contact"
+                  to="/sell"
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors hover:text-red-600 ${
-                    isActive('/contact') ? 'text-red-600 bg-red-50' : 'text-gray-700'
+                    isActive('/sell') ? 'text-red-600 bg-red-50' : 'text-gray-700'
                   }`}
                 >
                   <MdOutlineSell size={20} />

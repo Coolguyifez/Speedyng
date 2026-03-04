@@ -174,43 +174,50 @@ const AdminPanel = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-
-    Object.keys(formData).forEach(key => {
-      if (key !== 'image' && key !== 'images' && key !== 'features') {
-        let value = formData[key];
-        if (['price', 'year', 'acceleration'].includes(key)) {
-          value = String(value).replace(/[^0-9.]/g, '');
-        }
-        data.append(key, value);
-      }
-    });
-    
-    // 2. Handle Features (FastAPI List[str] style)
-    const featureArray = typeof formData.features === 'string' 
-      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-      : formData.features;
+  
+    // 1. Manually append fields to ensure they are clean
+    data.append('name', formData.name);
+    data.append('make', formData.make);
+    data.append('model', formData.model);
+    data.append('price', parseFloat(formData.price) || 0);
+    data.append('year', parseInt(formData.year) || 2024);
+    data.append('category', formData.category);
+    data.append('type', formData.type);
+    data.append('service', formData.service);
+    data.append('condition', formData.condition);
+    data.append('location', formData.location);
+    data.append('description', formData.description);
+    data.append('transmission', formData.transmission);
+    data.append('fuel_type', formData.fuel_type);
+    data.append('color', formData.color);
+    data.append('owner_name', formData.owner_name);
+    data.append('address', formData.address);
+    data.append('phone_number', formData.phone_number);
+    data.append('mileage', formData.mileage);
+  
+    // 2. Stringify features so Python can json.loads() it
+    const featureArray = formData.features.split(',').map(f => f.trim()).filter(Boolean);
     data.append('features', JSON.stringify(featureArray));
-
-    // Image handling
+  
+    // 3. Images
     if (formData.image instanceof File) data.append('image', formData.image);
     formData.images.forEach((file) => {
       if (file instanceof File) data.append('images', file);
     });
-
+  
     try {
+      // Send to backend
       if (editingVehicle) {
         await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Vehicle Updated!');
       } else {
         await vehicleAPI.create(data);
-        toast.success('Vehicle Added to Speedy!');
       }
-      setIsDialogOpen(false);
+      toast.success('Successfully saved to Speedy database!');
       fetchInventory();
-      resetForm();
+      setIsDialogOpen(false);
     } catch (error) {
-      console.error("Submission Error:", error.response?.data);
-      toast.error(error.response?.data?.detail || "Operation failed");
+      console.error("Database Error:", error.response?.data);
+      toast.error("Failed to save. Check your required fields.");
     }
   };
 

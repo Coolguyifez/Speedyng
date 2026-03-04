@@ -209,6 +209,12 @@ const handleSocialLogin = (provider) => {
               <p className="text-sm text-gray-450">
                 Don't have an account? <Link to="/register" state={{ from: location.state?.from }} className="text-red-600 font-bold hover:underline">Sign up</Link>
               </p>
+              <div className="pt-4 border-t border-gray-100">
+                <p className="text-[10px] uppercase tracking-widest text-gray-400 leading-relaxed">
+                  By logging in, you agree to the Speedy <br />
+                  <Link to="/terms" className="text-gray-600 hover:text-red-600 underline">Terms of Service</Link> & <Link to="/privacy" className="text-gray-600 hover:text-red-600 underline">Privacy Policy</Link>
+                </p>
+              </div>
               <Link to="/" className="block text-sm text-gray-500 hover:text-gray-900 transition-colors font-medium">
                 Back to Home
               </Link>

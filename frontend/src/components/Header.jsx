@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut, Home, Car, Contact, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, Home, Car, Truck, Bus, Contact, ChevronDown } from 'lucide-react';
 import { MdOutlineSell } from "react-icons/md";
+import { FaMotorcycle } from "react-icons/fa";
+import { FaTruckPickup  } from "react-icons/fa";
+import { PiMotorcycleLight } from "react-icons/pi";
+import { PiVan } from "react-icons/pi";
 import { FiUserCheck } from "react-icons/fi";
 import { Button } from './ui/button';
 import { authAPI } from '../services/api';
@@ -15,12 +19,13 @@ const Header = () => {
   const navigate = useNavigate();
 
   const vehicleTypes = [
-    { name: 'Cars', slug: 'Car' },
-    { name: 'Trucks', slug: 'Truck' },
-    { name: 'Vans', slug: 'Van' },
-    { name: 'Buses', slug: 'Bus' },
-    { name: 'Motorcycles', slug: 'Motorcycle' },
-    { name: 'Tricycles', slug: 'Tricycle' },
+    { name: 'Cars', slug: 'Car', icon: Car },
+    { name: 'Trucks', slug: 'Truck', icon: Truck },
+    { name: 'Vans', slug: 'Pickup', icon: FaTruckPickup },
+    { name: 'Vans', slug: 'Van', icon: PiVan },
+    { name: 'Buses', slug: 'Bus', icon: Bus },
+    { name: 'Motorcycles', slug: 'Motorcycle', icon: FaMotorcycle },
+    { name: 'Tricycles', slug: 'Tricycle', icon: PiMotorcycleLight },
   ];
 
   useEffect(() => {
@@ -241,7 +246,7 @@ const Header = () => {
                       isTypeActive(type.slug) ? 'text-red-600 bg-red-50 font-bold' : 'text-gray-700'
                     }`}
                   >
-                    <Car size={20} />
+                    <Icon size={20}/>
                     <span>{type.name}</span>
                   </Link>
                 ))}

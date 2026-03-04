@@ -407,6 +407,7 @@ async def create_Vehicle(
     description: str = Form(""),
     features: str = Form("[]"), # Frontend sends JSON.stringify string
     image: Optional[UploadFile] = File(None),
+    images: List[UploadFile] = File([]),
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):

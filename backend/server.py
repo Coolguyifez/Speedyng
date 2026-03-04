@@ -416,26 +416,35 @@ async def create_Vehicle(
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        main_image_url = "/assets/default-car.jpg" # Fallback
+        main_image_url = "/assets/default-car.jpg"
         if image:
-            # Create a unique name: e.g. a1b2c3d4.jpg
             file_ext = image.filename.split(".")[-1]
             unique_name = f"{secrets.token_hex(8)}.{file_ext}"
-            
-            # Ensure folder exists
-            upload_dir = "static/uploads"
-            os.makedirs(upload_dir, exist_ok=True)
-            
-            file_path = os.path.join(upload_dir, unique_name)
-            
-            # Save the bytes
+            file_path = os.path.join(UPLOAD_DIR, unique_name)
             content = await image.read()
             with open(file_path, "wb") as f:
                 f.write(content)
-            
-            # This is the string path that enters the DB
             main_image_url = f"/static/uploads/{unique_name}"
-            
+
+        # 2. Process Gallery Images
+        gallery_urls = []
+        for img in images:
+            if img.filename:
+                ext = img.filename.split(".")[-1]
+                u_name = f"{secrets.token_hex(8)}.{ext}"
+                p = os.path.join(UPLOAD_DIR, u_name)
+                c = await img.read()
+                with open(p, "wb") as f:
+                    f.write(c)
+                gallery_urls.append(f"/static/uploads/{u_name}")
+
+        # 3. Parse Features JSON string to List
+        try:
+            features_list = json.loads(features)
+        except:
+            features_list = []
+
+        # 4. Save to DB
         new_vehicle = Vehicle(
             name=name, type=type, service=service, category=category,
             price=price, condition=condition, location=location,
@@ -444,7 +453,7 @@ async def create_Vehicle(
             phone_number=phone_number, mileage=mileage, 
             transmission=transmission, fuel_type=fuel_type,
             description=description, features=features_list,
-            image=main_image_url, verified=True
+            image=main_image_url, images=gallery_urls, verified=True
         )
         
         db.add(new_vehicle)
@@ -452,9 +461,9 @@ async def create_Vehicle(
         await db.refresh(new_vehicle)
         return serialize_vehicle(new_vehicle)
     except Exception as e:
-        logger.error(f"Upload Error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
-
+        logger.error(f"Critical Upload Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+        
 @api_router.delete("/vehicles/{vehicle_id}")
 async def delete_vehicle(vehicle_id: int, current_admin: User = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
@@ -509,6 +518,7 @@ async def get_chat_history(
 
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 BUILD_DIR = os.path.join(os.getcwd(), "frontend", "dist")
 
@@ -533,10 +543,7 @@ async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     logger.info("Database tables created/ready")
- 
-            
-os.makedirs("static/uploads", exist_ok=True)           
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.get("/")
 async def root():

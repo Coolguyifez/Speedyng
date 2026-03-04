@@ -153,6 +153,17 @@ const AdminPanel = () => {
     }
   };
   
+  const removeMainImage = () => {
+    setFormData({ ...formData, image: null });
+  };
+
+  const removeGalleryImage = (indexToRemove) => {
+    setFormData({
+      ...formData,
+      images: formData.images.filter((_, index) => index !== indexToRemove)
+    });
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -629,13 +640,22 @@ const AdminPanel = () => {
                             className="w-16 h-16 object-cover rounded-lg border" 
                             alt="Preview" 
                           />
-                        )}
+                          <button 
+                            type="button"
+                            onClick={removeMainImage}
+                            className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 transition-colors"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ) : (
                         <input
                           type="file"
                           accept="image/*"
                           onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
                           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
                         />
+                      )}
                       </div>
                     </div>
                     <div className="space-y-2">
@@ -659,6 +679,13 @@ const AdminPanel = () => {
                               className="w-full h-full object-cover rounded border" 
                               alt="multiple-preview" 
                             />
+                            <button 
+                              type="button"
+                              onClick={() => removeGalleryImage(index)}
+                              className="absolute -top-2 -right-2 bg-gray-900/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            >
+                              <X size={12} />
+                            </button>
                           </div>
                         ))}
                       </div>

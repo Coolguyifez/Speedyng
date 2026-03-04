@@ -15,8 +15,8 @@ const SellVehiclePage = () => {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 5) {
-      toast.error("Speedy listings allow a maximum of 5 vehicle photos.");
+    if (images.length + files.length > 10) {
+      toast.error("Speedy listings allow a maximum of 10 vehicle photos.");
       return;
     }
     const newPreviews = files.map(file => ({
@@ -102,7 +102,7 @@ const SellVehiclePage = () => {
                         </button>
                       </div>
                     ))}
-                    {images.length < 5 && (
+                    {images.length < 10 && (
                       <label className="h-32 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-500 hover:bg-red-50 transition-all">
                         <Plus className="text-gray-400" />
                         <span className="text-xs text-gray-500 mt-1">Add Photo</span>

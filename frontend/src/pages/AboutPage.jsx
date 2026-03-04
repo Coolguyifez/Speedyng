@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { ShieldCheck, Users, Zap, CheckCircle, Car, MessageSquare } from 'lucide-react';
+import { ShieldCheck, TrendingUp, Users, Zap, CheckCircle, Car, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const AboutPage = () => {

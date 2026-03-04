@@ -29,7 +29,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     phone: Optional[str] = None
     role: str
-    favorites: List[int] = []
+    favorites: List[int] = Field(default_factory=list)
     created_at: datetime
 
     class Config:
@@ -56,7 +56,7 @@ class VehicleBase(BaseModel):
     address: Optional[str] = None       
     phone_number: Optional[str] = None
     image: Optional[str] = None
-    images: Optional[List[str]] = []
+    images: List[str] = Field(default_factory=list)
     year: Optional[int] = None
     mileage: Optional[str] = None
     transmission: Optional[str] = None

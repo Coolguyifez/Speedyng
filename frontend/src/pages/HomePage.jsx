@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus,  DollarSign, Ship, TruckElectric, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, CheckCircle, Shield, Clock, Star, Car, Truck, Crown, Bus, Info, DollarSign, Ship, TruckElectric, ShieldCheck, Zap } from 'lucide-react';
 import { FaTruckPickup  } from "react-icons/fa";
 import { FaMotorcycle } from "react-icons/fa";
 import { TbCarSuv } from "react-icons/tb";
@@ -165,6 +165,7 @@ const HomePage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
             <Link to="/about">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
+                <Info className="mr-1 w-5 h-5"/>
                 About Us
               </Button>
             </Link>

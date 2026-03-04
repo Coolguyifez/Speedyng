@@ -172,54 +172,68 @@ const AdminPanel = () => {
 
     // 1. Append all standard fields from state
     Object.keys(formData).forEach(key => {
-      // Skip images and features for custom handling below
-      if (key !== 'image' && key !== 'images' && key !== 'features') {
-        // Handle numbers explicitly
-        if (key === 'price') data.append(key, parseFloat(formData.price) || 0);
-        else if (key === 'year') data.append(key, parseInt(formData.year) || new Date().getFullYear());
-        else if (key === 'acceleration') data.append(key, formData.acceleration ? parseFloat(formData.acceleration) : 0);
-        else data.append(key, formData[key]);
+    if (key !== 'image' && key !== 'images' && key !== 'features') {
+      let value = formData[key];
+
+      // Clean numbers: strip commas/letters if user typed them (e.g., "1,200,000" -> 1200000)
+      if (key === 'price' || key === 'year' || key === 'acceleration') {
+        const stringVal = String(value).replace(/[^0-9.]/g, '');
+        value = key === 'year' ? parseInt(stringVal) : parseFloat(stringVal);
       }
-    });
+      
+      // Ensure mileage is sent as a clean number if your backend requires it
+      if (key === 'mileage') {
+        value = String(value).replace(/[^0-9]/g, ''); 
+      }
 
-    data.append('verified', 'true');
-
-    // 2. Handle Features (convert comma-string to individual items)
-    const featureArray = typeof formData.features === 'string' 
-      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-      : formData.features;
-    featureArray.forEach(feature => data.append('features', feature));
-
-    // 3. Handle Main Image (Single)
-    if (formData.image instanceof File) {
-      data.append('image', formData.image);
+      if (value !== null && value !== undefined) {
+        data.append(key, value);
+      }
     }
+  });
 
-    // 4. Handle Gallery Images (Multiple)
-    // We only append new File objects. Existing URLs are handled by the backend.
-    formData.images.forEach((file) => {
-      if (file instanceof File) {
-        data.append('images', file);
-      }
-    });
+  // 2. Handle Features (FastAPI List[str] style)
+  const featureArray = typeof formData.features === 'string' 
+    ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
+    : Array.isArray(formData.features) ? formData.features : [];
+  
+  featureArray.forEach(feature => data.append('features', feature));
 
-    try {
-      if (editingVehicle) {
-        // Send the FormData 'data', NOT 'processedData'
-        await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Vehicle Updated successfully!');
+  // 3. Handle Images
+  if (formData.image instanceof File) data.append('image', formData.image);
+  formData.images.forEach((file) => {
+    if (file instanceof File) data.append('images', file);
+  });
+
+  data.append('verified', 'true');
+
+  try {
+    if (editingVehicle) {
+      await vehicleAPI.update(editingVehicle.id, data);
+      toast.success('Vehicle Updated!');
+    } else {
+      await vehicleAPI.create(data);
+      toast.success('Vehicle Added!');
+    }
+    setIsDialogOpen(false);
+    fetchInventory();
+    resetForm();
+  } catch (error) {
+    // --- CRITICAL DEBUGGING SECTION ---
+    console.error("FULL ERROR OBJECT:", error);
+    if (error.response && error.response.data) {
+      console.log("BACKEND SAYS:", error.response.data);
+      // This maps the specific FastAPI error so you can see it in a toast
+      const details = error.response.data.detail;
+      if (Array.isArray(details)) {
+        const errorMsgs = details.map(err => `${err.loc[1]}: ${err.msg}`).join(", ");
+        toast.error(`Validation Error: ${errorMsgs}`);
       } else {
-        await vehicleAPI.create(data);
-        toast.success('Vehicle added to inventory!');
+        toast.error(error.response.data.detail || "Submission Failed");
       }
-      setIsDialogOpen(false);
-      fetchInventory();
-      resetForm();
-    } catch (error) {
-      console.error("Submission error details:", error.response?.data);
-      toast.error(error.response?.data?.detail?.[0]?.msg || "Submission Failed: Check backend connection");
     }
-  };
+  }
+};
 
   const handleEdit = (v) => {
     setEditingVehicle(v);

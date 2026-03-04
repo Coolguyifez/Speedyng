@@ -15,6 +15,8 @@ import AdminPanel from "./pages/AdminPanel";
 import AuthCallback from './pages/AuthCallback';
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import PrivacyPolicy from "./pages/PrivacyPolicy"; 
+import TermsOfService from "./pages/TermsOfService";
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -64,6 +66,8 @@ function App() {
           <Route path="/auth/callback/:provider" element={<AuthCallback />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
 
           {/* Protected Agent Routes */}
           <Route path="/Vehicles" element={

@@ -21,6 +21,8 @@ const HomePage = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const formatPrice = (price) => {
     if (!price) return "0";
@@ -53,6 +55,61 @@ const HomePage = () => {
     fetchVehicles();
   }, []);
 
+
+  const slides = [
+    
+    {
+      image: "https://images.unsplash.com/photo-1566895454896-dd7b13b1e917?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "The Ultimate Vehicle Hub ",
+      highlight: "Your Journey Starts Here",
+      text: "Nigeria's most trusted brokerage for cars, trucks, and commercial fleets. We verify so you can drive."
+    },
+    {
+      image: "https://globemotors.ng/wp-content/uploads/2023/12/2024_mercedes-benz_gle-class_4dr-suv_amg-gle-53_fq_oem_1_1280x855-1024x684.webp",
+      title: "Premium Luxury Cars",
+      highlight: "Drive with Confidence",
+      text: "Premium brokerage connecting you to verified luxury and everyday cars from certified dealers across Nigeria."
+    },
+    {
+      image: "https://plus.unsplash.com/premium_photo-1661963219843-f1a50a6cfcd3?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Able Duty Trucks",
+      highlight: "Power Your Business",
+      text: "Reliable haulage and construction trucks inspected for maximum performance."
+    },
+    {
+      image: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&q=80&w=1920",
+      title: "Commercial & Luxury Buses",
+      highlight: "Transporting the Future",
+      text: "From city shuttles to interstate luxury coaches, we connect you with the most reliable bus dealers in Nigeria."
+    }
+    {
+      image: "https://images.unsplash.com/photo-1724479839764-65981526641d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Versatile Delivery Vans",
+      highlight: "Logistics Made Easy",
+      text: "The best deals on cargo and passenger vans for your growing transport needs."
+    },
+    {
+      image: "https://images.unsplash.com/photo-1508357941501-0924cf312bbd?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Quality Motorcycles",
+      highlight: "Swift & Reliable",
+      text: "From sport bikes to commuter rides, find the two-wheeler that fits your lifestyle."
+    },
+    {
+      image: "https://images.unsplash.com/photo-1728545032673-e70e1117fbba?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      title: "Passenger Tricycles",
+      highlight: "City Mobility",
+      text: "Durable and fuel-efficient tricycles (Keke) for smart urban transportation."
+    }
+  ];
+
+  // Auto-play Carousel Logic
+  useEffect(() => {
+    const slideTimer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    }, 5000); // Changes every 5 seconds
+    return () => clearInterval(slideTimer);
+  }, [slides.length]);
+
   const getCategoryIcon = (iconName) => {
     const icons = {
       Car: Car,
@@ -74,6 +131,8 @@ const HomePage = () => {
     const Icon = typeof iconName === 'function' ? iconName : (icons[iconName] || Car);
     return <Icon className="w-8 h-8" />;
   };
+  // This ensures the homepage stays clean while still giving access to everything
+  const displayedCategories = showAllCategories ? categories : categories.slice(0, 6);
   // Only show the first 6 cars on the homepage
   const featuredVehicles = vehicles.slice(0, 6);
 
@@ -82,21 +141,24 @@ const HomePage = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-black">
-          <img
-            src="https://globemotors.ng/wp-content/uploads/2023/12/2024_mercedes-benz_gle-class_4dr-suv_amg-gle-53_fq_oem_1_1280x855-1024x684.webp"
-            alt="Luxury showroom"
-            className="w-full h-full object-cover opacity-40"
-          />
-        </div>
+      <section className="relative h-[600px] flex items-center justify-center overflow-hidden bg-black">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? "opacity-50" : "opacity-0"
+            }`}
+          >
+            <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+          </div>
+        ))}
         <div className="relative z-10 container mx-auto px-4 text-center text-white">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            Find Your Perfect Vehicle
-            <span className="block text-red-500 mt-2">Drive with Confidence</span>
+            {slides[currentSlide].title}
+            <span className="block text-red-500 mt-2">{slides[currentSlide].highlight}</span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
-            Fast, reliable, and trustworthy Automotive broker platform connecting buyers and dealers across Nigeria
+            {slides[currentSlide].text}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
             <Link to="/vehicles">
@@ -178,22 +240,24 @@ const HomePage = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">Browse by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 transition-all duration-500">
             {categories.map((category, index) => {
               // CALCULATE LIVE COUNT:
               // This filters the vehicles already fetched from your database
               const actualCount = vehicles.filter(v => v.category === category.name).length;
       
               return (
-                <Link key={index} to={`/vehicles?category=${encodeURIComponent(category.name)}`}>
-                  <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group">
-                    <CardContent className="p-6 text-center">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-red-100 transition-colors duration-300">
-                        <div className="text-gray-700 group-hover:text-red-600 transition-colors duration-300">
+                <Link key={index} to={`/vehicles?category=${encodeURIComponent(category.name)}`}
+                  className="animate-in fade-in zoom-in duration-300"
+                >
+                  <Card className="border-2 border-gray-200 hover:border-red-500 transition-all duration-300 hover:shadow-lg cursor-pointer group h-full">
+                    <CardContent className="p-6 text-center flex flex-col items-center justify-center">
+                      <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-red-100 transition-colors duration-300">
+                        <div className="text-gray-700 group-hover:text-red-600 transition-colors duration-300 scale-90">
                           {getCategoryIcon(category.icon)}
                         </div>
                       </div>
-                      <h3 className="font-semibold text-gray-900 mb-1">{category.name}</h3>
+                      <h3 className="font-semibold text-gray-900 mb-1">{category.name}s</h3>
                       {/* Displaying the real number from your database */}
                       <p className="text-sm text-gray-500">{actualCount} unit(s)</p>
                     </CardContent>
@@ -202,6 +266,18 @@ const HomePage = () => {
               );
             })}
           </div>
+          {/*VIEW ALL CATEGORY TOGGLE BUTTON */}
+          <div className="mt-10 text-center">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowAllCategories(!showAllCategories)}
+              className="border-gray-200 text-gray-600 hover:border-red-600 hover:text-red-600 px-10 rounded-full transition-all"
+            >
+              {showAllCategories ? "Show Less" : `View All ${categories.length} Categories`}
+            </Button>
+          </div>
+        </div>
+      </section>
         </div>
       </section>
 

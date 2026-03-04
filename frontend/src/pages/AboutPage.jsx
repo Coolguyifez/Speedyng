@@ -57,14 +57,14 @@ const AboutPage = () => {
       </section>
 
       {/* The Brokerage Difference */}
-      <section className="py-20">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="lg:w-1/2">
               <img 
                 src="https://i.imgur.com/Y7DMlo9.png" 
                 alt="Agent" 
-                className="rounded-3xl shadow-2xl shadow-gray-200"
+                className="rounded-3xl shadow-2xl shadow-gray-200 border border-gray-100"
               />
             </div>
             <div className="lg:w-1/2 space-y-6">

@@ -43,8 +43,8 @@ const Footer = () => {
             <h3 className="text-white font-bold mb-6 text-lg tracking-tight">Platforms</h3>
             <ul className="grid grid-cols-1 gap-3">
               {[
-                { label: 'All Vehicles', to: '/vehicles' },
-                { label: 'About Us', to: '/about' }, 
+                { label: 'Our Inventory', to: '/vehicles' },
+                { label: 'What we Do', to: '/about' }, 
                 { label: 'Help Center', to: '/contact' },
                 { label: 'Our Privacy Policy', to: '/privacy' },
                 { label: 'Our Terms of Services', to: '/terms' }

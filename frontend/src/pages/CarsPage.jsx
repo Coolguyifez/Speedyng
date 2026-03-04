@@ -11,20 +11,8 @@ import { vehicleAPI } from '../services/api'; // Ensure this path is correct
 
 // Define these or import them from your constants/mock file
 const categories = [
-  { name: 'Subcompact Sedan' },
-  { name: 'Compact Sedan' },
-  { name: 'Mid-size Sedan' },
-  { name: 'Full-Size Sedan' },
-  { name: 'Luxury Sedan' },
-  { name: 'Sport Sedan' },
-  { name: 'Subcompact SUV' },
-  { name: 'Compact SUV' },
-  { name: 'Mid-size SUV' },
-  { name: 'Full-size SUV' },
-  { name: 'Coupe SUV' },
-  { name: 'CUV' },
-  { name: 'Luxury SUV' },
-  { name: 'Sport Compact' },
+  { name: 'Sedan' },
+  { name: 'SUV' },
   { name: 'Hatchback' },
   { name: 'Exotic' },
   { name: 'Box Truck' },

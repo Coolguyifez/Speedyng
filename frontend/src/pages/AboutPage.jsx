@@ -117,7 +117,8 @@ const AboutPage = () => {
           
           <div className="flex flex-col md:flex-row justify-center items-start gap-8 md:gap-4">
             {[
-              { icon: <Car />, title: "Sourcing", desc: "Agents find the best cars across the country." },
+              { icon: <Car />, title: "Sourcing", desc: "Agents find the best vehicles across the country." },
+              { icon: <TrendingUp />, title: "Selling", desc: "Our Agents recieves your vehicle details and vet it before listing." },
               { icon: <ShieldCheck />, title: "Vetting", desc: "Rigorous mechanical and legal background checks." },
               { icon: <MessageSquare />, title: "Matching", desc: "AI and Agents help you find the right fit." },
               { icon: <CheckCircle />, title: "Closing", desc: "Secure payment and handover of ownership." }

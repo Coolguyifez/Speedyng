@@ -632,57 +632,55 @@ const AdminPanel = () => {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Image</label>
+                      <label className="block text-sm font-medium text-gray-700">Main Image</label>
                       <div className="flex items-center space-x-4">
-                        {formData.image && (
-                          <img 
-                            src={typeof formData.image === 'string' ? formData.image : URL.createObjectURL(formData.image)} 
-                            className="w-16 h-16 object-cover rounded-lg border" 
-                            alt="Preview" 
+                        {formData.image ? (
+                          <div className="relative">
+                            <img 
+                              src={typeof formData.image === 'string' ? formData.image : URL.createObjectURL(formData.image)} 
+                              className="w-16 h-16 object-cover rounded-lg border" 
+                              alt="Preview" 
+                            />
+                            <button 
+                              type="button"
+                              onClick={removeMainImage}
+                              className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 transition-colors"
+                            >
+                              <X size={14} />
+                            </button>
+                          </div>
+                        ) : (
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleMainImageChange}
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
                           />
-                          <button 
-                            type="button"
-                            onClick={removeMainImage}
-                            className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 shadow-lg hover:bg-red-700 transition-colors"
-                          >
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ) : (
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
-                        />
-                      )}
+                        )}
                       </div>
                     </div>
+
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Images</label>
+                      <label className="block text-sm font-medium text-gray-700">Gallery Images</label>
                       <input
                         type="file"
                         multiple
                         accept="image/*"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files);
-                          setFormData({ ...formData, images: [...formData.images, ...files] });
-                        }}
+                        onChange={handleGalleryChange}
                         className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
                       />
-                      {/* Small Preview Thumbnails */}
                       <div className="flex flex-wrap gap-2 mt-2">
                         {formData.images.map((img, index) => (
-                          <div key={index} className="relative w-12 h-12">
+                          <div key={index} className="relative group w-12 h-12">
                             <img 
                               src={typeof img === 'string' ? img : URL.createObjectURL(img)} 
                               className="w-full h-full object-cover rounded border" 
-                              alt="multiple-preview" 
+                              alt="gallery-preview" 
                             />
                             <button 
                               type="button"
                               onClick={() => removeGalleryImage(index)}
-                              className="absolute -top-2 -right-2 bg-gray-900/80 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                              className="absolute -top-2 -right-2 bg-gray-900/80 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
                             >
                               <X size={12} />
                             </button>
@@ -690,6 +688,7 @@ const AdminPanel = () => {
                         ))}
                       </div>
                     </div>
+                    
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                       <textarea

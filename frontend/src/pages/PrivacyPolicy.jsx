@@ -125,7 +125,7 @@ const PrivacyPolicy = () => {
                   <div className="space-y-2">
                     <p className="flex justify-between border-b border-white/10 pb-2">
                       <span className="text-gray-500 text-sm">Support Email</span>
-                      <span className="font-medium">support@speedy.ng</span>
+                      <span className="font-medium">infospeedyng360@gmail.com</span>
                     </p>
                   </div>
                 </div>

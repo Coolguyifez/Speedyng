@@ -163,10 +163,9 @@ const HomePage = () => {
             {slides[currentSlide].text}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-6 duration-700 delay-300">
-            <Link to="/vehicles">
+            <Link to="/about">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                Browse Vehicles
-                <ArrowRight className="ml-1 w-5 h-5" />
+                About Us
               </Button>
             </Link>
             <a href="tel:08135877104">
@@ -403,7 +402,7 @@ const HomePage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/vehicles">
               <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg transition-all duration-300 hover:shadow-lg hover:scale-105">
-                Browse All Vehicles
+                Browse All Inventory
               </Button>
             </Link>
           </div>

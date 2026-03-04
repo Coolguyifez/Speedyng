@@ -391,45 +391,47 @@ async def get_vehicles(
 @api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_Vehicle(
     name: str = Form(...),
-    make: str = Form(...),
-    model: str = Form(...),
-    type: str = Form("Car"),
-    service: str = Form("For Sale"),
-    category: str = Form("Sedan"),
-    price: float = Form(...),
-    condition: str = Form("Foreign Used"),
-    location: str = Form("Lagos"),
+    type: str = Form(...),
+    service: str = Form(...),
+    category: str = Form(...),
+    price: int = Form(...),
+    condition: str = Form(...),
+    location: str = Form(...),
     year: int = Form(...),
-    transmission: str = Form("Automatic"),
-    fuel_type: str = Form("Petrol"),
-    description: str = Form(""),
-    features: str = Form("[]"), # Sent as a stringified list from JS
-    owner_name: str = Form(""),
-    address: str = Form(""),
-    phone_number: str = Form(""),
+    make: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
     acceleration: Optional[float] = Form(None),
     color: Optional[str] = Form(None),
-    mileage: Optional[str] = Form("0"),
+    owner_name: Optional[str] = Form(None),
+    address: Optional[str] = Form(None),
+    phone_number: Optional[str] = Form(None),
+    mileage: Optional[str] = Form(None),
+    transmission: Optional[str] = Form(None),
+    fuel_type: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
+    features: str = Form("[]"), # Sent as a JSON string from frontend
     image: Optional[UploadFile] = File(None),
     images: List[UploadFile] = File([]),
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        # 1. Parse features back into a list
-        features_list = json.loads(features) if features else []
+        # Parse the features string back into a list
+        features_list = json.loads(features)
 
-        # 2. Handle Image Upload logic here (saving to Cloudinary/S3/Local)
-        # For now, we'll just use a placeholder string to ensure text data saves
-        main_image_url = "placeholder.jpg" 
-        
+        # Image Logic: In a real app, save files here and get URLs
+        # For now, we use a placeholder or the filename
+        main_image_url = image.filename if image else "default.jpg"
+
         new_vehicle = Vehicle(
-            name=name, make=make, model=model, type=type, service=service,
-            category=category, price=price, condition=condition, location=location,
-            year=year, transmission=transmission, fuel_type=fuel_type,
-            description=description, features=features_list, owner_name=owner_name,
-            address=address, phone_number=phone_number, acceleration=acceleration,
-            color=color, mileage=mileage, image=main_image_url, verified=True
+            name=name, type=type, service=service, category=category,
+            price=price, condition=condition, location=location,
+            year=year, make=make, model=model, acceleration=acceleration,
+            color=color, owner_name=owner_name, address=address,
+            phone_number=phone_number, mileage=mileage, 
+            transmission=transmission, fuel_type=fuel_type,
+            description=description, features=features_list,
+            image=main_image_url, verified=True
         )
         
         db.add(new_vehicle)
@@ -438,7 +440,7 @@ async def create_Vehicle(
         return serialize_vehicle(new_vehicle)
     except Exception as e:
         logger.error(f"Creation error: {e}")
-        raise HTTPException(status_code=400, detail=str(e)))
+        raise HTTPException(status_code=400, detail=str(e))
 
 @api_router.delete("/vehicles/{vehicle_id}")
 async def delete_vehicle(vehicle_id: int, current_admin: User = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):

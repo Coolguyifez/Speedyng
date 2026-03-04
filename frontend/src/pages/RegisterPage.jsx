@@ -21,7 +21,6 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   //Get the "from" path (where the user came from)
   // If they just clicked "Login" normally, this defaults to "/"
   const from = location.state?.from?.pathname || "/";
@@ -241,6 +240,19 @@ const RegisterPage = () => {
                     </button>
                   </div>
                 </div>
+              </div>
+              {/* TERMS CHECKBOX */}
+              <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                <input 
+                  type="checkbox" 
+                  id="agree"
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
+                  className="mt-1 h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500 cursor-pointer"
+                />
+                <label htmlFor="agree" className="text-[11px] text-gray-600 leading-relaxed cursor-pointer">
+                  I agree to the <Link to="/terms" className="text-red-600 font-bold hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-red-600 font-bold hover:underline">Privacy Policy</Link>.
+                </label>
               </div>
   
               <Button disabled={isLoading} type="submit" className="w-full py-6 bg-red-600 hover:bg-red-700 text-white rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition-all active:scale-95">

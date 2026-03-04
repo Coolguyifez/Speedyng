@@ -82,7 +82,7 @@ const HomePage = () => {
       title: "Commercial & Luxury Buses",
       highlight: "Transporting the Future",
       text: "From city shuttles to interstate luxury coaches, we connect you with the most reliable bus dealers in Nigeria."
-    }
+    },
     {
       image: "https://images.unsplash.com/photo-1724479839764-65981526641d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       title: "Versatile Delivery Vans",

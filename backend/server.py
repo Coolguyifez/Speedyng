@@ -368,7 +368,8 @@ async def get_vehicles(
     category: Optional[str] = Query(None), # Handles ?type=Luxury Sedan
     v_type: Optional[str] = Query(None, alias="type"), # Handles ?type=Truck
     service: Optional[str] = Query(None),             # Handles ?service=Rent
-    color: Optional[str] = Query(None),  
+    color: Optional[str] = Query(None), 
+    make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
     try:

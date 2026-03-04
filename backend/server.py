@@ -409,36 +409,42 @@ async def create_Vehicle(
     transmission: Optional[str] = Form(None),
     fuel_type: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
-    features: str = Form("[]"), # Sent as a JSON string from frontend
+    features: str = Form("[]"), 
     image: Optional[UploadFile] = File(None),
     images: List[UploadFile] = File([]),
     current_admin: User = Depends(get_current_admin),
     db: AsyncSession = Depends(get_db)
 ):
     try:
+        # Define the directory inside the function to be safe
+        upload_path = "static/uploads"
+        os.makedirs(upload_path, exist_ok=True)
+
+        # 1. Process Main Image
         main_image_url = "/assets/default-car.jpg"
-        if image:
+        if image and image.filename:
             file_ext = image.filename.split(".")[-1]
             unique_name = f"{secrets.token_hex(8)}.{file_ext}"
-            file_path = os.path.join(UPLOAD_DIR, unique_name)
+            full_file_path = os.path.join(upload_path, unique_name)
+            
             content = await image.read()
-            with open(file_path, "wb") as f:
+            with open(full_file_path, "wb") as f:
                 f.write(content)
             main_image_url = f"/static/uploads/{unique_name}"
 
         # 2. Process Gallery Images
         gallery_urls = []
         for img in images:
-            if img.filename:
+            if img and img.filename:
                 ext = img.filename.split(".")[-1]
                 u_name = f"{secrets.token_hex(8)}.{ext}"
-                p = os.path.join(UPLOAD_DIR, u_name)
+                p = os.path.join(upload_path, u_name)
                 c = await img.read()
                 with open(p, "wb") as f:
                     f.write(c)
                 gallery_urls.append(f"/static/uploads/{u_name}")
 
-        # 3. Parse Features JSON string to List
+        # 3. Parse Features
         try:
             features_list = json.loads(features)
         except:
@@ -463,15 +469,6 @@ async def create_Vehicle(
     except Exception as e:
         logger.error(f"Critical Upload Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-        
-@api_router.delete("/vehicles/{vehicle_id}")
-async def delete_vehicle(vehicle_id: int, current_admin: User = Depends(get_current_admin), db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
-    vehicle = result.scalar_one_or_none()
-    if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
-    await db.delete(vehicle)
-    await db.commit()
-    return {"message": "Vehicle deleted"}
     
 
 # -------------------- Chat Routes --------------------

@@ -46,8 +46,8 @@ const Footer = () => {
                 { label: 'All Vehicles', to: '/vehicles' },
                 { label: 'About Us', to: '/about' }, 
                 { label: 'Help Center', to: '/contact' },
-                { label: 'Privacy Policy', to: '/privacy' },
-                { label: 'Terms of Services', to: '/terms' }
+                { label: 'Our Privacy Policy', to: '/privacy' },
+                { label: 'Our Terms of Services', to: '/terms' }
               ].map((link) => (
                 <li key={link.label}>
                   <Link to={link.to} className="text-sm hover:text-red-500 transition-colors">

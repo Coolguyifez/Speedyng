@@ -416,13 +416,26 @@ async def create_Vehicle(
     db: AsyncSession = Depends(get_db)
 ):
     try:
-        # Parse the features string back into a list
-        features_list = json.loads(features)
-
-        # Image Logic: In a real app, save files here and get URLs
-        # For now, we use a placeholder or the filename
-        main_image_url = image.filename if image else "default.jpg"
-
+        main_image_url = "/assets/default-car.jpg" # Fallback
+        if image:
+            # Create a unique name: e.g. a1b2c3d4.jpg
+            file_ext = image.filename.split(".")[-1]
+            unique_name = f"{secrets.token_hex(8)}.{file_ext}"
+            
+            # Ensure folder exists
+            upload_dir = "static/uploads"
+            os.makedirs(upload_dir, exist_ok=True)
+            
+            file_path = os.path.join(upload_dir, unique_name)
+            
+            # Save the bytes
+            content = await image.read()
+            with open(file_path, "wb") as f:
+                f.write(content)
+            
+            # This is the string path that enters the DB
+            main_image_url = f"/static/uploads/{unique_name}"
+            
         new_vehicle = Vehicle(
             name=name, type=type, service=service, category=category,
             price=price, condition=condition, location=location,
@@ -439,7 +452,7 @@ async def create_Vehicle(
         await db.refresh(new_vehicle)
         return serialize_vehicle(new_vehicle)
     except Exception as e:
-        logger.error(f"Creation error: {e}")
+        logger.error(f"Upload Error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
 
 @api_router.delete("/vehicles/{vehicle_id}")
@@ -522,7 +535,8 @@ async def startup():
     logger.info("Database tables created/ready")
  
             
-            
+os.makedirs("static/uploads", exist_ok=True)           
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 async def root():

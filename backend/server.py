@@ -456,6 +456,18 @@ async def create_vehicle(
     await db.commit()
     await db.refresh(new_v)
     return serialize_vehicle(new_v)
+    
+@api_router.get("/vehicles/{v_id}", response_model=VehicleResponse)
+async def get_vehicle(v_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
+    vehicle = result.scalar_one_or_none()
+    
+    if not vehicle:
+        logger.error(f"Vehicle with ID {v_id} not found in database.")
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+        
+    return serialize_vehicle(vehicle)
+
 
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
 async def update_vehicle(

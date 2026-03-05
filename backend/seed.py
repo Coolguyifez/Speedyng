@@ -32,7 +32,7 @@ async def seed_database():
         is_already_initialized = admin_check.scalars().first() is not None
 
         if is_already_initialized:
-            logger.info("✓ System already initialized. Respecting Admin modifications. Skipping car seed.")
+            logger.info("✓ System already initialized. Respecting Admin modifications. Skipping Vehicle seed.")
             return # Exit early so no cars are added
 
         # ----------------- Admin & Test Users -----------------
@@ -72,218 +72,124 @@ async def seed_database():
         await session.commit()
 
         # ----------------- Vehicle -----------------
-        result = await session.execute(select(Vehicle))
-        vehicle_count = len(result.scalars().all())
-        if vehicle_count == 0:
+        rresult = await session.execute(select(Vehicle))
+        if len(result.scalars().all()) == 0:
             vehicles = [
                 Vehicle(
                     name="Toyota Camry 2024",
-                    category="Sedans",
-                    price=18500000,
-                    condition="Foreign Used",
-                    location="Lagos",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
+                    make= "Toyota", model= "Camry",
+                    type="Car", service="For Sale", # FIXED
+                    category="Sedans", price=18500000,
+                    condition="Foreign Used", location="Lagos", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
                     image="https://images.pexels.com/photos/33693281/pexels-photo-33693281.jpeg",
-                    images=[
-                        "https://images.pexels.com/photos/33693281/pexels-photo-33693281.jpeg",
-                        "https://images.pexels.com/photos/28688908/pexels-photo-28688908.jpeg"
-                    ],
-                    year=2024,
-                    mileage="15,000 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="Clean foreign used Toyota Camry with full options. Perfect condition, accident-free.",
-                    features=["Leather Seats", "Sunroof", "Navigation System", "Backup Camera", "Bluetooth"],
-                    verified=True
+                    images=["https://images.pexels.com/photos/33693281/pexels-photo-33693281.jpeg", "https://images.pexels.com/photos/28688908/pexels-photo-28688908.jpeg"],
+                    year=2024, mileage="15,000 km", transmission="Automatic",
+                    fuel_type="Petrol", description="Clean foreign used Toyota Camry.",
+                    features=["Leather Seats", "Sunroof"], verified=True
                 ),
                 Vehicle(
                     name="Honda Accord 2023",
-                    category="Sedans",
-                    price=16800000,
-                    condition="Foreign Used",
-                    location="Abuja",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
-                    phone_number="08135877104",
+                    make= "Honda", model= "Accord",
+                    type="Car", service="For Sale", # FIXED
+                    category="Sedans", price=16800000,
+                    condition="Foreign Used", location="Abuja", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="Abuja,Nigeria", phone_number="08135877104",
                     image="https://images.pexels.com/photos/16350067/pexels-photo-16350067.jpeg",
-                    images=[
-                        "https://images.pexels.com/photos/16350067/pexels-photo-16350067.jpeg",
-                        "https://images.pexels.com/photos/6128305/pexels-photo-6128305.jpeg"
-                    ],
-                    year=2023,
-                    mileage="22,000 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="Excellent Honda Accord in pristine condition. Well maintained with service history.",
-                    features=["Apple CarPlay", "Lane Assist", "Cruise Control", "Keyless Entry"],
-                    verified=True
+                    images=["https://images.pexels.com/photos/16350067/pexels-photo-16350067.jpeg"],
+                    year=2023, mileage="22,000 km", transmission="Automatic",
+                    fuel_type="Petrol", description="Excellent Honda Accord.",
+                    features=["Apple CarPlay", "Lane Assist"], verified=True
                 ),
                 Vehicle(
                     name="Toyota Prado 2022",
-                    category="SUVs",
-                    price=42000000,
-                    condition="Brand New",
-                    location="Lagos",
-                    image="https://images.pexels.com/photos/34166836/pexels-photo-34166836.jpeg",
-                    images=[
-                        "https://images.pexels.com/photos/34166836/pexels-photo-34166836.jpeg",
-                        "https://images.pexels.com/photos/34166839/pexels-photo-34166839.jpeg"
-                    ],
-                    year=2022,
-                    mileage="0 km",
-                    transmission="Automatic",
-                    fuel_type="Diesel",
-                    description="Brand new Toyota Prado. Perfect for Nigerian roads with exceptional off-road capability.",
-                    features=["4WD", "Leather Interior", "7 Seats", "Premium Sound System", "Climate Control"],
-                    verified=True
-                ),
-                Vehicle(
-                    name="Lexus RX 350 2023",
-                    category="SUVs",
-                    price=38500000,
-                    condition="Foreign Used",
-                    location="Port Harcourt",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
+                    make= "Toyota", model= "Prado",
+                    type="Car", service="For Sale", # FIXED
+                    category="SUV", price=42000000,
+                    condition="Brand New", location="Lagos", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
-                    image="https://images.pexels.com/photos/15011309/pexels-photo-15011309.jpeg",
-                    images=[
-                        "https://images.pexels.com/photos/15011309/pexels-photo-15011309.jpeg",
-                        "https://images.pexels.com/photos/1005632/pexels-photo-1005632.jpeg"
-                    ],
-                    year=2023,
-                    mileage="18,000 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="Luxury SUV in excellent condition. Smooth ride with premium features.",
-                    features=["Panoramic Sunroof", "Mark Levinson Sound", "Adaptive Cruise", "Heated Seats"],
-                    verified=True
+                    image="https://images.pexels.com/photos/34166836/pexels-photo-34166836.jpeg",
+                    images=["https://images.pexels.com/photos/34166836/pexels-photo-34166836.jpeg"],
+                    year=2022, mileage="0 km", transmission="Automatic",
+                    fuel_type="Diesel", description="Brand new Toyota Prado.",
+                    features=["4WD", "7 Seats"], verified=True
                 ),
                 Vehicle(
-                    name="Mercedes-Benz C300 2023",
-                    category="Luxury",
-                    price=45000000,
-                    condition="Foreign Used",
-                    location="Lagos",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
+                    name="Lexus RX 350 2023", make= "Lexus", model= "Rx 350",
+                    type="car", service="For Sale", # FIXED
+                    category="SUV", price=38500000,
+                    condition="Foreign Used", location="Port Harcourt", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", phone_number="08135877104",
+                    image="https://images.pexels.com/photos/15011309/pexels-photo-15011309.jpeg",
+                    images=["https://images.pexels.com/photos/15011309/pexels-photo-15011309.jpeg"],
+                    year=2023, mileage="18,000 km", transmission="Automatic",
+                    fuel_type="Petrol", description="Luxury SUV condition.",
+                    features=["Panoramic Sunroof"], verified=True
+                ),
+                Vehicle(
+                    name="Mercedes-Benz C300 2023", make= "Mercedes-Benz", model= "C300",
+                    type="Car", service="For Sale", # FIXED
+                    category="Sedan", price=45000000,
+                    condition="Foreign Used", location="Lagos", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
                     image="https://images.unsplash.com/photo-1485291571150-772bcfc10da5",
                     images=["https://images.unsplash.com/photo-1485291571150-772bcfc10da5"],
-                    year=2023,
-                    mileage="12,000 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="Sophisticated Mercedes-Benz with cutting-edge technology and luxury.",
-                    features=["AMG Package", "Burmester Sound", "Massage Seats", "Night Vision"],
-                    verified=True
-                ),
-                Vehicle(
-                    name="BMW M3 2022",
-                    category="Luxury",
-                    price=52000000,
-                    condition="Brand New",
-                    location="Abuja",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
-                    phone_number="08135877104",
-                    image="https://images.unsplash.com/photo-1601929862217-f1bf94503333",
-                    images=["https://images.unsplash.com/photo-1601929862217-f1bf94503333"],
-                    year=2022,
-                    mileage="0 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="High-performance luxury sedan with incredible power and style.",
-                    features=["M Sport Package", "Carbon Fiber Trim", "Performance Brakes", "Track Mode"],
-                    verified=True
+                    year=2023, mileage="12,000 km", transmission="Automatic",
+                    fuel_type="Petrol", description="Sophisticated Mercedes.",
+                    features=["AMG Package"], verified=True
                 ),
                 Vehicle(
                     name="Toyota Hilux 2023",
-                    category="Trucks",
-                    price=28000000,
-                    condition="Brand New",
-                    location="Lagos",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
+                    make= "Toyota", model= "Hilux",
+                    type="Pickup", service="For Sale", # FIXED
+                    category="Trucks", price=28000000,
+                    condition="Brand New", location="Lagos", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
                     image="https://images.pexels.com/photos/937668/pexels-photo-937668.jpeg",
                     images=["https://images.pexels.com/photos/937668/pexels-photo-937668.jpeg"],
-                    year=2023,
-                    mileage="0 km",
-                    transmission="Automatic",
-                    fuel_type="Diesel",
-                    description="Rugged and reliable pickup truck. Perfect for business and personal use.",
-                    features=["4x4", "Tow Package", "Bed Liner", "Heavy Duty Suspension"],
-                    verified=True
-                ),
-                Vehicle(
-                    name="Ford Ranger 2022",
-                    category="Trucks",
-                    price=24500000,
-                    condition="Foreign Used",
-                    location="Benin",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
-                    phone_number="08135877104",
-                    image="https://images.pexels.com/photos/10842901/pexels-photo-10842901.jpeg",
-                    images=["https://images.pexels.com/photos/10842901/pexels-photo-10842901.jpeg"],
-                    year=2022,
-                    mileage="25,000 km",
-                    transmission="Automatic",
-                    fuel_type="Diesel",
-                    description="Powerful Ford Ranger with excellent capabilities. Well maintained.",
-                    features=["Crew Cab", "Tonneau Cover", "Off-Road Tires", "Rear Diff Lock"],
-                    verified=True
+                    year=2023, mileage="0 km", transmission="Automatic",
+                    fuel_type="Diesel", description="Rugged pickup truck.",
+                    features=["4x4", "Tow Package"], verified=True
                 ),
                 Vehicle(
                     name="Hyundai Elantra 2024",
-                    category="Budget",
-                    price=8500000,
-                    condition="Brand New",
-                    location="Lagos",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
+                    make= "Hyundai", model= "Elantra",
+                    type="car", service="For Sale", # FIXED
+                    category="Budget", price=8500000,
+                    condition="Brand New", location="Lagos",  acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
                     image="https://images.unsplash.com/photo-1748214547306-360d11024747",
                     images=["https://images.unsplash.com/photo-1748214547306-360d11024747"],
-                    year=2024,
-                    mileage="0 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="Affordable and reliable sedan. Perfect for first-time car buyers.",
-                    features=["Fuel Efficient", "Modern Design", "Safety Features", "Warranty"],
-                    verified=True
+                    year=2024, mileage="0 km", transmission="Automatic",
+                    fuel_type="Petrol", description="Affordable sedan.",
+                    features=["Fuel Efficient"], verified=True
                 ),
                 Vehicle(
                     name="Fiat 500 2021",
-                    category="Budget",
-                    price=6200000,
-                    condition="Foreign Used",
-                    location="Abuja",
-                    owner_name="Speedy Official Dealer",
-                    address="123 Lekki Phase 1, Lagos",
-                    phone_number="08135877104",
+                    make= "Fiat", model= "500",
+                    type="Car", service="For Sale", # FIXED
+                    category="Budget", price=6200000,
+                    condition="Foreign Used", location="Abuja", acceleration= "7.2", color= "Pearl White"
+                    owner_name="Speedy Official Dealer", address="Abuja,Nigeria", phone_number="08135877104",
                     image="https://images.pexels.com/photos/7469142/pexels-photo-7469142.jpeg",
                     images=["https://images.pexels.com/photos/7469142/pexels-photo-7469142.jpeg"],
-                    year=2021,
-                    mileage="32,000 km",
-                    transmission="Automatic",
-                    fuel_type="Petrol",
-                    description="Compact and economical car. Great for city driving.",
-                    features=["Excellent Fuel Economy", "Easy Parking", "Low Maintenance"],
-                    verified=True
+                    year=2021, mileage="32,000 km", transmission="Automatic",
+                    fuel_type="Petrol", description="Compact city car.",
+                    features=["Low Maintenance"], verified=True
                 )
             ]
             session.add_all(vehicles)
             await session.commit()
-            logger.info(f"✓ {len(vehicles)} sample vehicles added.")
+            logger.info(f"✓ {len(vehicles)} sample vehicles added successfully.")
         else:
-            logger.info("✓ Vehicles already exist in database.")
+            logger.info("✓ Vehicles already exist.")
 
         logger.info("✅ Seeding complete!")
-
 
 if __name__ == "__main__":
     asyncio.run(seed_database())

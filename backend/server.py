@@ -57,6 +57,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://speedy-bsvq.onrender.com",
+        "https://speedy-backend-fb9s.onrender.com",
         "http://localhost:3000", # Common for React local dev
         "http://localhost:5173"  # Common for Vite local dev
     ],
@@ -166,7 +167,7 @@ async def upload_to_cloudinary(file: UploadFile, folder: str = "speedy"):
     
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
-def serialize_vehicle(vehicle):
+def serialize_vehicle(v):
     return {
         "id": v.id, "name": v.name, "type": v.type, "service": v.service,
         "category": v.category, "price": v.price, "condition": v.condition,
@@ -479,7 +480,6 @@ async def get_vehicle(v_id: int, db: AsyncSession = Depends(get_db)):
 
 
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
-@api_router.put("/vehicles/{v_id}")
 async def update_vehicle(
     v_id: int, 
     update_data: VehicleUpdate, # Now uses JSON schema for clean updates

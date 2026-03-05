@@ -168,34 +168,16 @@ async def upload_to_cloudinary(file: UploadFile, folder: str = "speedy"):
 # Added .isoformat() to prevent JSON 500 errors
 def serialize_vehicle(vehicle):
     return {
-        "id": getattr(vehicle, 'id', None),
-        "name": getattr(vehicle, 'name', 'Unknown'),
-        "type": getattr(vehicle, 'type', 'Unknown'),
-        "service": getattr(vehicle, 'service', 'Unknown'),
-        "category": getattr(vehicle, 'category', 'Uncategorized'),
-        "price": getattr(vehicle, 'price', 0),
-        "condition": getattr(vehicle, 'condition', 'Used'),
-        "location": getattr(vehicle, 'location', 'Unknown'),
-        "acceleration": getattr(vehicle, 'acceleration', None), 
-        "color": getattr(vehicle, 'color', 'Unknown'),
-        "make": getattr(vehicle, 'make', 'Unknown'),
-        "model": getattr(vehicle, 'model', 'Unknown'),
-        "owner_name": getattr(vehicle, 'owner_name', ''),
-        "address": getattr(vehicle, 'address', ''),          
-        "phone_number": getattr(vehicle, 'phone_number', ''),
-        "image": getattr(vehicle, 'image', None),
-        # Ensures these return [] if None to prevent .map() errors in React
-        "images": getattr(vehicle, 'images', []) or [],
-        "features": getattr(vehicle, 'features', []) or [],
-        "year": getattr(vehicle, 'year', None),
-        "mileage": getattr(vehicle, 'mileage', '0'),
-        "transmission": getattr(vehicle, 'transmission', 'Automatic'),
-        "fuel_type": getattr(vehicle, 'fuel_type', 'Petrol'),
-        "description": getattr(vehicle, 'description', ''),
-        "verified": getattr(vehicle, 'verified', False),
-        # Convert datetime to ISO string for JSON compatibility
-        "created_at": vehicle.created_at.isoformat() if hasattr(vehicle, 'created_at') and vehicle.created_at else None,
-        "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None
+        "id": v.id, "name": v.name, "type": v.type, "service": v.service,
+        "category": v.category, "price": v.price, "condition": v.condition,
+        "location": v.location, "acceleration": v.acceleration, "color": v.color,
+        "make": v.make, "model": v.model, "owner_name": v.owner_name,
+        "address": v.address, "phone_number": v.phone_number, "image": v.image,
+        "images": v.images or [], "features": v.features or [], "year": v.year,
+        "mileage": v.mileage, "transmission": v.transmission, "fuel_type": v.fuel_type,
+        "description": v.description, "verified": v.verified,
+        "created_at": v.created_at.isoformat() if v.created_at else None,
+        "updated_at": v.updated_at.isoformat() if v.updated_at else None
     }
 
 
@@ -413,12 +395,14 @@ async def get_vehicles(
     category: Optional[str] = Query(None),
     v_type: Optional[str] = Query(None, alias="type"),
     service: Optional[str] = Query(None),
+    make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
     query = select(Vehicle)
     if category: query = query.filter(Vehicle.category == category)
     if v_type: query = query.filter(Vehicle.type == v_type)
     if service: query = query.filter(Vehicle.service == service)
+    if make: query = query.filter(Vehicle.make == make)
     
     result = await db.execute(query.order_by(Vehicle.id.desc()))
     return [serialize_vehicle(v) for v in result.scalars().all()]
@@ -460,7 +444,7 @@ async def create_vehicle(
     gallery = []
     for img in images:
         if img.filename:
-            url = await upload_to_cloudinary(img, folder="gallery")
+            url = await upload_to_cloudinary(img, "gallery")
             if url:
                 gallery.append(url)
 
@@ -495,23 +479,21 @@ async def get_vehicle(v_id: int, db: AsyncSession = Depends(get_db)):
 
 
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
+@api_router.put("/vehicles/{v_id}")
 async def update_vehicle(
     v_id: int, 
-    name: Optional[str] = Form(None), 
-    price: Optional[int] = Form(None),
-    image: Optional[UploadFile] = File(None), 
+    update_data: VehicleUpdate, # Now uses JSON schema for clean updates
     db: AsyncSession = Depends(get_db),
     current_admin: User = Depends(get_current_admin)
 ):
+    """Updates vehicle using JSON data from the Admin Panel"""
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
     vehicle = result.scalar_one_or_none()
-    if not vehicle: raise HTTPException(status_code=404, detail="Not found")
+    if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    if name: vehicle.name = name
-    if price: vehicle.price = price
-    if image and image.filename:
-        url = await upload_to_cloudinary(image, folder="main_images")
-        if url: vehicle.image = url
+    data = update_data.dict(exclude_unset=True)
+    for key, value in data.items():
+        setattr(vehicle, key, value)
 
     await db.commit()
     await db.refresh(vehicle)

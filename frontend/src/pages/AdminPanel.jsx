@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2, CircleGauge, Search } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Upload } from 'antd';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';

@@ -124,72 +124,72 @@ const AdminPanel = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-
-  const featureArray = typeof formData.features === 'string'
-    ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-    : (Array.isArray(formData.features) ? formData.features : []);
-
-  try {
-    const data = new FormData();
-
-    // 1. Mandatory & Text Fields
-    // Use String() for price/year/acceleration so FormData doesn't break
-    data.append('name', formData.name || '');
-    data.append('make', formData.make || '');
-    data.append('model', formData.model || '');
-    data.append('type', formData.type || 'Car');
-    data.append('service', formData.service || 'For Sale');
-    data.append('category', formData.category || 'Sedan');
-    data.append('price', String(formData.price || 0));
-    data.append('condition', formData.condition || 'Foreign Used');
-    data.append('location', formData.location || 'Lagos');
-    data.append('year', String(formData.year || 2026));
-    data.append('acceleration', String(formData.acceleration || 0.0)); // Sent as string, Backend converts to float
-    data.append('color', formData.color || '');
-    data.append('owner_name', formData.owner_name || '');
-    data.append('address', formData.address || '');
-    data.append('phone_number', formData.phone_number || '');
-    data.append('mileage', formData.mileage || '0 km');
-    data.append('transmission', formData.transmission || 'Automatic');
-    data.append('fuel_type', formData.fuel_type || 'Petrol');
-    data.append('description', formData.description || '');
-    
-    // 2. Features as JSON string
-    data.append('features', JSON.stringify(featureArray));
-
-    // 3. Main Image
-    if (formData.image instanceof File) {
-      data.append('image', formData.image);
-    }
-
-    // 4. Gallery Images
-    formData.images.forEach((file) => {
-      if (file instanceof File) {
-        data.append('images', file);
+    e.preventDefault();
+    setIsSubmitting(true);
+  
+    const featureArray = typeof formData.features === 'string'
+      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
+      : (Array.isArray(formData.features) ? formData.features : []);
+  
+    try {
+      const data = new FormData();
+  
+      // 1. Mandatory & Text Fields
+      // Use String() for price/year/acceleration so FormData doesn't break
+      data.append('name', formData.name || '');
+      data.append('make', formData.make || '');
+      data.append('model', formData.model || '');
+      data.append('type', formData.type || 'Car');
+      data.append('service', formData.service || 'For Sale');
+      data.append('category', formData.category || 'Sedan');
+      data.append('price', String(formData.price || 0));
+      data.append('condition', formData.condition || 'Foreign Used');
+      data.append('location', formData.location || 'Lagos');
+      data.append('year', String(formData.year || 2026));
+      data.append('acceleration', String(formData.acceleration || 0.0)); // Sent as string, Backend converts to float
+      data.append('color', formData.color || '');
+      data.append('owner_name', formData.owner_name || '');
+      data.append('address', formData.address || '');
+      data.append('phone_number', formData.phone_number || '');
+      data.append('mileage', formData.mileage || '0 km');
+      data.append('transmission', formData.transmission || 'Automatic');
+      data.append('fuel_type', formData.fuel_type || 'Petrol');
+      data.append('description', formData.description || '');
+      
+      // 2. Features as JSON string
+      data.append('features', JSON.stringify(featureArray));
+  
+      // 3. Main Image
+      if (formData.image instanceof File) {
+        data.append('image', formData.image);
       }
-    });
-
-    // 5. API Call
-    if (editingVehicle) {
-      await vehicleAPI.update(editingVehicle.id, data);
-      toast.success('Vehicle Updated on Speedy!');
-    } else {
-      await vehicleAPI.create(data);
-      toast.success('Vehicle Added to Speedy!');
+  
+      // 4. Gallery Images
+      formData.images.forEach((file) => {
+        if (file instanceof File) {
+          data.append('images', file);
+        }
+      });
+  
+      // 5. API Call
+      if (editingVehicle) {
+        await vehicleAPI.update(editingVehicle.id, data);
+        toast.success('Vehicle Updated on Speedy!');
+      } else {
+        await vehicleAPI.create(data);
+        toast.success('Vehicle Added to Speedy!');
+      }
+  
+      setIsDialogOpen(false);
+      fetchInventory();
+      resetForm();
+    } catch (error) {
+      console.error("Submission Error:", error.response?.data);
+      toast.error("Error updating vehicle. Check required fields.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsDialogOpen(false);
-    fetchInventory();
-    resetForm();
-  } catch (error) {
-    console.error("Submission Error:", error.response?.data);
-    toast.error("Error updating vehicle. Check required fields.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();

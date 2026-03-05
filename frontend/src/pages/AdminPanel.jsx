@@ -256,9 +256,9 @@ const AdminPanel = () => {
                       <div className="space-y-4">
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Basic Information</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          <InputGroup label="Vehicle Name" name="name" val={formData.name} onChange={handleChange} />
-                          <InputGroup label="Make" name="make" val={formData.make} onChange={handleChange} />
-                          <InputGroup label="Model" name="model" val={formData.model} onChange={handleChange} />
+                          <InputGroup label="Vehicle Name" name="name" val={formData.name} onChange={handleChange} placeholder="e.g. Toyota Camry 2026" />
+                          <InputGroup label="Make" name="make" val={formData.make} onChange={handleChange} placeholder="Toyota" />
+                          <InputGroup label="Model" name="model" val={formData.model} onChange={handleChange} placeholder="Camry" />
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Type</label>
                             <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
@@ -285,7 +285,7 @@ const AdminPanel = () => {
                       <div className="space-y-4">
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Specifications & Pricing</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                          <InputGroup label="Price (₦)" name="price" type="number" val={formData.price} onChange={handleChange} />
+                          <InputGroup label="Price (₦)" name="price" type="number" val={formData.price} onChange={handleChange} placeholder="e.g. 45000000" />
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Condition</label>
                             <Select value={formData.condition} onValueChange={(v) => setFormData({...formData, condition: v})}>
@@ -321,8 +321,8 @@ const AdminPanel = () => {
                             </Select>
                           </div>
                           <InputGroup label="Mileage" name="mileage" val={formData.mileage} onChange={handleChange} placeholder="e.g. 45,000 km" />
-                          <InputGroup label="Color" name="color" val={formData.color} onChange={handleChange} />
-                          <InputGroup label="Acceleration (0-60)" name="acceleration" val={formData.acceleration} onChange={handleChange} />
+                          <InputGroup label="Color" name="color" val={formData.color} onChange={handleChange} placeholder="e.g. Metallic Black" />
+                          <InputGroup label="Acceleration (0-100)km/h" name="acceleration" val={formData.acceleration} onChange={handleChange} placeholder="e.g. 4.5" />
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Transmission</label>
                             <Select value={formData.transmission} onValueChange={(v) => setFormData({...formData, transmission: v})}>
@@ -351,12 +351,12 @@ const AdminPanel = () => {
 
                       {/* Section: Seller Info */}
                       <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Seller / Agent Info</h3>
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Seller / Dealer Info</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <InputGroup label="Owner/Agent Name" name="owner_name" val={formData.owner_name} onChange={handleChange} />
-                          <InputGroup label="Phone Number" name="phone_number" val={formData.phone_number} onChange={handleChange} />
+                          <InputGroup label="Owner/Dealer's/Company's Name" name="owner_name" val={formData.owner_name} onChange={handleChange} placeholder="e.g. Iyke Motor's Ltd." />
+                          <InputGroup label="Phone Number" name="phone_number" val={formData.phone_number} onChange={handleChange} placeholder="+234....." />
                           <div className="sm:col-span-2">
-                            <InputGroup label="Address" name="address" val={formData.address} onChange={handleChange} />
+                            <InputGroup label="Address" name="address" val={formData.address} onChange={handleChange} placeholder="e.g. 123, Lekki, Lagos" />
                           </div>
                         </div>
                       </div>

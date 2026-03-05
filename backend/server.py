@@ -38,6 +38,10 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Speedy Vehicle Dealership API")
 api_router = APIRouter()
 
+# --- CRITICAL FIX: Ensure static directories exist before mounting ---
+UPLOAD_DIR = os.path.join(os.getcwd(), "static", "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 # Secure CORS configuration for Render deployment
 app.add_middleware(
     CORSMiddleware,

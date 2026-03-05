@@ -5,6 +5,7 @@ import asyncio
 import os
 import logging
 from datetime import datetime
+from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

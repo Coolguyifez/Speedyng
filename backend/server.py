@@ -514,25 +514,19 @@ async def get_chat_history(
 
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
+# Static files for uploaded images
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 BUILD_DIR = os.path.join(os.getcwd(), "frontend", "dist")
-
-# Mount Static Assets (CSS/JS)
 if os.path.exists(os.path.join(BUILD_DIR, "assets")):
     app.mount("/assets", StaticFiles(directory=os.path.join(BUILD_DIR, "assets")), name="assets")
 
 @app.get("/{catchall:path}")
 async def serve_react_app(catchall: str):
-    # Don't let the catchall swallow missing API calls
-    if catchall.startswith("api"):
-        raise HTTPException(status_code=404)
-        
+    if catchall.startswith("api"): raise HTTPException(status_code=404)
     index_path = os.path.join(BUILD_DIR, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-        
-    return {"message": "Speedy API is running. Frontend build not found."}
+    if os.path.exists(index_path): return FileResponse(index_path)
+    return {"message": "Speedy API running. Frontend not found."}
 
 @app.on_event("startup")
 async def startup():

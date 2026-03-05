@@ -82,7 +82,7 @@ const AdminPanel = () => {
   };
 
   const removeMainImage = () => setFormData({ ...formData, image: null });
-  const removeGalleryImage = (idx) => setFormData({ ...formData, images: formData.images.filter((_, i) => i !== idx) });
+  const removeGalleryImage = (idx) => { setFormData({ ...formData, images: formData.images.filter((_, i) => i !== idx) });};
 
   const handleDelete = async (id) => {
     if (window.confirm("Remove this vehicle from Speedy?")) {
@@ -105,18 +105,21 @@ const AdminPanel = () => {
     e.preventDefault();
     const data = new FormData();
     
-    // Append fields
-    Object.keys(formData).forEach(key => {
-        if (key === 'image' || key === 'images' || key === 'features') return;
-        
+    // Explicit list of allowed fields for backend
+    const allowedFields = [
+        'name', 'make', 'model', 'type', 'service', 'category', 'price', 
+        'condition', 'location', 'acceleration', 'color', 'owner_name', 
+        'address', 'phone_number', 'image', 'images', 'year', 'mileage', 'transmission', 
+      'fuel_type', 'description', 'features'
+    ];
+
+    allowedFields.forEach(key => {
         let value = formData[key];
-        // Ensure numbers are sent correctly
         if (key === 'price' || key === 'year') value = parseInt(value) || 0;
         if (key === 'acceleration') value = parseFloat(value) || 0;
-        
-        data.append(key, value);
+        data.append(key, value || '');
     });
-
+    
     // Handle Features properly for Backend
     const featureArray = typeof formData.features === 'string' 
       ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
@@ -218,7 +221,11 @@ const AdminPanel = () => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader><DialogTitle>{editingVehicle ? 'Edit' : 'Add'} Full Vehicle Details</DialogTitle></DialogHeader>
+                    <DialogHeader><DialogTitle>{editingVehicle ? 'Edit' : 'Add'} Full Vehicle Details</DialogTitle>
+                      <DialogDescription className="text-xs text-gray-500">
+                        Provide specifications for the vehicle listing.
+                      </DialogDescription>
+                    </DialogHeader>
                     <form onSubmit={handleSubmit} className="space-y-6">
                       
                       {/* Section: Basic Info */}
@@ -332,23 +339,58 @@ const AdminPanel = () => {
 
                       {/* Section: Media & Description */}
                       <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media & Details</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase">Image</label>
-                            <div className="flex items-center gap-2">
-                               <input type="file" id="main-img" onChange={handleMainImageChange} className="hidden" accept="image/*"/>
-                               <label htmlFor="main-img" className="flex items-center justify-center w-full p-2 border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-xs">
-                                 <Upload className="w-4 h-4 mr-2"/> {formData.image ? 'Image Selected' : 'Upload Thumbnail'}
-                               </label>
-                            </div>
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media (Cancel uploads by clicking X)</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                          {/* Main Image */}
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase">Main Image</label>
+                            {formData.image ? (
+                              <div className="relative w-full h-32 rounded-lg overflow-hidden border">
+                                <img 
+                                  src={formData.image instanceof File ? URL.createObjectURL(formData.image) : formData.image} 
+                                  className="w-full h-full object-cover" 
+                                  alt="Preview"
+                                />
+                                <button 
+                                  type="button" 
+                                  onClick={removeMainImage}
+                                  className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full hover:bg-red-700 transition-colors"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            ) : (
+                              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                                <Upload className="w-8 h-8 text-gray-400 mb-2"/>
+                                <span className="text-xs text-gray-500">Click to upload main image</span>
+                                <input type="file" onChange={handleMainImageChange} className="hidden" accept="image/*"/>
+                              </label>
+                            )}
                           </div>
-                          <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase">Gallery Images</label>
-                            <div className="flex items-center gap-2">
-                               <input type="file" id="gallery-imgs" multiple onChange={handleGalleryChange} className="hidden" accept="image/*"/>
-                               <label htmlFor="gallery-imgs" className="flex items-center justify-center w-full p-2 border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-xs">
-                                 <Plus className="w-4 h-4 mr-2"/> {formData.images.length > 0 ? `${formData.images.length} files` : 'Add to Gallery'}
+
+                          {/* Gallery Images */}
+                          <div className="space-y-2">
+                            <label className="text-xs font-semibold uppercase">Gallery ({formData.images.length})</label>
+                            <div className="grid grid-cols-3 gap-2">
+                               {formData.images.map((img, idx) => (
+                                 <div key={idx} className="relative h-20 rounded border overflow-hidden">
+                                   <img 
+                                     src={img instanceof File ? URL.createObjectURL(img) : img} 
+                                     className="w-full h-full object-cover" 
+                                     alt="Gallery Preview"
+                                   />
+                                   <button 
+                                      type="button" 
+                                      onClick={() => removeGalleryImage(idx)}
+                                      className="absolute top-0.5 right-0.5 bg-black/60 text-white p-0.5 rounded-full hover:bg-red-600"
+                                   >
+                                     <X className="w-3 h-3" />
+                                   </button>
+                                 </div>
+                               ))}
+                               <label className="flex items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:bg-gray-50">
+                                 <Plus className="w-6 h-6 text-gray-400"/>
+                                 <input type="file" multiple onChange={handleGalleryChange} className="hidden" accept="image/*"/>
                                </label>
                             </div>
                           </div>

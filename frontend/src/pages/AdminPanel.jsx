@@ -127,6 +127,11 @@ const AdminPanel = () => {
     e.preventDefault();
     setIsSubmitting(true);
   
+    // 1. Sanitize numeric fields to ensure they are NEVER empty strings
+    const cleanPrice = formData.price === "" || formData.price === null ? "0" : String(formData.price);
+    const cleanYear = formData.year === "" || formData.year === null ? "2026" : String(formData.year);
+    const cleanAccel = formData.acceleration === "" || formData.acceleration === null ? "0.0" : String(formData.acceleration);
+  
     const featureArray = typeof formData.features === 'string'
       ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
       : (Array.isArray(formData.features) ? formData.features : []);
@@ -134,19 +139,18 @@ const AdminPanel = () => {
     try {
       const data = new FormData();
   
-      // 1. Mandatory & Text Fields
-      // Use String() for price/year/acceleration so FormData doesn't break
+      // Mandatory & Text Fields
       data.append('name', formData.name || '');
       data.append('make', formData.make || '');
       data.append('model', formData.model || '');
       data.append('type', formData.type || 'Car');
       data.append('service', formData.service || 'For Sale');
       data.append('category', formData.category || 'Sedan');
-      data.append('price', String(formData.price || 0));
+      data.append('price', cleanPrice); // Used sanitized value
       data.append('condition', formData.condition || 'Foreign Used');
       data.append('location', formData.location || 'Lagos');
-      data.append('year', String(formData.year || 2026));
-      data.append('acceleration', String(formData.acceleration || 0.0)); // Sent as string, Backend converts to float
+      data.append('year', cleanYear); // Used sanitized value
+      data.append('acceleration', cleanAccel); // Used sanitized value
       data.append('color', formData.color || '');
       data.append('owner_name', formData.owner_name || '');
       data.append('address', formData.address || '');
@@ -156,36 +160,42 @@ const AdminPanel = () => {
       data.append('fuel_type', formData.fuel_type || 'Petrol');
       data.append('description', formData.description || '');
       
-      // 2. Features as JSON string
       data.append('features', JSON.stringify(featureArray));
   
-      // 3. Main Image
+      // 2. IMAGE FIX: If it's a File (new upload), append it. 
+      // If it's a String (existing URL during Edit), 
+      // you may need to append it as a string OR handle it differently on the backend.
       if (formData.image instanceof File) {
+        data.append('image', formData.image);
+      } else if (typeof formData.image === 'string' && editingVehicle) {
+        // If your backend allows 'image' to be a string URL during update:
         data.append('image', formData.image);
       }
   
-      // 4. Gallery Images
+      // 3. Gallery Images
       formData.images.forEach((file) => {
         if (file instanceof File) {
           data.append('images', file);
         }
+        // Note: If you want to keep existing gallery images during an edit,
+        // you must also send the existing URLs back to the server.
       });
   
-      // 5. API Call
       if (editingVehicle) {
         await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Vehicle Updated on Speedy!');
+        toast.success('Vehicle Updated!');
       } else {
         await vehicleAPI.create(data);
-        toast.success('Vehicle Added to Speedy!');
+        toast.success('Vehicle Added!');
       }
   
       setIsDialogOpen(false);
       fetchInventory();
       resetForm();
     } catch (error) {
-      console.error("Submission Error:", error.response?.data);
-      toast.error("Error updating vehicle. Check required fields.");
+      // LOG THE ACTUAL ERROR DETAIL
+      console.error("Backend Validation Error:", error.response?.data?.detail);
+      toast.error("Validation Error: Check the console for details.");
     } finally {
       setIsSubmitting(false);
     }

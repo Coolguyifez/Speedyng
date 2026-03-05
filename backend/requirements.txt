@@ -8,6 +8,7 @@ psycopg2-binary==2.9.7
 pydantic-settings==2.2.1
 
 greenlet>=2.0.2
+cloudinary==1.41.0
 
 resend==2.4.0
 python-dotenv==1.0.1

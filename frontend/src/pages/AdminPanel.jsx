@@ -233,7 +233,7 @@ const AdminPanel = () => {
                             <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
                               <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
                               <SelectContent>
-                                {['Car', 'Truck', 'Pickup', 'Bus', 'Van', 'Bike', 'Tricycle'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                                {['Car', 'Truck', 'Pickup', 'Bus', 'Van', 'Motorcycle', 'Tricycle'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                               </SelectContent>
                             </Select>
                           </div>
@@ -263,6 +263,20 @@ const AdminPanel = () => {
                                 <SelectItem value="Brand New">Brand New</SelectItem>
                                 <SelectItem value="Foreign Used">Foreign Used</SelectItem>
                                 <SelectItem value="Nigerian Used">Nigerian Used</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Service</label>
+                            <Select value={formData.service} onValueChange={(v) => setFormData({...formData, service: v})}>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="For Sale">For Sale</SelectItem>
+                                <SelectItem value="For Rent">For Rent</SelectItem>
+                                <SelectItem value="For Lease">For Lease</SelectItem>
+                                <SelectItem value="For Budget Sale">For Budget Sale</SelectItem>
+                                <SelectItem value="Under Inspection">Under Inspection</SelectItem>
+                                <SelectItem value="Sold">Sold</SelectItem>
                               </SelectContent>
                             </Select>
                           </div>
@@ -321,7 +335,7 @@ const AdminPanel = () => {
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media & Details</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="space-y-1">
-                            <label className="text-xs font-semibold uppercase">Main Thumbnail</label>
+                            <label className="text-xs font-semibold uppercase">Image</label>
                             <div className="flex items-center gap-2">
                                <input type="file" id="main-img" onChange={handleMainImageChange} className="hidden" accept="image/*"/>
                                <label htmlFor="main-img" className="flex items-center justify-center w-full p-2 border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-xs">
@@ -349,7 +363,7 @@ const AdminPanel = () => {
                         </div>
                       </div>
 
-                      <Button type="submit" className="w-full bg-red-600 py-6 text-lg font-bold">Save Listing to Speedy</Button>
+                      <Button type="submit" className="w-full bg-red-600 py-6 text-lg font-bold">Update Listing</Button>
                     </form>
                   </DialogContent>
                 </Dialog>

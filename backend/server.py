@@ -514,6 +514,7 @@ async def get_chat_history(
 
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
+
 # Static files for uploaded images
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -532,7 +533,7 @@ async def serve_react_app(catchall: str):
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database tables created/ready")
+    logger.info("Database synced with new Agent fields.")
 
 
 @app.get("/")

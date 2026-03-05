@@ -380,12 +380,30 @@ async def get_vehicles(
 
 @api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_vehicle(
-    name: str = Form(...), type: str = Form(...), service: str = Form(...),
-    category: str = Form(...), price: int = Form(...), condition: str = Form(...),
-    location: str = Form(...), year: int = Form(...), make: str = Form(None),
-    model: str = Form(None), features: str = Form("[]"), 
-    image: Optional[UploadFile] = File(None), images: List[UploadFile] = File([]),
-    db: AsyncSession = Depends(get_db), current_admin: User = Depends(get_current_admin)
+    name: str = Form(...), 
+    type: str = Form(...), 
+    service: str = Form(...),
+    category: str = Form(...), 
+    price: int = Form(...), 
+    condition: str = Form(...),
+    location: str = Form(...), 
+    year: int = Form(...), 
+    make: str = Form(None),
+    model: str = Form(None), 
+    acceleration: float = Form(0.0), # Added
+    color: str = Form(None),         # Added
+    owner_name: str = Form(None),    # Added
+    address: str = Form(None),       # Added
+    phone_number: str = Form(None),  # Added
+    mileage: str = Form("0"),        # Added
+    transmission: str = Form("Automatic"), # Added
+    fuel_type: str = Form("Petrol"), # Added
+    description: str = Form(""),     # Added
+    features: str = Form("[]"), 
+    image: Optional[UploadFile] = File(None), 
+    images: List[UploadFile] = File([]),
+    db: AsyncSession = Depends(get_db), 
+    current_admin: User = Depends(get_current_admin)
 ):
     main_image_url = "/assets/default-car.jpg"
     if image and image.filename:
@@ -401,12 +419,17 @@ async def create_vehicle(
             with open(os.path.join(UPLOAD_DIR, u_name), "wb") as f: f.write(await img.read())
             gallery.append(f"/static/uploads/{u_name}")
 
-    try: f_list = json.loads(features)
-    except: f_list = []
+    try: 
+        f_list = json.loads(features)
+    except: 
+        f_list = []
 
     new_v = Vehicle(
         name=name, type=type, service=service, category=category, price=price,
         condition=condition, location=location, year=year, make=make, model=model,
+        acceleration=acceleration, color=color, owner_name=owner_name,
+        address=address, phone_number=phone_number, mileage=mileage,
+        transmission=transmission, fuel_type=fuel_type, description=description,
         features=f_list, image=main_image_url, images=gallery, verified=True
     )
     db.add(new_v)

@@ -26,6 +26,7 @@ const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba']
 const AdminPanel = () => {
   const [vehicles, setVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [searchQuery, setSearchQuery] = useState(''); // Fixed: renamed from searchTerm
@@ -50,14 +51,6 @@ const AdminPanel = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const formatPrice = (price) => {
-    if (!price) return "₦0";
-    const num = parseFloat(price);
-    if (num >= 1000000) return `₦${(num / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
-    if (num >= 1000) return `₦${(num / 1000).toFixed(0)}K`;
-    return `₦${num.toLocaleString()}`;
   };
 
   const resetForm = () => {
@@ -93,6 +86,97 @@ const AdminPanel = () => {
       } catch (error) { toast.error("Delete failed"); }
     }
   };
+  
+  const handleEdit = (v) => {
+    setEditingVehicle(v);
+    setFormData({
+      ...v,
+      features: Array.isArray(v.features) ? v.features.join(', ') : (v.features || ''),
+      images: Array.isArray(v.images) ? v.images : []
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Prepare common data values
+    const featureArray = typeof formData.features === 'string' 
+      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
+      : formData.features;
+
+    try {
+      if (editingVehicle) {
+        // UPDATING: Send as JSON (Standard for most FastAPI update routes)
+        const updatePayload = {
+          ...formData,
+          price: parseInt(formData.price) || 0,
+          year: parseInt(formData.year) || 2024,
+          acceleration: parseFloat(formData.acceleration) || 0,
+          features: featureArray,
+          // Remove File objects for JSON update (if backend expects URLs)
+          image: typeof formData.image === 'string' ? formData.image : editingVehicle.image,
+          images: formData.images.filter(img => typeof img === 'string')
+        };
+        
+        await vehicleAPI.update(editingVehicle.id, updatePayload);
+        toast.success('Vehicle Updated Successfully!');
+      } else {
+        // CREATING: Must use FormData for image uploads
+        const data = new FormData();
+        
+        // Append text fields explicitly to avoid 'field required' errors
+        data.append('name', formData.name || '');
+        data.append('make', formData.make || '');
+        data.append('model', formData.model || '');
+        data.append('type', formData.type || 'Car');
+        data.append('service', formData.service || 'For Sale');
+        data.append('category', formData.category || 'Sedan');
+        data.append('price', parseInt(formData.price) || 0);
+        data.append('condition', formData.condition || 'Foreign Used');
+        data.append('location', formData.location || 'Lagos');
+        data.append('year', parseInt(formData.year) || 2026);
+        data.append('acceleration', parseFloat(formData.acceleration) || 0);
+        data.append('color', formData.color || '');
+        data.append('owner_name', formData.owner_name || '');
+        data.append('address', formData.address || '');
+        data.append('phone_number', formData.phone_number || '');
+        data.append('mileage', formData.mileage || '0 km');
+        data.append('transmission', formData.transmission || 'Automatic');
+        data.append('fuel_type', formData.fuel_type || 'Petrol');
+        data.append('description', formData.description || '');
+        
+        // Features must be JSON string for the backend to parse List[str]
+        data.append('features', JSON.stringify(featureArray));
+
+        // Images
+        if (formData.image instanceof File) {
+          data.append('image', formData.image);
+        }
+        formData.images.forEach((file) => { 
+          if (file instanceof File) data.append('images', file); 
+        });
+
+        await vehicleAPI.create(data);
+        toast.success('Vehicle Added to Speedy!');
+      }
+      
+      setIsDialogOpen(false);
+      fetchInventory();
+      resetForm();
+    } catch (error) {
+      console.error("Submission Error Details:", error.response?.data);
+      const detail = error.response?.data?.detail;
+      // Handle FastAPI's array-style error detail
+      const msg = Array.isArray(detail) 
+        ? `${detail[0].loc[detail[0].loc.length - 1]}: ${detail[0].msg}` 
+        : "Validation failed. Check your network or required fields.";
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();
@@ -100,68 +184,6 @@ const AdminPanel = () => {
     const matchesCond = filterCondition === 'All' || v.condition === filterCondition;
     return matchesSearch && matchesCond;
   });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
-    
-    // Explicit list of allowed fields for backend
-    const allowedFields = [
-        'name', 'make', 'model', 'type', 'service', 'category', 'price', 
-        'condition', 'location', 'acceleration', 'color', 'owner_name', 
-        'address', 'phone_number', 'year', 'mileage', 'transmission', 
-      'fuel_type', 'description', 'features'
-    ];
-
-    allowedFields.forEach(key => {
-        let value = formData[key];
-        if (key === 'price' || key === 'year') value = parseInt(value) || 0;
-        if (key === 'acceleration') value = parseFloat(value) || 0;
-        data.append(key, value || '');
-    });
-    
-    // Handle Features properly for Backend
-    const featureArray = typeof formData.features === 'string' 
-      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-      : formData.features;
-    data.append('features', JSON.stringify(featureArray));
-
-    // Images
-    if (formData.image instanceof File) {
-      data.append('image', formData.image);
-    }
-    formData.images.forEach((file) => { 
-        if (file instanceof File) data.append('images', file); 
-    });
-
-    try {
-      if (editingVehicle) {
-        await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Vehicle Updated Successfully!');
-      } else {
-        await vehicleAPI.create(data);
-        toast.success('Vehicle Added to Speedy!');
-      }
-      setIsDialogOpen(false);
-      fetchInventory();
-      resetForm();
-    } catch (error) {
-      console.error("Submission Error Details:", error.response?.data);
-      const detail = error.response?.data?.detail;
-      const msg = Array.isArray(detail) ? `${detail[0].loc[1]}: ${detail[0].msg}` : "Validation failed. Please check all fields.";
-      toast.error(msg);
-    }
-  };
-
-  const handleEdit = (v) => {
-    setEditingVehicle(v);
-    setFormData({
-      ...v,
-      features: Array.isArray(v.features) ? v.features.join(', ') : v.features,
-      images: Array.isArray(v.images) ? v.images : []
-    });
-    setIsDialogOpen(true);
-  };
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-20">
@@ -407,7 +429,10 @@ const AdminPanel = () => {
                         </div>
                       </div>
 
-                      <Button type="submit" className="w-full bg-red-600 py-6 text-lg font-bold">Update Listing</Button>
+                      <Button type="submit" disabled={isSubmitting} className="w-full bg-red-600 py-6 text-lg font-bold">
+                        {isSubmitting ? <Loader2 className="animate-spin mr-2"/> : null}
+                        {editingVehicle ? 'Update Listing' : 'Add to Inventory'}
+                      </Button>
                     </form>
                   </DialogContent>
                 </Dialog>

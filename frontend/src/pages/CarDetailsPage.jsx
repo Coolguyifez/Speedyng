@@ -249,16 +249,16 @@ const CarDetailsPage = () => {
                 {/* Specifications */}
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   {[
-                    { icon: Car, label: 'Make', value: v.make ? `${v.make}` : 'N/A' },
-                    { icon: Accessibility, label: 'Model', value: v.model ? `${v.model}` : 'N/A' },
-                    { icon: CgCarousel, label: 'Category', value: v.category ? `${v.category}` : 'N/A' },
-                    { icon: Palette , label: 'Exterior Color', value: v.color ? `${v.color}` : 'N/A' },
-                    { icon: Calendar, label: 'Year', value: v.year ? `${v.year}` : 'N/A' },
-                    { icon: Gauge, label: 'Mileage', value: v.mileage ? `${v.mileage}` : 'N/A' },
+                    { icon: Car, label: 'Make', value: v.make },
+                    { icon: Accessibility, label: 'Model', value: v.model },
+                    { icon: CgCarousel, label: 'Category', value: v.category },
+                    { icon: Palette , label: 'Exterior Color', value: v.color },
+                    { icon: Calendar, label: 'Year', value: v.year },
+                    { icon: Gauge, label: 'Mileage', value: v.mileage },
                     { icon: CircleGauge, label: 'Acceleration(0-100 km/h)', value: v.acceleration ? `${v.acceleration}s` : 'N/A' },
-                    { icon: Settings, label: 'Transmission', value: v.transmission ? `${v.transmission}` : 'N/A' },
-                    { icon: Fuel, label: 'Fuel Type', value: v.fuel_type ? `${v.fuel_type}` : 'N/A' },
-                    { icon: MapPin, label: 'Location', value: v.location ? `${v.location}` : 'N/A' },
+                    { icon: Settings, label: 'Transmission', value: v.transmission },
+                    { icon: Fuel, label: 'Fuel Type', value: v.fuel_type },
+                    { icon: MapPin, label: 'Location', value: v.location },
                   ].map((spec, i) => (
                     <div key={i} className="flex items-center justify-between">
                       <div className="flex items-center space-x-2 text-gray-600">

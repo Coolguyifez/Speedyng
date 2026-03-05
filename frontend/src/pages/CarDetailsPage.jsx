@@ -151,7 +151,7 @@ const CarDetailsPage = () => {
             <div className="mb-4">
               <div className="relative h-96 md:h-[500px] rounded-lg overflow-hidden bg-gray-200">
                 <img
-                  src={v.images[selectedImage]}
+                  src={v.images && v.images.length > 0 ? v.images[selectedImage] : v.image}
                   alt={v.name}
                   className="w-full h-full object-cover"
                 />

@@ -109,7 +109,7 @@ const AdminPanel = () => {
     const allowedFields = [
         'name', 'make', 'model', 'type', 'service', 'category', 'price', 
         'condition', 'location', 'acceleration', 'color', 'owner_name', 
-        'address', 'phone_number', 'image', 'images', 'year', 'mileage', 'transmission', 
+        'address', 'phone_number', 'year', 'mileage', 'transmission', 
       'fuel_type', 'description', 'features'
     ];
 
@@ -144,17 +144,10 @@ const AdminPanel = () => {
       fetchInventory();
       resetForm();
     } catch (error) {
-      console.error("Submission Error:", error);
-      
-      // Fix for Minified React Error #31
-      const errorDetail = error.response?.data?.detail;
-      const errorMessage = typeof errorDetail === 'string' 
-        ? errorDetail 
-        : Array.isArray(errorDetail) 
-            ? errorDetail[0]?.msg 
-            : "Operation failed. Check all fields.";
-            
-      toast.error(errorMessage);
+      console.error("Submission Error Details:", error.response?.data);
+      const detail = error.response?.data?.detail;
+      const msg = Array.isArray(detail) ? `${detail[0].loc[1]}: ${detail[0].msg}` : "Check all fields and try again.";
+      toast.error(msg);
     }
   };
 
@@ -180,8 +173,15 @@ const AdminPanel = () => {
       <div className="bg-gray-900 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold flex items-center gap-2">
-            <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">S</div>
-            Speedy Admin
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center transform rotate-3 hover:rotate-0 transition-transform duration-300">
+                <span className="text-white font-bold text-xl">S</span>
+              </div>
+              <div className="absolute -right-1 -bottom-1 w-4 h-4 bg-black rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+            </div>
+            <span className="text-2xl font-bold text-black ml-2">Speedy Admin</span>
           </Link>
           <Link to="/"><Button variant="ghost">Back to Site</Button></Link>
         </div>

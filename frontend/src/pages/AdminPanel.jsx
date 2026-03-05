@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2, CircleGauge, Search, Upload } from 'lucide-react';
+import { LayoutDashboard, Car, Plus, Edit, Trash2, X, CheckCircle, Loader2, CircleGauge, Search, Upload, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '../components/ui/dialog';
@@ -85,7 +85,7 @@ const AdminPanel = () => {
   const removeGalleryImage = (idx) => { setFormData({ ...formData, images: formData.images.filter((_, i) => i !== idx) });};
 
   const handleDelete = async (id) => {
-    if (window.confirm("Remove this vehicle from Speedy?")) {
+    if (window.confirm("Are you sure you want to remove this vehicle")) {
       try {
         await vehicleAPI.delete(id);
         toast.success("Vehicle removed");
@@ -127,7 +127,9 @@ const AdminPanel = () => {
     data.append('features', JSON.stringify(featureArray));
 
     // Images
-    if (formData.image instanceof File) data.append('image', formData.image);
+    if (formData.image instanceof File) {
+      data.append('image', formData.image);
+    }
     formData.images.forEach((file) => { 
         if (file instanceof File) data.append('images', file); 
     });
@@ -135,7 +137,7 @@ const AdminPanel = () => {
     try {
       if (editingVehicle) {
         await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Vehicle Updated!');
+        toast.success('Vehicle Updated Successfully!');
       } else {
         await vehicleAPI.create(data);
         toast.success('Vehicle Added to Speedy!');
@@ -146,7 +148,7 @@ const AdminPanel = () => {
     } catch (error) {
       console.error("Submission Error Details:", error.response?.data);
       const detail = error.response?.data?.detail;
-      const msg = Array.isArray(detail) ? `${detail[0].loc[1]}: ${detail[0].msg}` : "Check all fields and try again.";
+      const msg = Array.isArray(detail) ? `${detail[0].loc[1]}: ${detail[0].msg}` : "Validation failed. Please check all fields.";
       toast.error(msg);
     }
   };
@@ -181,7 +183,7 @@ const AdminPanel = () => {
                 <div className="w-2 h-2 bg-white rounded-full"></div>
               </div>
             </div>
-            <span className="text-2xl font-bold text-black ml-2">Speedy Admin</span>
+            <span className="text-2xl font-bold text-white ml-2">Speedy Admin</span>
           </Link>
           <Link to="/"><Button variant="ghost">Back to Site</Button></Link>
         </div>
@@ -189,7 +191,7 @@ const AdminPanel = () => {
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard title="Total Vehicles" val={vehicles.length} icon={<Car className="text-red-600"/>} bg="bg-red-100" />
+          <StatCard title="Inventory" val={vehicles.length} icon={<Car className="text-red-600"/>} bg="bg-red-100" />
           <StatCard title="Brand New" val={vehicles.filter(v => v.condition === 'Brand New').length} icon={<CheckCircle className="text-green-600"/>} bg="bg-green-100" />
           <StatCard title="Foreign Used" val={vehicles.filter(v => v.condition === 'Foreign Used').length} icon={<LayoutDashboard className="text-blue-600"/>} bg="bg-blue-100" />
           <StatCard title="Nigerian Used" val={vehicles.filter(v => v.condition === 'Nigerian Used').length} icon={<CircleGauge className="text-yellow-600"/>} bg="bg-yellow-100" />
@@ -418,8 +420,10 @@ const AdminPanel = () => {
                 <thead className="bg-gray-50 border-b">
                   <tr>
                     <th className="p-4 text-left">Vehicle</th>
+                    <th className="p-4 text-left">Body Color</th>
                     <th className="p-4 text-left">Price</th>
                     <th className="p-4 text-left">Seller</th>
+                    <th className="p-4 text-left">Address</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -430,9 +434,10 @@ const AdminPanel = () => {
                         <img src={v.image} className="w-10 h-10 rounded object-cover" alt=""/>
                         <div>
                           <p className="font-medium">{v.name}</p>
-                          <p className="text-[10px] text-gray-400">{v.location}</p>
+                          <p className="text-[10px] text-gray-400">{v.location}-{v.service}</p>
                         </div>
                       </td>
+                      <td className="p-4 font-bold">{v.color}</td>
                       <td className="p-4 font-bold">₦{parseInt(v.price).toLocaleString()}</td>
                       <td className="p-4 text-gray-600">{v.owner_name || 'N/A'}</td>
                       <td className="p-4 text-right space-x-2">
@@ -443,6 +448,12 @@ const AdminPanel = () => {
                   ))}
                 </tbody>
               </table>
+              {filteredVehicles.length === 0 && (
+                <div className="py-20 flex flex-col items-center text-gray-400">
+                   <AlertCircle size={40} className="mb-2 opacity-20" />
+                   <p>No listings found matches your search.</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -453,7 +464,7 @@ const AdminPanel = () => {
 
 const InputGroup = ({ label, name, val, onChange, type="text", placeholder="" }) => (
   <div className="space-y-1">
-    <label className="text-xs font-semibold text-gray-600 uppercase">{label}</label>
+    <label className="">{label}</label>
     <input 
       type={type} 
       name={name} 
@@ -465,11 +476,12 @@ const InputGroup = ({ label, name, val, onChange, type="text", placeholder="" })
     />
   </div>
 );
-const StatCard = ({ title, val, icon, bg }) => (
+
+const StatCard = ({ title, val, icon, bg, color }) => (
   <Card className="border-none shadow-md">
     <CardContent className="p-6 flex justify-between items-center">
       <div><p className="text-sm text-gray-500">{title}</p><p className="text-2xl font-bold">{val}</p></div>
-      <div className={`w-12 h-12 ${bg} rounded-lg flex items-center justify-center`}>{icon}</div>
+      <div className={`w-12 h-12 ${bg} ${color} rounded-lg flex items-center justify-center`}>{icon}</div>
     </CardContent>
   </Card>
 );

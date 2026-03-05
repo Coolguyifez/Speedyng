@@ -17,6 +17,7 @@ from sqlalchemy import text
 import resend
 
 # Import shared components
+from seed import seed_database # Import your seed function
 from database import get_db, engine, Base
 from models import User, Vehicle, Contact, ChatMessage
 from auth import ( 
@@ -365,6 +366,21 @@ async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_current_user_profile(current_user: User = Depends(get_current_user)):
     return current_user
+# -------------------- reset route database --------------------
+@app.get("/api/admin/reset-db-secret-99")
+async def reset_database():
+    try:
+        async with engine.begin() as conn:
+            # This wipes everything!
+            await conn.run_sync(Base.metadata.drop_all)
+            await conn.run_sync(Base.metadata.create_all)
+        
+        # Now run your seed script logic
+        await seed_database()
+        return {"status": "success", "message": "Database wiped and re-seeded!"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+        
 
 # -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])

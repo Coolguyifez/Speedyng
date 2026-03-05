@@ -104,7 +104,7 @@ async def seed_database():
                     make= "Toyota", model= "Prado",
                     type="Car", service="For Sale", # FIXED
                     category="SUV", price=42000000,
-                    condition="Brand New", location="Lagos", acceleration= "7.2", color= "Pearl White",
+                    condition="Brand New", location="Lagos", acceleration= 7.2, color= "Pearl White",
                     owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
                     image="https://images.pexels.com/photos/34166836/pexels-photo-34166836.jpeg",

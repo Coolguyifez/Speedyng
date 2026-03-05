@@ -440,6 +440,7 @@ const AdminPanel = () => {
                       <td className="p-4 font-bold">{v.color}</td>
                       <td className="p-4 font-bold">₦{parseInt(v.price).toLocaleString()}</td>
                       <td className="p-4 text-gray-600">{v.owner_name || 'N/A'}</td>
+                      <td className="p-4 text-gray-600">{v.address || 'N/A'}</td>
                       <td className="p-4 text-right space-x-2">
                         <Button variant="ghost" size="sm" onClick={() => handleEdit(v)}><Edit className="w-4 h-4 text-blue-600"/></Button>
                         <Button variant="ghost" size="sm" onClick={() => handleDelete(v.id)}><Trash2 className="w-4 h-4 text-red-600"/></Button>

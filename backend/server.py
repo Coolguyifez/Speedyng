@@ -433,13 +433,13 @@ async def create_vehicle(
     condition: str = Form("Foriegn Used"),
     location: str = Form("Lagos"), 
     year: int = Form(2026), 
-    make: str = Optional[str] = Form(None),
-    model: str = Optional[str] = Form(None), 
+    make: Optional[str] = Form(None),
+    model: Optional[str] = Form(None), 
     acceleration: float = Form(0.0), # Added
-    color: str = Optional[str] = Form(None),         # Added
+    color: Optional[str] = Form(None),         # Added
     owner_name: Optional[str] = Form(None),    # Added
-    address: str = Optional[str] = Form(None),       # Added
-    phone_number: str = Optional[str] = Form(None),  # Added
+    address: Optional[str] = Form(None),       # Added
+    phone_number: Optional[str] = Form(None),  # Added
     mileage: str = Form("0"),        # Added
     transmission: str = Form("Automatic"), # Added
     fuel_type: str = Form("Petrol"), # Added

@@ -108,7 +108,13 @@ const AdminPanel = () => {
     // Append fields
     Object.keys(formData).forEach(key => {
         if (key === 'image' || key === 'images' || key === 'features') return;
-        data.append(key, formData[key]);
+        
+        let value = formData[key];
+        // Ensure numbers are sent correctly
+        if (key === 'price' || key === 'year') value = parseInt(value) || 0;
+        if (key === 'acceleration') value = parseFloat(value) || 0;
+        
+        data.append(key, value);
     });
 
     // Handle Features properly for Backend
@@ -117,8 +123,11 @@ const AdminPanel = () => {
       : formData.features;
     data.append('features', JSON.stringify(featureArray));
 
+    // Images
     if (formData.image instanceof File) data.append('image', formData.image);
-    formData.images.forEach((file) => { if (file instanceof File) data.append('images', file); });
+    formData.images.forEach((file) => { 
+        if (file instanceof File) data.append('images', file); 
+    });
 
     try {
       if (editingVehicle) {
@@ -126,13 +135,23 @@ const AdminPanel = () => {
         toast.success('Vehicle Updated!');
       } else {
         await vehicleAPI.create(data);
-        toast.success('Vehicle Added!');
+        toast.success('Vehicle Added to Speedy!');
       }
       setIsDialogOpen(false);
       fetchInventory();
       resetForm();
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Operation failed");
+      console.error("Submission Error:", error);
+      
+      // Fix for Minified React Error #31
+      const errorDetail = error.response?.data?.detail;
+      const errorMessage = typeof errorDetail === 'string' 
+        ? errorDetail 
+        : Array.isArray(errorDetail) 
+            ? errorDetail[0]?.msg 
+            : "Operation failed. Check all fields.";
+            
+      toast.error(errorMessage);
     }
   };
 
@@ -175,82 +194,176 @@ const AdminPanel = () => {
 
         <Card className="shadow-xl">
           <CardContent className="p-0">
-            <div className="p-6 border-b flex flex-col md:flex-row justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-bold">Inventory Management</h2>
-                <p className="text-sm text-gray-500">Manage Speedy's active listings</p>
+            {/* SEARCH & ADD SECTION - MOBILE OPTIMIZED */}
+            <div className="p-4 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-center gap-4">
+              <div className="w-full sm:w-auto text-center sm:text-left">
+                <h2 className="text-xl font-bold">Inventory</h2>
+                <p className="text-xs text-gray-500">Manage listings</p>
               </div>
-              <div className="flex gap-3">
-                <div className="relative">
+              
+              <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+                <div className="relative w-full sm:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input 
-                    className="pl-10 pr-4 py-2 border rounded-lg text-sm" 
-                    placeholder="Search vehicles..." 
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-red-500 outline-none" 
+                    placeholder="Search..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
                 <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if(!open) resetForm(); }}>
                   <DialogTrigger asChild>
-                    <Button className="bg-red-600 hover:bg-red-700"><Plus className="w-4 h-4 mr-2"/>Add New</Button>
+                    <Button className="bg-red-600 hover:bg-red-700 w-full sm:w-auto">
+                      <Plus className="w-4 h-4 mr-2"/> Add New
+                    </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader><DialogTitle>{editingVehicle ? 'Edit' : 'Add'} Vehicle</DialogTitle></DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <InputGroup label="Name" name="name" val={formData.name} onChange={handleChange} />
-                        <InputGroup label="Make" name="make" val={formData.make} onChange={handleChange} />
-                        <InputGroup label="Model" name="model" val={formData.model} onChange={handleChange} />
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Category</label>
+                  <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader><DialogTitle>{editingVehicle ? 'Edit' : 'Add'} Full Vehicle Details</DialogTitle></DialogHeader>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      
+                      {/* Section: Basic Info */}
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Basic Information</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <InputGroup label="Vehicle Name" name="name" val={formData.name} onChange={handleChange} />
+                          <InputGroup label="Make" name="make" val={formData.make} onChange={handleChange} />
+                          <InputGroup label="Model" name="model" val={formData.model} onChange={handleChange} />
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Type</label>
+                            <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                {['Car', 'Truck', 'Pickup', 'Bus', 'Van', 'Bike', 'Tricycle'].map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Category</label>
                             <Select value={formData.category} onValueChange={(v) => setFormData({...formData, category: v})}>
-                                <SelectTrigger><SelectValue/></SelectTrigger>
-                                <SelectContent>{categories.map(c => <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                {categories.map(c => <SelectItem key={c.name} value={c.name}>{c.name}</SelectItem>)}
+                              </SelectContent>
                             </Select>
+                          </div>
+                          <InputGroup label="Year" name="year" type="number" val={formData.year} onChange={handleChange} />
                         </div>
                       </div>
-                      {/* ... other fields remain similar, ensuring price is type="number" ... */}
-                      <div className="grid grid-cols-2 gap-4">
-                        <InputGroup label="Price (₦)" name="price" type="number" val={formData.price} onChange={handleChange} />
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Condition</label>
+
+                      {/* Section: Specs & Pricing */}
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Specifications & Pricing</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <InputGroup label="Price (₦)" name="price" type="number" val={formData.price} onChange={handleChange} />
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Condition</label>
                             <Select value={formData.condition} onValueChange={(v) => setFormData({...formData, condition: v})}>
-                                <SelectTrigger><SelectValue/></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="Brand New">Brand New</SelectItem>
-                                    <SelectItem value="Foreign Used">Foreign Used</SelectItem>
-                                    <SelectItem value="Nigerian Used">Nigerian Used</SelectItem>
-                                </SelectContent>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Brand New">Brand New</SelectItem>
+                                <SelectItem value="Foreign Used">Foreign Used</SelectItem>
+                                <SelectItem value="Nigerian Used">Nigerian Used</SelectItem>
+                              </SelectContent>
                             </Select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Location</label>
+                            <Select value={formData.location} onValueChange={(v) => setFormData({...formData, location: v})}>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                {locations.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <InputGroup label="Mileage" name="mileage" val={formData.mileage} onChange={handleChange} placeholder="e.g. 45,000 km" />
+                          <InputGroup label="Color" name="color" val={formData.color} onChange={handleChange} />
+                          <InputGroup label="Acceleration (0-60)" name="acceleration" val={formData.acceleration} onChange={handleChange} />
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Transmission</label>
+                            <Select value={formData.transmission} onValueChange={(v) => setFormData({...formData, transmission: v})}>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Automatic">Automatic</SelectItem>
+                                <SelectItem value="Manual">Manual</SelectItem>
+                                <SelectItem value="CVT">CVT</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Fuel Type</label>
+                            <Select value={formData.fuel_type} onValueChange={(v) => setFormData({...formData, fuel_type: v})}>
+                              <SelectTrigger className="h-9"><SelectValue/></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Petrol">Petrol</SelectItem>
+                                <SelectItem value="Diesel">Diesel</SelectItem>
+                                <SelectItem value="Electric">Electric</SelectItem>
+                                <SelectItem value="Hybrid">Hybrid</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Main Image</label>
-                        <input type="file" onChange={handleMainImageChange} className="block w-full text-sm"/>
-                        {formData.image && <p className="text-xs text-green-600">Image selected</p>}
+                      {/* Section: Seller Info */}
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Seller / Agent Info</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <InputGroup label="Owner/Agent Name" name="owner_name" val={formData.owner_name} onChange={handleChange} />
+                          <InputGroup label="Phone Number" name="phone_number" val={formData.phone_number} onChange={handleChange} />
+                          <div className="sm:col-span-2">
+                            <InputGroup label="Address" name="address" val={formData.address} onChange={handleChange} />
+                          </div>
+                        </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Features (Comma separated)</label>
-                        <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded" rows="2" />
+                      {/* Section: Media & Description */}
+                      <div className="space-y-4">
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media & Details</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Main Thumbnail</label>
+                            <div className="flex items-center gap-2">
+                               <input type="file" id="main-img" onChange={handleMainImageChange} className="hidden" accept="image/*"/>
+                               <label htmlFor="main-img" className="flex items-center justify-center w-full p-2 border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-xs">
+                                 <Upload className="w-4 h-4 mr-2"/> {formData.image ? 'Image Selected' : 'Upload Thumbnail'}
+                               </label>
+                            </div>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-xs font-semibold uppercase">Gallery Images</label>
+                            <div className="flex items-center gap-2">
+                               <input type="file" id="gallery-imgs" multiple onChange={handleGalleryChange} className="hidden" accept="image/*"/>
+                               <label htmlFor="gallery-imgs" className="flex items-center justify-center w-full p-2 border-2 border-dashed rounded-md cursor-pointer hover:bg-gray-50 text-xs">
+                                 <Plus className="w-4 h-4 mr-2"/> {formData.images.length > 0 ? `${formData.images.length} files` : 'Add to Gallery'}
+                               </label>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold uppercase">Features (Comma separated)</label>
+                          <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Sunroof, Leather Seats, Navigation..." rows="2" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold uppercase">Description</label>
+                          <textarea name="description" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Detailed vehicle history or notes..." rows="3" />
+                        </div>
                       </div>
 
-                      <Button type="submit" className="w-full bg-red-600">Save Vehicle</Button>
+                      <Button type="submit" className="w-full bg-red-600 py-6 text-lg font-bold">Save Listing to Speedy</Button>
                     </form>
                   </DialogContent>
                 </Dialog>
               </div>
             </div>
 
+            {/* TABLE - SCROLLABLE ON MOBILE */}
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b">
                   <tr>
                     <th className="p-4 text-left">Vehicle</th>
                     <th className="p-4 text-left">Price</th>
-                    <th className="p-4 text-left">Condition</th>
-                    <th className="p-4 text-left">Location</th>
+                    <th className="p-4 text-left">Seller</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -259,11 +372,13 @@ const AdminPanel = () => {
                     <tr key={v.id} className="border-b hover:bg-gray-50">
                       <td className="p-4 flex items-center gap-3">
                         <img src={v.image} className="w-10 h-10 rounded object-cover" alt=""/>
-                        <span className="font-medium">{v.name}</span>
+                        <div>
+                          <p className="font-medium">{v.name}</p>
+                          <p className="text-[10px] text-gray-400">{v.location}</p>
+                        </div>
                       </td>
-                      <td className="p-4 font-bold">{formatPrice(v.price)}</td>
-                      <td className="p-4"><span className="px-2 py-1 bg-red-50 text-red-700 rounded text-xs">{v.condition}</span></td>
-                      <td className="p-4 text-gray-600">{v.location}</td>
+                      <td className="p-4 font-bold">₦{parseInt(v.price).toLocaleString()}</td>
+                      <td className="p-4 text-gray-600">{v.owner_name || 'N/A'}</td>
                       <td className="p-4 text-right space-x-2">
                         <Button variant="ghost" size="sm" onClick={() => handleEdit(v)}><Edit className="w-4 h-4 text-blue-600"/></Button>
                         <Button variant="ghost" size="sm" onClick={() => handleDelete(v.id)}><Trash2 className="w-4 h-4 text-red-600"/></Button>
@@ -280,6 +395,20 @@ const AdminPanel = () => {
   );
 };
 
+const InputGroup = ({ label, name, val, onChange, type="text", placeholder="" }) => (
+  <div className="space-y-1">
+    <label className="text-xs font-semibold text-gray-600 uppercase">{label}</label>
+    <input 
+      type={type} 
+      name={name} 
+      value={val} 
+      onChange={onChange} 
+      placeholder={placeholder}
+      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-red-500 outline-none h-9 text-sm" 
+      required={name === 'name' || name === 'price'} 
+    />
+  </div>
+);
 const StatCard = ({ title, val, icon, bg }) => (
   <Card className="border-none shadow-md">
     <CardContent className="p-6 flex justify-between items-center">
@@ -288,12 +417,4 @@ const StatCard = ({ title, val, icon, bg }) => (
     </CardContent>
   </Card>
 );
-
-const InputGroup = ({ label, name, val, onChange, type="text" }) => (
-  <div className="space-y-1">
-    <label className="text-xs font-semibold text-gray-600 uppercase">{label}</label>
-    <input type={type} name={name} value={val} onChange={onChange} className="w-full p-2 border rounded-md focus:ring-2 focus:ring-red-500 outline-none" required />
-  </div>
-);
-
 export default AdminPanel;

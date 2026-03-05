@@ -401,20 +401,20 @@ async def get_vehicles(
 @api_router.post("/vehicles", response_model=VehicleResponse)
 async def create_vehicle(
     name: str = Form(...), 
-    type: str = Form(...), 
-    service: str = Form(...),
-    category: str = Form(...), 
+    type: str = Form("Car"), 
+    service: str = Form("For Sale"),
+    category: str = Form("Sedan"), 
     price: int = Form(...), 
-    condition: str = Form(...),
-    location: str = Form(...), 
-    year: int = Form(...), 
-    make: str = Form(None),
-    model: str = Form(None), 
+    condition: str = Form("Foriegn Used"),
+    location: str = Form("Lagos"), 
+    year: int = Form(2026), 
+    make: str = Optional[str] = Form(None),
+    model: str = Optional[str] = Form(None), 
     acceleration: float = Form(0.0), # Added
-    color: str = Form(None),         # Added
-    owner_name: str = Form(None),    # Added
-    address: str = Form(None),       # Added
-    phone_number: str = Form(None),  # Added
+    color: str = Optional[str] = Form(None),         # Added
+    owner_name: Optional[str] = Form(None),    # Added
+    address: str = Optional[str] = Form(None),       # Added
+    phone_number: str = Optional[str] = Form(None),  # Added
     mileage: str = Form("0"),        # Added
     transmission: str = Form("Automatic"), # Added
     fuel_type: str = Form("Petrol"), # Added
@@ -425,7 +425,7 @@ async def create_vehicle(
     db: AsyncSession = Depends(get_db), 
     current_admin: User = Depends(get_current_admin)
 ):
-    main_image_url = "/assets/default-car.jpg"
+    main_image_url = "/assets/default-vehicle.jpg"
     if image and image.filename:
         unique_name = f"{secrets.token_hex(8)}_{image.filename}"
         path = os.path.join(UPLOAD_DIR, unique_name)

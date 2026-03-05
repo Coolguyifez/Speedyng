@@ -15,7 +15,8 @@ from sqlalchemy.future import select
 from sqlalchemy import text
 
 import resend
-
+import cloudinary
+import cloudinary.uploader
 # Import shared components
 from seed import seed_database # Import your seed function
 from database import get_db, engine, Base
@@ -38,6 +39,14 @@ logger = logging.getLogger(__name__)
 # -------------------- App Setup --------------------
 app = FastAPI(title="Speedy Vehicle Dealership API")
 api_router = APIRouter()
+
+# -------------------- Cloudinary Configuration --------------------
+cloudinary.config( 
+  cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"), 
+  api_key = os.getenv("CLOUDINARY_API_KEY"), 
+  api_secret = os.getenv("CLOUDINARY_API_SECRET"),
+  secure = True
+)
 
 # --- CRITICAL FIX: Ensure static directories exist before mounting ---
 UPLOAD_DIR = os.path.join(os.getcwd(), "static", "uploads")
@@ -138,6 +147,22 @@ async def send_reset_email(email_to: str, reset_link: str):
     except Exception as e:
         logger.error(f"Resend Error: {str(e)}")
         raise e
+
+
+        # -------------------- Helper Functions --------------------
+
+async def upload_to_cloudinary(file: UploadFile, folder: str = "speedy"):
+    """Helper to upload files directly to Cloudinary"""
+    try:
+        result = cloudinary.uploader.upload(
+            file.file,
+            folder=f"speedy/{folder}",
+            resource_type="auto"
+        )
+        return result.get("secure_url")
+    except Exception as e:
+        logger.error(f"Cloudinary Upload Failed: {e}")
+        return None
     
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
@@ -425,19 +450,19 @@ async def create_vehicle(
     db: AsyncSession = Depends(get_db), 
     current_admin: User = Depends(get_current_admin)
 ):
-    main_image_url = "/assets/default-vehicle.jpg"
+    main_image_url = "https://res.cloudinary.com/demo/image/upload/v1/sample.jpg"
     if image and image.filename:
-        unique_name = f"{secrets.token_hex(8)}_{image.filename}"
-        path = os.path.join(UPLOAD_DIR, unique_name)
-        with open(path, "wb") as f: f.write(await image.read())
-        main_image_url = f"/static/uploads/{unique_name}"
+        url = await upload_to_cloudinary(image, folder="main_images")
+        if url:
+            main_image_url = url
 
+    # 2. Upload Gallery to Cloudinary
     gallery = []
     for img in images:
         if img.filename:
-            u_name = f"{secrets.token_hex(8)}_{img.filename}"
-            with open(os.path.join(UPLOAD_DIR, u_name), "wb") as f: f.write(await img.read())
-            gallery.append(f"/static/uploads/{u_name}")
+            url = await upload_to_cloudinary(img, folder="gallery")
+            if url:
+                gallery.append(url)
 
     try: 
         f_list = json.loads(features)
@@ -471,8 +496,11 @@ async def get_vehicle(v_id: int, db: AsyncSession = Depends(get_db)):
 
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
 async def update_vehicle(
-    v_id: int, name: str = Form(None), price: int = Form(None),
-    image: Optional[UploadFile] = File(None), db: AsyncSession = Depends(get_db),
+    v_id: int, 
+    name: Optional[str] = Form(None), 
+    price: Optional[int] = Form(None),
+    image: Optional[UploadFile] = File(None), 
+    db: AsyncSession = Depends(get_db),
     current_admin: User = Depends(get_current_admin)
 ):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
@@ -482,18 +510,15 @@ async def update_vehicle(
     if name: vehicle.name = name
     if price: vehicle.price = price
     if image and image.filename:
-        u_name = f"{secrets.token_hex(8)}_{image.filename}"
-        with open(os.path.join(UPLOAD_DIR, u_name), "wb") as f: f.write(await image.read())
-        vehicle.image = f"/static/uploads/{u_name}"
+        url = await upload_to_cloudinary(image, folder="main_images")
+        if url: vehicle.image = url
 
     await db.commit()
+    await db.refresh(vehicle)
     return serialize_vehicle(vehicle)
 
 @api_router.delete("/vehicles/{v_id}")
-async def delete_vehicle(
-    v_id: int, db: AsyncSession = Depends(get_db), 
-    current_admin: User = Depends(get_current_admin)
-):
+async def delete_vehicle(v_id: int, db: AsyncSession = Depends(get_db), current_admin: User = Depends(get_current_admin)):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
     vehicle = result.scalar_one_or_none()
     if not vehicle: raise HTTPException(status_code=404, detail="Not found")
@@ -565,7 +590,7 @@ async def serve_react_app(catchall: str):
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database synced with new Agent fields.")
+    logger.info("Database synced withwith Cloudinary integration.")
 
 
 @app.get("/")

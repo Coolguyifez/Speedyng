@@ -28,7 +28,7 @@ async def seed_database():
         # We check for the Admin. If the Admin exists, it means the 
         # system has been seeded before. We will NOT add cars again.
         admin_email = "infospeedyng360@gmail.com"
-        admin_check = await session.execute(select(User).where(User.email == admin_email))
+        admin_result = await session.execute(select(User).where(User.email == admin_email))
         admin_exists = admin_result.scalar_one_or_none()
 
         if not admin_exists:

@@ -52,13 +52,14 @@ class VehicleBase(BaseModel):
     location: str
     acceleration: Optional[float] = None
     color: Optional[str] = None
+    vin: Optional[str] = None
     make: Optional[str] = None
     model: Optional[str] = None
     owner_name: Optional[str] = None
     address: Optional[str] = None       
     phone_number: Optional[str] = None
     image: Optional[str] = None
-    images: List[str] = Field(default_factory=list)
+    images: Optional[List[str]] = []
     year: Optional[int] = None
     mileage: Optional[str] = None
     transmission: Optional[str] = None
@@ -71,29 +72,30 @@ class VehicleCreate(VehicleBase):
     pass
 
 class VehicleUpdate(BaseModel):
-    name: Optional[str] = None
-    type: Optional[str] = None       
-    service: Optional[str] = None
-    category: Optional[str] = None
-    price: Optional[int] = None
-    condition: Optional[str] = None
-    location: Optional[str] = None
-    acceleration: Optional[float] = None
-    color: Optional[str] = None
-    make: Optional[str] = None
-    model: Optional[str] = None
-    owner_name: Optional[str] = None
-    address: Optional[str] = None      
-    phone_number: Optional[str] = None
-    image: Optional[str] = None
-    images: Optional[List[str]] = None
-    year: Optional[int] = None
-    mileage: Optional[str] = None
-    transmission: Optional[str] = None
-    fuel_type: Optional[str] = None
-    description: Optional[str] = None
-    features: Optional[List[str]] = None
-    verified: Optional[bool] = None
+    name: Optional[str] 
+    type: Optional[str]        
+    service: Optional[str] 
+    category: Optional[str] 
+    price: Optional[int]
+    condition: Optional[str] 
+    location: Optional[str] 
+    acceleration: Optional[float] 
+    color: Optional[str]
+    vin: Optional[str]
+    make: Optional[str] 
+    model: Optional[str] 
+    owner_name: Optional[str]
+    address: Optional[str]    
+    phone_number: Optional[str] 
+    image: Optional[str]
+    images: Optional[List[str]]
+    year: Optional[int]
+    mileage: Optional[str]
+    transmission: Optional[str]
+    fuel_type: Optional[str]
+    description: Optional[str]
+    features: Optional[List[str]]
+    verified: Optional[bool]
 
 class VehicleResponse(VehicleBase):
     id: int

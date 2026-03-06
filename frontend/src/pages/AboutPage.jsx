@@ -184,28 +184,48 @@ const AboutPage = () => {
       {/* Our Process Diagram Flow */}
       <section className="py-20 bg-slate-900 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-16"> Our Work Process</h2>
+          <h2 className="text-3xl font-bold mb-16">Our Work Process</h2>
           
-          <div className="flex flex-col md:flex-row justify-center items-start gap-8 md:gap-4">
+          <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-4">
             {[
               { icon: <Car />, title: "Sourcing" },
-              { icon: <MdOutlineSell />, title: "Selling" },
               { icon: <ShieldCheck />, title: "Vetting" },
               { icon: <MessageSquare />, title: "Matching" },
+              { icon: <MdOutlineSell />, title: "Selling" },
               { icon: <CheckCircle />, title: "Closing" }
             ].map((step, index) => (
-              <div key={index} className="flex-1 px-4 relative group">
-                <div className="w-16 h-16 bg-white text-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-600 group-hover:scale-110 transition-transform">
-                  {step.icon}
+              <React.Fragment key={index}>
+                {/* Step Circle */}
+                <div className="flex-1 px-4 relative group">
+                  <div className="w-16 h-16 bg-white text-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-600 group-hover:scale-110 transition-transform z-10 relative">
+                    {step.icon}
+                  </div>
+                  <h4 className="font-bold text-lg mb-2">{step.title}</h4>
                 </div>
-                <h4 className="font-bold text-lg mb-2">{step.title}</h4>
+      
+                {/* Broken Arrow Connector */}
                 {index < 4 && (
-                    <div className="hidden lg:block absolute top-8 -right-4 w-8 border-t-2 border-dashed border-red-600/30"></div>
+                  <div className="flex items-center justify-center py-4 md:py-0 md:h-16">
+                    {/* Laptop Arrow (Horizontal) */}
+                    <svg 
+                      className="hidden md:block w-12 lg:w-20 h-8 text-red-600/50" 
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+      
+                    {/* Mobile Arrow (Vertical) */}
+                    <svg 
+                      className="block md:hidden w-8 h-12 text-red-600/50" 
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 13l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                  </div>
                 )}
-              </div>
+              </React.Fragment>
             ))}
           </div>
-          
         </div>
       </section>
 

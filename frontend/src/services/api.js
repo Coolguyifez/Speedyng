@@ -94,23 +94,17 @@ export const authAPI = {
 // 4. Car API: Handles Inventory
 export const vehicleAPI = {
   getAll: (category = null) => {
+    // If category is "All" or null, don't send a param
     const config = category && category !== 'All' ? { params: { category } } : {};
     return api.get('/vehicles', config);
   },
-
   getOne: (id) => api.get(`/vehicles/${id}`), 
-
-  // CRITICAL: Set multipart/form-data for image uploads
-  create: (formData) => api.post('/vehicles', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
-
-  update: (id, formData) => api.put(`/vehicles/${id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
-
+  create: (data) => api.post('/vehicles', data),
+  update: (id, data) => api.put(`/vehicles/${id}`, data),
   delete: (id) => api.delete(`/vehicles/${id}`),
 
+
+  // --- Chat Functions --
   saveChatMessage: (messageData) => {
     return api.post('/chat/save', {
       content: messageData.content || messageData.text,
@@ -118,7 +112,7 @@ export const vehicleAPI = {
       timestamp: messageData.timestamp || new Date().toISOString()
     });
   },
-
+// Fetches the history list for the specific user
   getChatHistory: (userId) => api.get(`/chat/history/${userId}`),
 };
   

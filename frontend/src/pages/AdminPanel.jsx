@@ -149,6 +149,7 @@ const AdminPanel = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <div className="bg-gray-900 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold flex items-center gap-2">
@@ -176,7 +177,6 @@ const AdminPanel = () => {
 
         <Card className="shadow-xl">
           <CardContent className="p-0">
-            {/* SEARCH & ADD SECTION - MOBILE OPTIMIZED */}
             <div className="p-4 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-center gap-4">
               <div className="w-full sm:w-auto text-center sm:text-left">
                 <h2 className="text-xl font-bold">Inventory</h2>
@@ -200,14 +200,14 @@ const AdminPanel = () => {
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader><DialogTitle>{editingVehicle ? 'Edit' : 'Add'} Full Vehicle Details</DialogTitle>
+                    <DialogHeader>
+                      <DialogTitle>{editingVehicle ? 'Edit' : 'Add'} Full Vehicle Details</DialogTitle>
                       <DialogDescription className="text-xs text-gray-500">
                         Provide specifications for the vehicle listing.
                       </DialogDescription>
                     </DialogHeader>
+                    
                     <form onSubmit={handleSubmit} className="space-y-6">
-                      
-                      {/* Section: Basic Info */}
                       <div className="space-y-4">
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Basic Information</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -215,6 +215,7 @@ const AdminPanel = () => {
                           <InputGroup label="Make" name="make" val={formData.make} onChange={handleChange} placeholder="Toyota" />
                           <InputGroup label="Model" name="model" val={formData.model} onChange={handleChange} placeholder="Camry" />
                           <InputGroup label="VIN" name="vin" val={formData.vin} onChange={handleChange} placeholder="e.g 245367654676534567" />
+                          
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Type</label>
                             <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
@@ -224,6 +225,7 @@ const AdminPanel = () => {
                               </SelectContent>
                             </Select>
                           </div>
+
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Category</label>
                             <Select value={formData.category} onValueChange={(v) => setFormData({...formData, category: v})}>
@@ -237,7 +239,6 @@ const AdminPanel = () => {
                         </div>
                       </div>
 
-                      {/* Section: Specs & Pricing */}
                       <div className="space-y-4">
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Specifications & Pricing</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -305,7 +306,6 @@ const AdminPanel = () => {
                         </div>
                       </div>
 
-                      {/* Section: Seller Info */}
                       <div className="space-y-4">
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Seller / Dealer Info</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -317,47 +317,23 @@ const AdminPanel = () => {
                         </div>
                       </div>
 
-                      {/* Section: Media & Description */}
                       <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media (Image URLs)</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                          {/* Main Image */}
-                          <div>
-                            <label className="text-xs font-semibold uppercase">Main Thumbnail URL</label>
-                            <input
-                              type="url"
-                              name="image"
-                              value={formData.image}
-                              onChange={handleChange}
-                              required
-                              className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm"
-                              placeholder="https://..."
-                            />
-                          </div>
-                          <div>
-                            <label className="text-xs font-semibold uppercase">Gallery URLs (Comma separated)</label>
-                            <input
-                              type="url"
-                              name="images"
-                              value={formData.images}
-                              onChange={handleChange}
-                              required
-                              className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm"
-                              placeholder="https://..., https://..., etc"
-                            />
-                          </div>
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media & Content</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <InputGroup label="Main Thumbnail URL" name="image" val={formData.image} onChange={handleChange} placeholder="https://..." />
+                          <InputGroup label="Gallery URLs (Comma separated)" name="images" val={formData.images} onChange={handleChange} placeholder="https://url1, https://url2..." />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold uppercase">Features (Comma separated)</label>
+                          <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Sunroof, Leather Seats..." rows="2" />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold uppercase">Description</label>
+                          <textarea name="description" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Detailed vehicle history..." rows="3" />
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold uppercase">Features (Comma separated)</label>
-                        <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Sunroof, Leather Seats, Navigation..." rows="2" />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold uppercase">Description</label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Detailed vehicle history or notes..." rows="3" />
-                      </div>
-                    </div>
-                      <Button type="submit" disabled={isSubmitting} className="w-full bg-red-600 py-7 rounded-2xl text-lg font-bold shadow-xl shadow-red-200">
+
+                      <Button type="submit" disabled={isSubmitting} className="w-full bg-red-600 py-7 rounded-2xl text-lg font-bold shadow-xl">
                         {isSubmitting ? <Loader2 className="animate-spin mr-2"/> : null}
                         {editingVehicle ? 'Update Listing' : 'Add to Inventory'}
                       </Button>
@@ -366,8 +342,7 @@ const AdminPanel = () => {
                 </Dialog>
               </div>
             </div>
-
-            {/* TABLE - SCROLLABLE ON MOBILE */}
+      
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-gray-50 border-b">
@@ -387,14 +362,13 @@ const AdminPanel = () => {
                         <img src={v.image} className="w-10 h-10 rounded object-cover" alt=""/>
                         <div>
                           <p className="font-medium">{v.name}</p>
-                          <p className="text-[10px] text-gray-450">{v.vin}</p>
-                          <p className="text-[7px] text-gray-400">{v.location}-{v.service}</p>
+                          <p className="text-[10px] text-gray-400">{v.vin}</p>
                         </div>
                       </td>
                       <td className="p-4 font-bold">{v.color}</td>
                       <td className="p-4 font-bold">₦{parseInt(v.price).toLocaleString()}</td>
                       <td className="p-4 text-gray-600">{v.owner_name || 'N/A'}</td>
-                      <td className="p-4 text-gray-600">{v.address || 'N/A'}</td>
+                      <td className="p-4 text-gray-600 truncate max-w-[150px]">{v.address || 'N/A'}</td>
                       <td className="p-4 text-right space-x-2">
                         <Button variant="ghost" size="sm" onClick={() => handleEdit(v)}><Edit className="w-4 h-4 text-blue-600"/></Button>
                         <Button variant="ghost" size="sm" onClick={() => handleDelete(v.id)}><Trash2 className="w-4 h-4 text-red-600"/></Button>
@@ -405,8 +379,8 @@ const AdminPanel = () => {
               </table>
               {filteredVehicles.length === 0 && (
                 <div className="py-20 flex flex-col items-center text-gray-400">
-                   <AlertCircle size={40} className="mb-2 opacity-20" />
-                   <p>No listings found matches your search.</p>
+                  <AlertCircle size={40} className="mb-2 opacity-20" />
+                  <p>No listings found in the inventory.</p>
                 </div>
               )}
             </div>
@@ -419,7 +393,7 @@ const AdminPanel = () => {
 
 const InputGroup = ({ label, name, val, onChange, type="text", placeholder="" }) => (
   <div className="space-y-1">
-    <label className="">{label}</label>
+    <label className="text-xs font-semibold uppercase">{label}</label>
     <input 
       type={type} 
       name={name} 
@@ -440,4 +414,5 @@ const StatCard = ({ title, val, icon, bg, color }) => (
     </CardContent>
   </Card>
 );
+
 export default AdminPanel;

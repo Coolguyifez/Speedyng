@@ -153,17 +153,62 @@ async def send_reset_email(email_to: str, reset_link: str):
         # -------------------- Helper Functions --------------------
 
 async def upload_to_cloudinary(file: UploadFile, folder: str = "speedy"):
-    """Helper to upload files directly to Cloudinary"""
+    """Helper to upload files directly to Cloudinary and return the secure URL"""
     try:
+        # Seek to the beginning of the file to ensure we read everything
+        file.file.seek(0)
+        
         result = cloudinary.uploader.upload(
             file.file,
             folder=f"speedy/{folder}",
             resource_type="auto"
         )
+        # We return the secure_url which starts with https://
         return result.get("secure_url")
     except Exception as e:
         logger.error(f"Cloudinary Upload Failed: {e}")
         return None
+
+
+def get_cloudinary_public_id(url: str):
+    """
+    Extracts the public_id from a Cloudinary URL.
+    Input: https://res.cloudinary.com/demo/image/upload/v1/speedy/main/car.jpg
+    Output: speedy/main/car
+    """
+    if not url or "res.cloudinary.com" not in url:
+        return None
+    
+    try:
+        # 1. Split by 'upload/' to get the path after the base URL
+        parts = url.split('upload/')
+        if len(parts) < 2:
+            return None
+        
+        # 2. Remove the versioning (the part starting with 'v' followed by numbers)
+        path_parts = parts[1].split('/')
+        if path_parts[0].startswith('v') and path_parts[0][1:].isdigit():
+            path_parts = path_parts[1:]
+            
+        # 3. Join back and strip the file extension (.jpg, .png, etc)
+        public_id_with_ext = "/".join(path_parts)
+        public_id = public_id_with_ext.rsplit('.', 1)[0]
+        return public_id
+    except Exception as e:
+        logger.error(f"Failed to extract Public ID: {e}")
+        return None
+
+async def delete_from_cloudinary(url: str):
+    """Utility to delete image from Cloudinary by its URL"""
+    public_id = get_cloudinary_public_id(url)
+    if public_id:
+        try:
+            # Simple direct call to the Cloudinary SDK
+            cloudinary.uploader.destroy(public_id)
+            logger.info(f"Cloudinary Deleted: {public_id}")
+        except Exception as e:
+            logger.error(f"Cloudinary Destruction Error: {e}")
+        
     
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
@@ -460,9 +505,9 @@ async def update_vehicle(
     v_id: int,
     name: str = Form(None), make: str = Form(None), model: str = Form(None),
     type: str = Form(None), service: str = Form(None), category: str = Form(None),
-    price: Optional[int] = Form(None), condition: str = Form(None),
-    location: str = Form(None), year: Optional[int] = Form(None),
-    acceleration: Optional[float] = Form(None), color: str = Form(None),
+    price: str = Form(None), condition: str = Form(None),
+    location: str = Form(None), year: str = Form(None),
+    acceleration: str = Form(None), color: str = Form(None),
     owner_name: str = Form(None), address: str = Form(None),
     phone_number: str = Form(None), mileage: str = Form(None),
     transmission: str = Form(None), fuel_type: str = Form(None),
@@ -483,7 +528,17 @@ async def update_vehicle(
     for field in fields:
         val = locals().get(field)
         if val is not None: setattr(vehicle, field, val)
+        
 
+    #  Handle Numeric Conversion Safely (to avoid 422 if empty string)
+    if price and price.strip() != "":
+        vehicle.price = int(float(price)) # Convert via float for safety
+    if year and year.strip() != "":
+        vehicle.year = int(float(year))
+    if acceleration and acceleration.strip() != "":
+        vehicle.acceleration = float(acceleration)
+
+    
     if features:
         try: vehicle.features = json.loads(features)
         except: pass
@@ -505,13 +560,29 @@ async def update_vehicle(
     return serialize_vehicle(vehicle)
 
 @api_router.delete("/vehicles/{v_id}")
-async def delete_vehicle(v_id: int, db: AsyncSession = Depends(get_db), current_admin: User = Depends(get_current_admin)):
+async def delete_vehicle(
+    v_id: int, 
+    db: AsyncSession = Depends(get_db), 
+    current_admin: User = Depends(get_current_admin)
+):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
     vehicle = result.scalar_one_or_none()
-    if not vehicle: raise HTTPException(status_code=404, detail="Not found")
+    
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+
+    # Clean up Main Image
+    if vehicle.image:
+        await delete_from_cloudinary(vehicle.image)
+
+    # Clean up Gallery Images (stored as a list of URLs)
+    if vehicle.images:
+        for img_url in vehicle.images:
+            await delete_from_cloudinary(img_url)
+
     await db.delete(vehicle)
     await db.commit()
-    return {"message": "Deleted"}
+    return {"message": "Vehicle and all assets deleted from Cloudinary and DB."}
     
 
 # -------------------- Chat Routes --------------------

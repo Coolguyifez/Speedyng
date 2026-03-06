@@ -512,6 +512,7 @@ async def create_vehicle(
     
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
 async def update_vehicle(
+    async def update_vehicle(
     v_id: int,
     name: Optional[str] = Form(None),
     type: Optional[str] = Form(None),
@@ -538,64 +539,67 @@ async def update_vehicle(
     db: AsyncSession = Depends(get_db),
     current_admin: User = Depends(get_current_admin)
 ):
-    result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
-    vehicle = result.scalar_one_or_none()
-    if not vehicle: 
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    try:
+        result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
+        vehicle = result.scalar_one_or_none()
+        if not vehicle: 
+            raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    # 1. Update Text Fields
-    if name is not None: vehicle.name = name
-    if type is not None: vehicle.type = type
-    if service is not None: vehicle.service = service
-    if mileage is not None: vehicle.mileage = mileage
-    if category is not None: vehicle.category = category
-    if owner_name is not None: vehicle.owner_name = owner_name
-    if phone_number is not None: vehicle.phone_number = phone_number
-    if address is not None: vehicle.address = address
-    if color is not None: vehicle.color = color
-    if transmission is not None: vehicle.transmission = transmission
-    if fuel_type is not None: vehicle.fuel_type = fuel_type
-    if acceleration is not None: vehicle.acceleration = acceleration
-    if location is not None: vehicle.location = location
-    if make is not None: vehicle.make = make
-    if model is not None: vehicle.model = model
-    if condition is not None: vehicle.condition = condition
-    if description is not None: vehicle.description = description
+        # Create a dictionary of all potential updates
+        updates = {
+            "name": name, "type": type, "service": service, "mileage": mileage,
+            "category": category, "owner_name": owner_name, "phone_number": phone_number,
+            "address": address, "color": color, "transmission": transmission,
+            "fuel_type": fuel_type, "acceleration": acceleration, "location": location,
+            "make": make, "model": model, "condition": condition, "description": description
+        }
 
-    # 2. Handle Numeric Conversions
-    if price and price.strip():
-        try: vehicle.price = int(float(price))
-        except: pass
+        # Safe dynamic update: only update if the attribute exists in the model
+        for key, value in updates.items():
+            if value is not None:
+                if hasattr(vehicle, key):
+                    setattr(vehicle, key, value)
+                else:
+                    logger.warning(f"Field '{key}' skipped: not found in Vehicle model.")
+
+        # 2. Handle Numeric Conversions safely
+        if price and price.strip():
+            try: vehicle.price = int(float(price))
+            except: pass
+        
+        if year and year.strip():
+            try: vehicle.year = int(float(year))
+            except: pass
+
+        # 3. Handle Features (JSON)
+        if features:
+            try: 
+                vehicle.features = json.loads(features)
+            except Exception as e:
+                logger.error(f"Failed to parse features JSON: {e}")
+
+        # 4. Handle Main Image replacement
+        if image and image.filename:
+            url = await upload_to_cloudinary(image, "main_images")
+            if url: vehicle.image = url
+
+        # 5. Handle Gallery additions
+        if images:
+            current_gallery = list(vehicle.images or [])
+            for img in images:
+                if img.filename:
+                    url = await upload_to_cloudinary(img, "gallery")
+                    if url: current_gallery.append(url)
+            vehicle.images = current_gallery
+
+        await db.commit()
+        await db.refresh(vehicle)
+        return serialize_vehicle(vehicle)
     
-    if year and year.strip():
-        try: vehicle.year = int(float(year))
-        except: pass
-
-    # 3. Handle Features (JSON)
-    if features:
-        try: 
-            vehicle.features = json.loads(features)
-        except Exception as e:
-            logger.error(f"Failed to parse features JSON: {e}")
-
-    # 4. Handle Main Image replacement
-    if image and image.filename:
-        url = await upload_to_cloudinary(image, "main_images")
-        if url: vehicle.image = url
-
-    # 5. Handle Gallery additions
-    if images:
-        current_gallery = list(vehicle.images or [])
-        for img in images:
-            if img.filename:
-                url = await upload_to_cloudinary(img, "gallery")
-                if url: current_gallery.append(url)
-        vehicle.images = current_gallery
-
-    await db.commit()
-    await db.refresh(vehicle)
-    return serialize_vehicle(vehicle)
-    
+    except Exception as e:
+        logger.error(f"CRITICAL UPDATE ERROR: {str(e)}")
+        # This returns the error to the frontend so you can see it in the console
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")    
 
 @api_router.delete("/vehicles/{v_id}")
 async def delete_vehicle(

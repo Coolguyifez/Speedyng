@@ -24,31 +24,6 @@ const categories = [
 
 const locations = ['Lagos', 'Abuja', 'Port Harcourt', 'Benin', 'Warri', 'Asaba'];
 
-// --- MEMORY SAFE IMAGE PREVIEW COMPONENT ---
-const SafeImagePreview = ({ file, onRemove, isGallery = false }) => {
-  const [url, setUrl] = useState("");
-
-  useEffect(() => {
-    if (!file) return;
-    const blobUrl = typeof file === 'string' ? file : URL.createObjectURL(file);
-    setUrl(blobUrl);
-    return () => { if (typeof file !== 'string') URL.revokeObjectURL(blobUrl); };
-  }, [file]);
-
-  return (
-    <div className={`relative rounded-lg overflow-hidden border border-gray-200 shadow-sm group ${isGallery ? 'h-20' : 'w-full h-32'}`}>
-      <img src={url} className="w-full h-full object-cover" alt="Preview" />
-      <button 
-        type="button" 
-        onClick={onRemove}
-        className="absolute top-1 right-1 bg-red-600/90 text-white p-1 rounded-full hover:bg-red-700 transition-all scale-0 group-hover:scale-100 shadow-lg"
-      >
-        <X className={isGallery ? "w-3 h-3" : "w-4 h-4"} />
-      </button>
-    </div>
-  );
-};
-
 const AdminPanel = () => {
   const [vehicles, setVehicles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -62,7 +37,7 @@ const AdminPanel = () => {
     name: '', make: '', model: '', type: 'Car', service: 'For Sale',
     category: 'Sedan', price: '', condition: 'Foreign Used', location: 'Lagos',
     acceleration: '', color: '', owner_name: '', address: '', phone_number: '',
-    image: null, images: [], year: new Date().getFullYear(), mileage: '',
+    image: '', images: '', year: new Date().getFullYear(), mileage: '',
     transmission: 'Automatic', fuel_type: 'Petrol', description: '', features: ''
   });
 
@@ -92,107 +67,70 @@ const AdminPanel = () => {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleMainImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) setFormData({ ...formData, image: e.target.files[0] });
-  };
-
-  const handleGalleryChange = (e) => {
-    if (e.target.files) setFormData({ ...formData, images: [...formData.images, ...Array.from(e.target.files)] });
-  };
-
-  const removeMainImage = () => setFormData({ ...formData, image: null });
-  const removeGalleryImage = (idx) => { setFormData({ ...formData, images: formData.images.filter((_, i) => i !== idx) });};
-
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to remove this vehicle")) {
-      try {
-        await vehicleAPI.delete(id);
-        toast.success("Vehicle removed");
-        fetchInventory();
-      } catch (error) { toast.error("Delete failed"); }
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+     
+    const processedData = {
+      ...formData,
+      // Ensure these are numbers for the database
+      price: parseFloat(formData.price),
+      year: parseInt(formData.year),
+      acceleration: formData.acceleration ? parseFloat(formData.acceleration) : null,
+      verified: true,
+      images: typeof formData.images === 'string' 
+        ? formData.images.split(',').map(img => img.trim()).filter(img => img !== "") 
+        : formData.images,
+      // Ensure features is an array, as backend expects a list
+      features: typeof formData.features === 'string' 
+        ? formData.features.split(',').map(f => f.trim()).filter(f => f !== "") 
+        : formData.features
+    };
+     
+    try {
+      if (editingVehicle) {
+        await vehicleAPI.update(editingVehicle.id, processedData);
+        toast.success('Vehicle Updated successful!');
+      } else {
+        await vehicleAPI.create(processedData);
+        toast.success('Vehicle added to inventory!');
+      }
+      setIsDialogOpen(false);
+      fetchInventory(); // Refreshes your table
+      resetForm();
+    } catch (error) {
+      // This will now catch the 500 or CORS error and show details
+      console.error("Submission error details:", error.response?.data);
+      toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
     }
   };
-  
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Permanently delete this vehicle?')) {
+      try {
+        await vehicleAPI.delete(id);
+        toast.success('Vehicle removed from database');
+        setVehicles(vehicles.filter(v => v.id !== id));
+      } catch (error) {
+        toast.error("Delete failed");
+      }
+    }
+  };
+
   const handleEdit = (v) => {
     setEditingVehicle(v);
     setFormData({
       ...v,
-      features: Array.isArray(v.features) ? v.features.join(', ') : (v.features || ''),
-      images: Array.isArray(v.images) ? v.images : [],
-      image: v.image // Keeping existing URL for preview
+      acceleration: v.acceleration || '',
+      color: v.color || '',
+      address: v.address || '',           // Ensure value is captured
+      phone_number: v.phone_number || '', // Ensure value is captured
+      fuel_type: v.fuel_type || 'Petrol', // Mapping to match state
+      features: Array.isArray(v.features) ? v.features.join(', ') : v.features,
+      images: Array.isArray(v.images) ? v.images.join(', ') : v.images
     });
     setIsDialogOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-  
-    const data = new FormData();
-    
-    Object.keys(formData).forEach((key) => {
-      const value = formData[key];
-  
-      // 1. Handle Images
-      if (key === 'image') {
-        if (value instanceof File) data.append('image', value);
-      } 
-      else if (key === 'images') {
-        value.forEach((file) => {
-          if (file instanceof File) data.append('images', file);
-        });
-      } 
-      // 2. Handle Features (Ensure it's a string before splitting)
-      else if (key === 'features') {
-        const featureArray = typeof value === 'string' 
-          ? value.split(',').map(f => f.trim()).filter(Boolean) 
-          : value;
-        data.append('features', JSON.stringify(featureArray));
-      } 
-      // 3. Handle Numbers (Fixes the 422 error)
-      else if (['price', 'year', 'acceleration'].includes(key)) {
-        // If the value is empty, send 0 or omit it so the backend doesn't receive ""
-        const numValue = value === '' ? 0 : value;
-        data.append(key, numValue);
-      }
-      // 4. Everything else (Strings)
-      else {
-        if (value !== null && value !== undefined) {
-          data.append(key, value);
-        }
-      }
-    });
-  
-    try {
-      const apiCall = editingVehicle 
-        ? vehicleAPI.update(editingVehicle.id, data) 
-        : vehicleAPI.create(data);
-  
-      await apiCall;
-      toast.success("Speedy Inventory Updated!");
-      setIsDialogOpen(false);
-      resetForm();
-      fetchInventory();
-    } catch (error) {
-      console.error("Upload Error:", error.response?.data);
-  
-      // FIX FOR ERROR #31: Ensure we only pass a STRING to toast.error
-      let errorMessage = "Something went wrong";
-      
-      if (error.response?.data?.detail) {
-        const detail = error.response.data.detail;
-        // If detail is an array (Pydantic error), extract the first message
-        errorMessage = Array.isArray(detail) 
-          ? `${detail[0].loc.join('.')}: ${detail[0].msg}` 
-          : detail;
-      }
-  
-      toast.error(String(errorMessage)); 
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-    
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();
     const matchesSearch = v.name.toLowerCase().includes(sLower) || (v.owner_name?.toLowerCase().includes(sLower));
@@ -381,33 +319,32 @@ const AdminPanel = () => {
                         <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media (Cancel uploads by clicking X)</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                           {/* Main Image */}
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase">Main Image</label>
-                            {formData.image ? (
-                              <SafeImagePreview file={formData.image} onRemove={removeMainImage} />
-                            ) : (
-                              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                                <Upload className="w-8 h-8 text-gray-400 mb-2"/>
-                                <span className="text-xs text-gray-500">Click to upload main image</span>
-                                <input type="file" onChange={handleMainImageChange} className="hidden" accept="image/*"/>
-                              </label>
-                            )}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                            <input
+                              type="url"
+                              name="image"
+                              value={formData.image}
+                              onChange={handleChange}
+                              required
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                              placeholder="https://example.com/image.jpg"
+                            />
                           </div>
-
-                          {/* Gallery Images */}
-                          <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase">Gallery ({formData.images.length})</label>
-                            <div className="grid grid-cols-3 gap-2">
-                               {formData.images.map((img, idx) => (
-                                 <SafeImagePreview key={idx} file={img} isGallery={true} onRemove={() => removeGalleryImage(idx)} />
-                               ))}
-                               <label className="flex items-center justify-center h-20 border-2 border-dashed rounded cursor-pointer hover:bg-gray-50">
-                                 <Plus className="w-6 h-6 text-gray-400"/>
-                                 <input type="file" multiple onChange={handleGalleryChange} className="hidden" accept="image/*"/>
-                               </label>
-                            </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Images URL</label>
+                            <input
+                              type="url"
+                              name="images"
+                              value={formData.images}
+                              onChange={handleChange}
+                              required
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                              placeholder="https://example.com/image.jpg, https://example.com/image.jpg "
+                            />
                           </div>
                         </div>
+                      </div>
                         <div className="space-y-1">
                           <label className="text-xs font-semibold uppercase">Features (Comma separated)</label>
                           <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Sunroof, Leather Seats, Navigation..." rows="2" />
@@ -417,7 +354,6 @@ const AdminPanel = () => {
                           <textarea name="description" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Detailed vehicle history or notes..." rows="3" />
                         </div>
                       </div>
-
                       <Button type="submit" disabled={isSubmitting} className="w-full bg-red-600 py-6 text-lg font-bold">
                         {isSubmitting ? <Loader2 className="animate-spin mr-2"/> : null}
                         {editingVehicle ? 'Update Listing' : 'Add to Inventory'}

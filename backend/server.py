@@ -508,8 +508,14 @@ async def create_vehicle(
 async def update_vehicle(
     v_id: int,
     name: Optional[str] = Form(None),
+    type: Optional[str] = Form(None),
     price: Optional[str] = Form(None),
     category: Optional[str] = Form(None),
+    location: Optional[str] = Form(None),
+    year: Optional[str] = Form(None),
+    make: Optional[str] = Form(None),         # Added
+    model: Optional[str] = Form(None),        # Added
+    condition: Optional[str] = Form(None),    # Added
     description: Optional[str] = Form(None),
     features: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None),
@@ -519,24 +525,38 @@ async def update_vehicle(
 ):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
     vehicle = result.scalar_one_or_none()
-    if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
+    if not vehicle: 
+        raise HTTPException(status_code=404, detail="Vehicle not found")
 
     # FIXED: Only update if the value is not an empty string (prevents accidental wiping)
-    if name and name.strip(): vehicle.name = name
-    if price and price.strip(): vehicle.price = int(float(price))
-    if category and category.strip(): vehicle.category = category
-    if description and description.strip(): vehicle.description = description
+    if name: vehicle.name = name
+    if type: vehicle.type = type
+    if category: vehicle.category = category
+    if location: vehicle.location = location
+    if make: vehicle.make = make
+    if model: vehicle.model = model
+    if condition: vehicle.condition = condition
+    if description: vehicle.description = description
     
-    if features and features.strip():
+    # Safe numeric conversion
+    if price and price.strip():
+        try: vehicle.price = int(float(price))
+        except: pass
+    if year and year.strip():
+        try: vehicle.year = int(year)
+        except: pass
+
+    # Features JSON handling
+    if features:
         try: vehicle.features = json.loads(features)
         except: pass
 
-    # Handle New Image Overwrites
+    # Image Overwrites
     if image and image.filename:
         url = await upload_to_cloudinary(image, "main_images")
         if url: vehicle.image = url
 
-    # Append to existing gallery
+    # Gallery handling (Appending new ones)
     if images:
         current_gallery = list(vehicle.images or [])
         for img in images:

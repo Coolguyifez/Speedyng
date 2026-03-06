@@ -317,45 +317,45 @@ const AdminPanel = () => {
 
                       {/* Section: Media & Description */}
                       <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media (Cancel uploads by clicking X)</h3>
+                        <h3 className="text-sm font-bold text-red-600 border-b pb-1">Media (Image URLs)</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                           {/* Main Image */}
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Image URL</label>
+                            <label className="text-xs font-semibold uppercase">Main Thumbnail URL</label>
                             <input
                               type="url"
                               name="image"
                               value={formData.image}
                               onChange={handleChange}
                               required
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                              placeholder="https://example.com/image.jpg"
+                              className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm"
+                              placeholder="https://..."
                             />
                           </div>
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Images URL</label>
+                            <label className="text-xs font-semibold uppercase">Gallery URLs (Comma separated)</label>
                             <input
                               type="url"
                               name="images"
                               value={formData.images}
                               onChange={handleChange}
                               required
-                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-                              placeholder="https://example.com/image.jpg, https://example.com/image.jpg "
+                              className="w-full p-2.5 bg-gray-50 border rounded-xl text-sm"
+                              placeholder="https://..., https://..., etc"
                             />
                           </div>
                         </div>
                       </div>
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold uppercase">Features (Comma separated)</label>
-                          <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Sunroof, Leather Seats, Navigation..." rows="2" />
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-xs font-semibold uppercase">Description</label>
-                          <textarea name="description" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Detailed vehicle history or notes..." rows="3" />
-                        </div>
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold uppercase">Features (Comma separated)</label>
+                        <textarea name="features" value={formData.features} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Sunroof, Leather Seats, Navigation..." rows="2" />
                       </div>
-                      <Button type="submit" disabled={isSubmitting} className="w-full bg-red-600 py-6 text-lg font-bold">
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold uppercase">Description</label>
+                        <textarea name="description" value={formData.description} onChange={handleChange} className="w-full p-2 border rounded-md text-sm" placeholder="Detailed vehicle history or notes..." rows="3" />
+                      </div>
+                    </div>
+                      <Button type="submit" disabled={isSubmitting} className="w-full bg-red-600 py-7 rounded-2xl text-lg font-bold shadow-xl shadow-red-200">
                         {isSubmitting ? <Loader2 className="animate-spin mr-2"/> : null}
                         {editingVehicle ? 'Update Listing' : 'Add to Inventory'}
                       </Button>

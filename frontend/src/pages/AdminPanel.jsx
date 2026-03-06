@@ -67,9 +67,10 @@ const AdminPanel = () => {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-     
+    setIsSubmitting(true);
+    
     const processedData = {
       ...formData,
       // Ensure these are numbers for the database
@@ -101,14 +102,15 @@ const AdminPanel = () => {
       // This will now catch the 500 or CORS error and show details
       console.error("Submission error details:", error.response?.data);
       toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
-    }
+    } finally {
+      setIsSubmitting(false);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Permanently delete this vehicle?')) {
+    if (window.confirm('Are you sure you want to remove this vehicle?')) {
       try {
         await vehicleAPI.delete(id);
-        toast.success('Vehicle removed from database');
+        toast.success('Vehicle removed');
         setVehicles(vehicles.filter(v => v.id !== id));
       } catch (error) {
         toast.error("Delete failed");
@@ -160,13 +162,13 @@ const AdminPanel = () => {
             </div>
             <span className="text-2xl font-bold text-white ml-2">Speedy Admin</span>
           </Link>
-          <Link to="/"><Button variant="ghost">Back to Site</Button></Link>
+          <Link to="/"><Button variant="ghost" className="hover:text-red-500">Back to Site</Button></Link>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <StatCard title="Inventory" val={vehicles.length} icon={<Car className="text-red-600"/>} bg="bg-red-100" />
+          <StatCard title="Total Inventory" val={vehicles.length} icon={<Car className="text-red-600"/>} bg="bg-red-100" />
           <StatCard title="Brand New" val={vehicles.filter(v => v.condition === 'Brand New').length} icon={<CheckCircle className="text-green-600"/>} bg="bg-green-100" />
           <StatCard title="Foreign Used" val={vehicles.filter(v => v.condition === 'Foreign Used').length} icon={<LayoutDashboard className="text-blue-600"/>} bg="bg-blue-100" />
           <StatCard title="Nigerian Used" val={vehicles.filter(v => v.condition === 'Nigerian Used').length} icon={<CircleGauge className="text-yellow-600"/>} bg="bg-yellow-100" />

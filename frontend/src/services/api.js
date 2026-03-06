@@ -99,9 +99,18 @@ export const vehicleAPI = {
     return api.get('/vehicles', config);
   },
   getOne: (id) => api.get(`/vehicles/${id}`), 
-  create: (data) => api.post('/vehicles', data),
-  update: (id, data) => api.put(`/vehicles/${id}`, data),
+  
+  // FIXED: Explicitly set multipart/form-data for uploads
+  create: (formData) => api.post('/vehicles', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+
+  update: (id, formData) => api.put(`/vehicles/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+
   delete: (id) => api.delete(`/vehicles/${id}`),
+};
 
 
   // --- Chat Functions --

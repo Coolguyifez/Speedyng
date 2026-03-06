@@ -104,6 +104,7 @@ const AdminPanel = () => {
       toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
     } finally {
       setIsSubmitting(false);
+    }  
   };
 
   const handleDelete = async (id) => {

@@ -457,47 +457,53 @@ async def get_vehicles(
 async def create_vehicle(
     name: str = Form(...), 
     type: str = Form("Car"), 
-    price: int = Form("0"),
+    price: str = Form("0"), # Changed to str for safety
     category: str = Form("Sedan"), 
+    service: str = Form("Sale"), # Added
     location: str = Form("Lagos"),
-    year: int = Form("2026"),
+    condition: str = Form("Foreign Used"),
+    make: str = Form (""),
+    model: str = Form (""),
+    year: str = Form("2026"), # Changed to str
+    mileage: str = Form("0"), # Added
+    color: str = Form(""), # Added
+    acceleration: str = Form(""), # Added
+    transmission: str = Form("Automatic"), # Added
+    fuel_type: str = Form("Petrol"), # Added
+    owner_name: str = Form(""), # Added
+    phone_number: str = Form(""), # Added
+    address: str = Form(""), # Added
     description: str = Form(""),
     features: str = Form("[]"),
     image: Optional[UploadFile] = File(None), 
-    images: Optional[List[UploadFile]] = File(None), # FIXED: Optional to prevent 422
+    images: Optional[List[UploadFile]] = File(None),
     db: AsyncSession = Depends(get_db), 
     current_admin: User = Depends(get_current_admin)
 ):
-    try:
-        final_price = int(float(price)) if price else 0
-        final_year = int(year) if year else 2026
-    except ValueError:
-        final_price = 0
-        final_year = 2026
+    # Safe conversion logic
+    def to_int(val, default=0):
+        try: return int(float(val)) if val else default
+        except: return default
+
+    main_url = await upload_to_cloudinary(image, "main_images") if image else "https://res.cloudinary.com/demo/image/upload/v1/sample.jpg"
     
-    # Upload main image
-    main_url = "https://res.cloudinary.com/demo/image/upload/v1/sample.jpg"
-    if image and image.filename:
-        main_url = await upload_to_cloudinary(image, "main_images")
-        
-    # Upload gallery images
     gallery = []
     if images:
         for img in images:
-            # Check if the file actually has a name/content
-            if hasattr(img, 'filename') and img.filename:
+            if img.filename:
                 url = await upload_to_cloudinary(img, "gallery")
                 if url: gallery.append(url)
 
-    try: 
-        f_list = json.loads(features)
-    except: 
-        f_list = []
-
     new_v = Vehicle(
-        name=name, type=type, price=final_price, category=category, 
-        location=location, year=final_year, description=description, 
-        features=f_list, image=main_url, images=gallery, verified=True
+        name=name, type=type, price=to_int(price), category=category,
+        service=service, location=location, condition=condition, 
+        make=make, model= model, year=to_int(year, 2026),
+        mileage=mileage, color=color, acceleration=acceleration,
+        transmission=transmission, fuel_type=fuel_type,
+        owner_name=owner_name, phone_number=phone_number,
+        address=address, description=description, 
+        features=json.loads(features) if features else [],
+        image=main_url, images=gallery, verified=True
     )
     db.add(new_v)
     await db.commit()
@@ -510,7 +516,16 @@ async def update_vehicle(
     name: Optional[str] = Form(None),
     type: Optional[str] = Form(None),
     price: Optional[str] = Form(None),
+    service: Optional[str] = Form(None)
+    mileage: Optional[str] = Form(None),
     category: Optional[str] = Form(None),
+    owner_name: Optional[str] = Form(None),   # Added
+    phone_number: Optional[str] = Form(None), # Added
+    address: Optional[str] = Form(None),
+    color: Optional[str] = Form(None),
+    transmission: Optional[str] = Form(None), # Added
+    fuel_type: Optional[str] = Form(None),
+    acceleration: Optional[str] = Form(None),
     location: Optional[str] = Form(None),
     year: Optional[str] = Form(None),
     make: Optional[str] = Form(None),         # Added
@@ -525,38 +540,37 @@ async def update_vehicle(
 ):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
     vehicle = result.scalar_one_or_none()
-    if not vehicle: 
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+    if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    # FIXED: Only update if the value is not an empty string (prevents accidental wiping)
-    if name: vehicle.name = name
-    if type: vehicle.type = type
-    if category: vehicle.category = category
-    if location: vehicle.location = location
-    if make: vehicle.make = make
-    if model: vehicle.model = model
-    if condition: vehicle.condition = condition
-    if description: vehicle.description = description
+    # Update simple text fields
+    fields = [
+        "name", "service", "mileage", "color", "acceleration", 
+        "transmission", "fuel_type", "owner_name", "phone_number", 
+        "address", "category", "description"
+    ]
     
-    # Safe numeric conversion
+    # This loop handles all the "etc" strings automatically
+    for field in fields:
+        val = locals().get(field)
+        if val is not None:
+            setattr(vehicle, field, val)
+
+    # Handle numeric price
     if price and price.strip():
         try: vehicle.price = int(float(price))
         except: pass
-    if year and year.strip():
-        try: vehicle.year = int(year)
-        except: pass
 
-    # Features JSON handling
+    # Handle Features
     if features:
         try: vehicle.features = json.loads(features)
         except: pass
 
-    # Image Overwrites
+    # Handle main image replacement
     if image and image.filename:
         url = await upload_to_cloudinary(image, "main_images")
         if url: vehicle.image = url
 
-    # Gallery handling (Appending new ones)
+    # Handle gallery additions
     if images:
         current_gallery = list(vehicle.images or [])
         for img in images:

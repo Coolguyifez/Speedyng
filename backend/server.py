@@ -18,7 +18,7 @@ import resend
 # Import shared components
 from seed import seed_database # Import your seed function
 from database import get_db, engine, Base
-from models import User, Vehicle, Contact, ChatMessage
+from models import User, Vehicle, ChatMessage
 from auth import ( 
     get_password_hash, verify_password, create_access_token,  
     get_current_user, get_current_admin

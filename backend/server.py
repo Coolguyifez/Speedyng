@@ -457,10 +457,10 @@ async def get_vehicles(
 async def create_vehicle(
     name: str = Form(...), 
     type: str = Form("Car"), 
-    price: int = Form(...),
+    price: int = Form("0"),
     category: str = Form("Sedan"), 
     location: str = Form("Lagos"),
-    year: int = Form(2026),
+    year: int = Form("2026"),
     description: str = Form(""),
     features: str = Form("[]"),
     image: Optional[UploadFile] = File(None), 
@@ -468,30 +468,42 @@ async def create_vehicle(
     db: AsyncSession = Depends(get_db), 
     current_admin: User = Depends(get_current_admin)
 ):
-    # Upload main image
-    main_url = await upload_to_cloudinary(image, "main_images") if image else "https://res.cloudinary.com/demo/image/upload/v1/sample.jpg"
+    try:
+        final_price = int(float(price)) if price else 0
+        final_year = int(year) if year else 2026
+    except ValueError:
+        final_price = 0
+        final_year = 2026
     
+    # Upload main image
+    main_url = "https://res.cloudinary.com/demo/image/upload/v1/sample.jpg"
+    if image and image.filename:
+        main_url = await upload_to_cloudinary(image, "main_images")
+        
     # Upload gallery images
     gallery = []
     if images:
         for img in images:
-            if img.filename:
+            # Check if the file actually has a name/content
+            if hasattr(img, 'filename') and img.filename:
                 url = await upload_to_cloudinary(img, "gallery")
                 if url: gallery.append(url)
 
-    try: f_list = json.loads(features)
-    except: f_list = []
+    try: 
+        f_list = json.loads(features)
+    except: 
+        f_list = []
 
     new_v = Vehicle(
-        name=name, type=type, price=price, category=category, location=location,
-        year=year, description=description, features=f_list, 
-        image=main_url, images=gallery, verified=True
+        name=name, type=type, price=final_price, category=category, 
+        location=location, year=final_year, description=description, 
+        features=f_list, image=main_url, images=gallery, verified=True
     )
     db.add(new_v)
     await db.commit()
     await db.refresh(new_v)
     return serialize_vehicle(new_v)
-
+    
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
 async def update_vehicle(
     v_id: int,

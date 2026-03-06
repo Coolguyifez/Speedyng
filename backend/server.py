@@ -513,7 +513,7 @@ async def create_vehicle(
 @api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
 async def update_vehicle(
     async def update_vehicle(
-    v_id: int,
+    vehicle_id: int,
     name: Optional[str] = Form(None),
     type: Optional[str] = Form(None),
     price: Optional[str] = Form(None),

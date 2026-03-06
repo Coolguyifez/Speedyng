@@ -142,7 +142,7 @@ def serialize_vehicle(vehicle):
         "id": getattr(vehicle, 'id', None),
         "name": getattr(vehicle, 'name', 'Unknown'),
         "make": getattr(vehicle, 'make', 'Unknown'),
-        "model" : getattr(vehicle, 'make', 'Unknown'),
+        "model" : getattr(vehicle, 'model', 'Unknown'),
         "vin" : getattr(vehicle,'vin', 'Unknown'),
         "type": getattr(vehicle, 'type', 'Unknown'),
         "service": getattr(vehicle, 'service', 'Unknown'),

@@ -516,7 +516,7 @@ async def update_vehicle(
     name: Optional[str] = Form(None),
     type: Optional[str] = Form(None),
     price: Optional[str] = Form(None),
-    service: Optional[str] = Form(None)
+    service: Optional[str] = Form(None),
     mileage: Optional[str] = Form(None),
     category: Optional[str] = Form(None),
     owner_name: Optional[str] = Form(None),   # Added

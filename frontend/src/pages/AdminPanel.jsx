@@ -96,15 +96,14 @@ const AdminPanel = () => {
         toast.success('Vehicle added to inventory!');
       }
       setIsDialogOpen(false);
-      fetchInventory(); // Refreshes your table
+      fetchInventory(); 
       resetForm();
     } catch (error) {
-      // This will now catch the 500 or CORS error and show details
       console.error("Submission error details:", error.response?.data);
       toast.error(error.response?.data?.detail?.[0]?.msg || "Server Error: Check field names");
     } finally {
       setIsSubmitting(false);
-    }  
+    }
   };
 
   const handleDelete = async (id) => {

@@ -31,6 +31,7 @@ class Vehicle(Base):
     type = Column(String(50), nullable=False)
     service = Column(String(50), nullable=False)
     category = Column(String(50), nullable=False)
+    vin = Column(String(50), nullable=True)
     price = Column(Integer, nullable=False)
     make = Column(String(50), nullable=True) 
     model = Column(String(50), nullable=True) 

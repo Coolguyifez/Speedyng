@@ -26,7 +26,6 @@ from auth import (
 from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse, ForgotPasswordRequest, ResetPasswordSubmit,
     VehicleCreate, VehicleUpdate, VehicleResponse,  
-    ContactCreate, ContactResponse,
     ChatMessageCreate, ChatMessageResponse, MessageHistory,
     StatsResponse, CategoryResponse
 )

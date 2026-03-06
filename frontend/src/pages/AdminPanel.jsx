@@ -125,66 +125,64 @@ const AdminPanel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation Check before even sending
+    if (!formData.name || !formData.price) {
+      toast.error("Name and Price are required!");
+      return;
+    }
+  
     setIsSubmitting(true);
   
     try {
       const data = new FormData();
   
-      // 1. CRITICAL: Handle Numeric Fields
-      // If these are empty strings, FastAPI throws a 422. 
-      // We force them to valid numbers or 0.
-      const priceVal = parseInt(formData.price);
-      data.append('price', isNaN(priceVal) ? 0 : priceVal);
+      // Force values to exist so FastAPI doesn't see 'null'
+      data.append('name', String(formData.name).trim());
+      data.append('price', parseInt(formData.price) || 0);
+      
+      // For other numeric/required fields
+      data.append('year', parseInt(formData.year) || 2026);
+      data.append('type', formData.type || "Car");
+      data.append('service', formData.service || "For Sale");
+      data.append('category', formData.category || "Sedan");
+      data.append('condition', formData.condition || "Foreign Used");
+      data.append('location', formData.location || "Lagos");
+      data.append('acceleration', parseFloat(formData.acceleration) || 0.0);
   
-      const yearVal = parseInt(formData.year);
-      data.append('year', isNaN(yearVal) ? 2026 : yearVal);
-  
-      const accelVal = parseFloat(formData.acceleration);
-      data.append('acceleration', isNaN(accelVal) ? 0.0 : accelVal);
-  
-      // 2. Handle Text Fields (Ensure they aren't undefined/null)
-      const textFields = [
-        'name', 'make', 'model', 'type', 'service', 'category', 'condition', 
-        'location', 'color', 'owner_name', 'address', 'phone_number', 
-        'mileage', 'transmission', 'fuel_type', 'description'
+      // Append remaining optional text fields
+      const optionalFields = [
+        'make', 'model', 'color', 'owner_name', 'address', 
+        'phone_number', 'mileage', 'transmission', 'fuel_type', 'description'
       ];
-      textFields.forEach(field => {
+      optionalFields.forEach(field => {
         data.append(field, formData[field] || "");
       });
   
-      // 3. Features (Must be a JSON string for the backend)
-      let featureList = [];
-      if (typeof formData.features === 'string' && formData.features.trim() !== "") {
-        featureList = formData.features.split(',').map(f => f.trim()).filter(Boolean);
-      } else if (Array.isArray(formData.features)) {
-        featureList = formData.features;
-      }
-      data.append('features', JSON.stringify(featureList));
+      // Handle Features
+      const featureArray = typeof formData.features === 'string' 
+        ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
+        : [];
+      data.append('features', JSON.stringify(featureArray));
   
-      // 4. Main Image Logic
-      // Only append if it's a new File. If it's a URL (string), skip it.
+      // Handle Images
       if (formData.image instanceof File) {
         data.append('image', formData.image);
       }
-  
-      // 5. Gallery Images
+      
       if (Array.isArray(formData.images)) {
         formData.images.forEach((file) => {
-          if (file instanceof File) {
-            data.append('images', file);
-          }
+          if (file instanceof File) data.append('images', file);
         });
       }
   
-      // API Call
       if (editingVehicle) {
         await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Speedy Inventory Updated!');
+        toast.success('Updated successfully!');
       } else {
         await vehicleAPI.create(data);
-        toast.success('Successfully Added to Speedy!');
+        toast.success('Added successfully!');
       }
-  
       setIsDialogOpen(false);
       fetchInventory();
       resetForm();
@@ -201,7 +199,7 @@ const AdminPanel = () => {
       setIsSubmitting(false);
     }
   };
-
+    
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();
     const matchesSearch = v.name.toLowerCase().includes(sLower) || (v.owner_name?.toLowerCase().includes(sLower));

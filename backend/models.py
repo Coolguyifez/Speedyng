@@ -54,19 +54,6 @@ class Vehicle(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-
-# ================== Contact Model ==================
-class Contact(Base):
-    __tablename__ = "contacts"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-    email = Column(String(100), nullable=False)
-    phone = Column(String(20), nullable=False)
-    message = Column(Text, nullable=False)
-    status = Column(String(20), default="pending")  # pending, resolved
-    created_at = Column(DateTime, default=datetime.utcnow)
-
 # ================== AI Chat Message Model ==================
 class ChatMessage(Base):
     __tablename__ = "chat_messages"

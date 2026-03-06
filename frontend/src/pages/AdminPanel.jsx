@@ -125,66 +125,73 @@ const AdminPanel = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-
-  // 1. Initialize FormData
-  const data = new FormData();
-
-  // 2. Efficiently map all fields
-  Object.keys(formData).forEach((key) => {
-    const value = formData[key];
-
-    // CASE A: Main Thumbnail
-    if (key === 'image') {
-      if (value instanceof File) {
-        data.append('image', value);
+    e.preventDefault();
+    setIsSubmitting(true);
+  
+    const data = new FormData();
+    
+    Object.keys(formData).forEach((key) => {
+      const value = formData[key];
+  
+      // 1. Handle Images
+      if (key === 'image') {
+        if (value instanceof File) data.append('image', value);
+      } 
+      else if (key === 'images') {
+        value.forEach((file) => {
+          if (file instanceof File) data.append('images', file);
+        });
+      } 
+      // 2. Handle Features (Ensure it's a string before splitting)
+      else if (key === 'features') {
+        const featureArray = typeof value === 'string' 
+          ? value.split(',').map(f => f.trim()).filter(Boolean) 
+          : value;
+        data.append('features', JSON.stringify(featureArray));
+      } 
+      // 3. Handle Numbers (Fixes the 422 error)
+      else if (['price', 'year', 'acceleration'].includes(key)) {
+        // If the value is empty, send 0 or omit it so the backend doesn't receive ""
+        const numValue = value === '' ? 0 : value;
+        data.append(key, numValue);
       }
-    } 
-    // CASE B: Gallery Images (Multiple)
-    else if (key === 'images') {
-      value.forEach((file) => {
-        if (file instanceof File) data.append('images', file);
-      });
-    } 
-    // CASE C: Features (Convert comma string to JSON list)
-    else if (key === 'features') {
-      const featureArray = typeof value === 'string' 
-        ? value.split(',').map(f => f.trim()).filter(Boolean) 
-        : value;
-      data.append('features', JSON.stringify(featureArray));
-    } 
-    // CASE D: Standard Text/Numbers (The "Etc")
-    else {
-      // Don't append null or undefined to avoid backend validation errors
-      if (value !== null && value !== undefined && value !== '') {
-        data.append(key, value);
+      // 4. Everything else (Strings)
+      else {
+        if (value !== null && value !== undefined) {
+          data.append(key, value);
+        }
       }
+    });
+  
+    try {
+      const apiCall = editingVehicle 
+        ? vehicleAPI.update(editingVehicle.id, data) 
+        : vehicleAPI.create(data);
+  
+      await apiCall;
+      toast.success("Speedy Inventory Updated!");
+      setIsDialogOpen(false);
+      resetForm();
+      fetchInventory();
+    } catch (error) {
+      console.error("Upload Error:", error.response?.data);
+  
+      // FIX FOR ERROR #31: Ensure we only pass a STRING to toast.error
+      let errorMessage = "Something went wrong";
+      
+      if (error.response?.data?.detail) {
+        const detail = error.response.data.detail;
+        // If detail is an array (Pydantic error), extract the first message
+        errorMessage = Array.isArray(detail) 
+          ? `${detail[0].loc.join('.')}: ${detail[0].msg}` 
+          : detail;
+      }
+  
+      toast.error(String(errorMessage)); 
+    } finally {
+      setIsSubmitting(false);
     }
-  });
-
-  // 3. API Call Logic
-  try {
-    const apiCall = editingVehicle 
-      ? vehicleAPI.update(editingVehicle.id, data) 
-      : vehicleAPI.create(data);
-
-    await apiCall;
-    
-    toast.success(editingVehicle ? "Vehicle updated!" : "Added to Speedy inventory!");
-    
-    // 4. UI Cleanup
-    setIsDialogOpen(false);
-    resetForm();
-    fetchInventory(); // Refresh the table
-  } catch (error) {
-    const errorMsg = error.response?.data?.detail || "Upload failed. Please check your connection.";
-    console.error("Speedy Upload Error:", error.response?.data);
-    toast.error(errorMsg);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
     
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();

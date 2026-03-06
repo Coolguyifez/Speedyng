@@ -34,7 +34,7 @@ const AdminPanel = () => {
   const [filterCondition, setFilterCondition] = useState('All');
   
   const [formData, setFormData] = useState({
-    name: '', make: '', model: '', type: 'Car', service: 'For Sale',
+    name: '', make: '', model: '', vin: '', type: 'Car', service: 'For Sale',
     category: 'Sedan', price: '', condition: 'Foreign Used', location: 'Lagos',
     acceleration: '', color: '', owner_name: '', address: '', phone_number: '',
     image: '', images: '', year: new Date().getFullYear(), mileage: '',
@@ -57,7 +57,7 @@ const AdminPanel = () => {
   const resetForm = () => {
     setEditingVehicle(null);
     setFormData({
-      name: '', make: '', model: '', type: 'Car', service: 'For Sale',
+      name: '', make: '', model: '', vin: '', type: 'Car', service: 'For Sale',
       category: 'Sedan', price: '', condition: 'Foreign Used', location: 'Lagos',
       acceleration: '', color: '', owner_name: '', address: '', phone_number: '',
       image: null, images: [], year: new Date().getFullYear(), mileage: '',
@@ -212,6 +212,7 @@ const AdminPanel = () => {
                           <InputGroup label="Vehicle Name" name="name" val={formData.name} onChange={handleChange} placeholder="e.g. Toyota Camry 2026" />
                           <InputGroup label="Make" name="make" val={formData.make} onChange={handleChange} placeholder="Toyota" />
                           <InputGroup label="Model" name="model" val={formData.model} onChange={handleChange} placeholder="Camry" />
+                          <InputGroup label="VIN" name="vin" val={formData.vin} onChange={handleChange} placeholder="e.g 245367654676534567" />
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Type</label>
                             <Select value={formData.type} onValueChange={(v) => setFormData({...formData, type: v})}>
@@ -384,7 +385,8 @@ const AdminPanel = () => {
                         <img src={v.image} className="w-10 h-10 rounded object-cover" alt=""/>
                         <div>
                           <p className="font-medium">{v.name}</p>
-                          <p className="text-[10px] text-gray-400">{v.location}-{v.service}</p>
+                          <p className="text-[10px] text-gray-450">{v.vin}</p>
+                          <p className="text-[7px] text-gray-400">{v.location}-{v.service}</p>
                         </div>
                       </td>
                       <td className="p-4 font-bold">{v.color}</td>

@@ -74,9 +74,9 @@ async def seed_database():
             vehicles = [
                 Vehicle(
                     name="Toyota Camry 2024",
-                    make= "Toyota", model= "Camry",
+                    make= "Toyota", model= "Camry", vin = "23456768765276547",
                     type="Car", service="For Sale", # FIXED
-                    category="Sedans", price=18500000,
+                    category="Sedan", price=18500000,
                     condition="Foreign Used", location="Lagos", acceleration= 7.2, color= "Pearl White",
                     owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
@@ -88,9 +88,9 @@ async def seed_database():
                 ),
                 Vehicle(
                     name="Honda Accord 2023",
-                    make= "Honda", model= "Accord",
+                    make= "Honda", model= "Accord", vin = "23456768765276547",
                     type="Car", service="For Sale", # FIXED
-                    category="Sedans", price=16800000,
+                    category="Sedan", price=16800000,
                     condition="Foreign Used", location="Abuja", acceleration= 7.2, color= "Pearl White",
                     owner_name="Speedy Official Dealer", address="Abuja,Nigeria", phone_number="08135877104",
                     image="https://images.pexels.com/photos/16350067/pexels-photo-16350067.jpeg",
@@ -101,7 +101,7 @@ async def seed_database():
                 ),
                 Vehicle(
                     name="Toyota Prado 2022",
-                    make= "Toyota", model= "Prado",
+                    make= "Toyota", model= "Prado", vin = "23456768765276547",
                     type="Car", service="For Sale", # FIXED
                     category="SUV", price=42000000,
                     condition="Brand New", location="Lagos", acceleration= 7.2, color= "Pearl White",
@@ -114,11 +114,12 @@ async def seed_database():
                     features=["4WD", "7 Seats"], verified=True
                 ),
                 Vehicle(
-                    name="Lexus RX 350 2023", make= "Lexus", model= "Rx 350",
+                    name="Lexus RX 350 2023", make= "Lexus", model= "Rx 350", vin = "23456768765276547",
                     type="car", service="For Sale", # FIXED
                     category="SUV", price=38500000,
                     condition="Foreign Used", location="Port Harcourt", acceleration= 7.2, color= "Pearl White",
-                    owner_name="Speedy Official Dealer", phone_number="08135877104",
+                    owner_name="Speedy Official Dealer", address="12, Rumigbo, Ph",
+                    phone_number="08135875665",
                     image="https://images.pexels.com/photos/15011309/pexels-photo-15011309.jpeg",
                     images=["https://images.pexels.com/photos/15011309/pexels-photo-15011309.jpeg"],
                     year=2023, mileage="18,000 km", transmission="Automatic",
@@ -126,7 +127,7 @@ async def seed_database():
                     features=["Panoramic Sunroof"], verified=True
                 ),
                 Vehicle(
-                    name="Mercedes-Benz C300 2023", make= "Mercedes-Benz", model= "C300",
+                    name="Mercedes-Benz C300 2023", make= "Mercedes-Benz", model= "C300", vin = "23456768765276547",
                     type="Car", service="For Sale", # FIXED
                     category="Sedan", price=45000000,
                     condition="Foreign Used", location="Lagos", acceleration= 7.2, color= "Pearl White",
@@ -140,9 +141,9 @@ async def seed_database():
                 ),
                 Vehicle(
                     name="Toyota Hilux 2023",
-                    make= "Toyota", model= "Hilux",
+                    make= "Toyota", model= "Hilux", vin = "23456768765276547",
                     type="Pickup", service="For Sale", # FIXED
-                    category="Trucks", price=28000000,
+                    category="Double Cabin Pickup", price=28000000,
                     condition="Brand New", location="Lagos", acceleration= 7.2, color= "Pearl White",
                     owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
@@ -154,9 +155,9 @@ async def seed_database():
                 ),
                 Vehicle(
                     name="Hyundai Elantra 2024",
-                    make= "Hyundai", model= "Elantra",
-                    type="car", service="For Sale", # FIXED
-                    category="Budget", price=8500000,
+                    make= "Hyundai", model= "Elantra", vin = "23456768765276547",
+                    type="car", service="For Budget Sale", # FIXED
+                    category="sedan", price=8500000,
                     condition="Brand New", location="Lagos",  acceleration= 7.2, color= "Pearl White",
                     owner_name="Speedy Official Dealer", address="123 Lekki Phase 1, Lagos",
                     phone_number="08135877104",
@@ -168,9 +169,9 @@ async def seed_database():
                 ),
                 Vehicle(
                     name="Fiat 500 2021",
-                    make= "Fiat", model= "500",
-                    type="Car", service="For Sale", # FIXED
-                    category="Budget", price=6200000,
+                    make= "Fiat", model= "500", vin = "23456768765276547",
+                    type="Car", service="For Budget Sale", # FIXED
+                    category="Hatchback", price=6200000,
                     condition="Foreign Used", location="Abuja", acceleration= 7.2, color= "Pearl White",
                     owner_name="Speedy Official Dealer", address="Abuja,Nigeria", phone_number="08135877104",
                     image="https://images.pexels.com/photos/7469142/pexels-photo-7469142.jpeg",

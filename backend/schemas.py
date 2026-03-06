@@ -106,19 +106,7 @@ class VehicleResponse(VehicleBase):
     class Config:
         from_attributes = True
 
-# -------------------- Contact Schemas --------------------
-class ContactCreate(BaseModel):
-    name: str
-    email: EmailStr
-    phone: str # Updated from 'subject' to match models.py
-    message: str
 
-class ContactResponse(ContactCreate):
-    id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 # -------------------- Chat Schemas --------------------
 # Updated to match the storage needs of Speedy Assist

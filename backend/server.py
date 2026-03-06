@@ -542,41 +542,61 @@ async def update_vehicle(
     vehicle = result.scalar_one_or_none()
     if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    # Update simple text fields
-    fields = [
-        "name", "service", "mileage", "color", "acceleration", 
-        "transmission", "fuel_type", "owner_name", "phone_number", 
-        "address", "category", "description"
-    ]
-    
-    # This loop handles all the "etc" strings automatically
-    for field in fields:
-        val = locals().get(field)
-        if val is not None:
-            setattr(vehicle, field, val)
+   result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle: 
+        raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    # Handle numeric price
+    # 1. Update Text Fields (Explicitly checking each to ensure they save)
+    if name is not None: vehicle.name = name
+    if type is not None: vehicle.type = type
+    if service is not None: vehicle.service = service
+    if mileage is not None: vehicle.mileage = mileage
+    if category is not None: vehicle.category = category
+    if owner_name is not None: vehicle.owner_name = owner_name
+    if phone_number is not None: vehicle.phone_number = phone_number
+    if address is not None: vehicle.address = address
+    if color is not None: vehicle.color = color
+    if transmission is not None: vehicle.transmission = transmission
+    if fuel_type is not None: vehicle.fuel_type = fuel_type
+    if acceleration is not None: vehicle.acceleration = acceleration
+    if location is not None: vehicle.location = location
+    if make is not None: vehicle.make = make
+    if model is not None: vehicle.model = model
+    if condition is not None: vehicle.condition = condition
+    if description is not None: vehicle.description = description
+
+    # 2. Handle Numeric Conversions
     if price and price.strip():
         try: vehicle.price = int(float(price))
         except: pass
-
-    # Handle Features
-    if features:
-        try: vehicle.features = json.loads(features)
+    
+    if year and year.strip():
+        try: vehicle.year = int(float(year))
         except: pass
 
-    # Handle main image replacement
+    # 3. Handle Features (JSON)
+    if features:
+        try: 
+            vehicle.features = json.loads(features)
+        except Exception as e:
+            logger.error(f"Failed to parse features JSON: {e}")
+
+    # 4. Handle Main Image replacement
     if image and image.filename:
         url = await upload_to_cloudinary(image, "main_images")
-        if url: vehicle.image = url
+        if url: 
+            # Optional: delete old image from Cloudinary here
+            vehicle.image = url
 
-    # Handle gallery additions
+    # 5. Handle Gallery additions
     if images:
         current_gallery = list(vehicle.images or [])
         for img in images:
             if img.filename:
                 url = await upload_to_cloudinary(img, "gallery")
-                if url: current_gallery.append(url)
+                if url: 
+                    current_gallery.append(url)
         vehicle.images = current_gallery
 
     await db.commit()

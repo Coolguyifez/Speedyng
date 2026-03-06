@@ -519,18 +519,18 @@ async def update_vehicle(
     service: Optional[str] = Form(None),
     mileage: Optional[str] = Form(None),
     category: Optional[str] = Form(None),
-    owner_name: Optional[str] = Form(None),   # Added
-    phone_number: Optional[str] = Form(None), # Added
+    owner_name: Optional[str] = Form(None),
+    phone_number: Optional[str] = Form(None),
     address: Optional[str] = Form(None),
     color: Optional[str] = Form(None),
-    transmission: Optional[str] = Form(None), # Added
+    transmission: Optional[str] = Form(None),
     fuel_type: Optional[str] = Form(None),
     acceleration: Optional[str] = Form(None),
     location: Optional[str] = Form(None),
     year: Optional[str] = Form(None),
-    make: Optional[str] = Form(None),         # Added
-    model: Optional[str] = Form(None),        # Added
-    condition: Optional[str] = Form(None),    # Added
+    make: Optional[str] = Form(None),
+    model: Optional[str] = Form(None),
+    condition: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
     features: Optional[str] = Form(None),
     image: Optional[UploadFile] = File(None),
@@ -540,14 +540,10 @@ async def update_vehicle(
 ):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
     vehicle = result.scalar_one_or_none()
-    if not vehicle: raise HTTPException(status_code=404, detail="Vehicle not found")
-
-   result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
-    vehicle = result.scalar_one_or_none()
     if not vehicle: 
         raise HTTPException(status_code=404, detail="Vehicle not found")
 
-    # 1. Update Text Fields (Explicitly checking each to ensure they save)
+    # 1. Update Text Fields
     if name is not None: vehicle.name = name
     if type is not None: vehicle.type = type
     if service is not None: vehicle.service = service
@@ -585,9 +581,7 @@ async def update_vehicle(
     # 4. Handle Main Image replacement
     if image and image.filename:
         url = await upload_to_cloudinary(image, "main_images")
-        if url: 
-            # Optional: delete old image from Cloudinary here
-            vehicle.image = url
+        if url: vehicle.image = url
 
     # 5. Handle Gallery additions
     if images:
@@ -595,8 +589,7 @@ async def update_vehicle(
         for img in images:
             if img.filename:
                 url = await upload_to_cloudinary(img, "gallery")
-                if url: 
-                    current_gallery.append(url)
+                if url: current_gallery.append(url)
         vehicle.images = current_gallery
 
     await db.commit()

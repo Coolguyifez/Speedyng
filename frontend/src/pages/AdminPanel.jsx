@@ -118,51 +118,73 @@ const AdminPanel = () => {
     setFormData({
       ...v,
       features: Array.isArray(v.features) ? v.features.join(', ') : (v.features || ''),
-      images: Array.isArray(v.images) ? v.images : []
+      images: Array.isArray(v.images) ? v.images : [],
+      image: v.image // Keeping existing URL for preview
     });
     setIsDialogOpen(true);
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    // IMPORTANT: You must use the browser's FormData object for files!
-    const data = new FormData();
-    
-    // 1. Append text fields
-    data.append('name', formState.name);
-    data.append('price', formState.price);
-    data.append('category', formState.category);
-    data.append('description', formState.description);
-    
-    // 2. Append JSON as string (Backend will json.loads this)
-    data.append('features', JSON.stringify(formState.features || []));
-  
-    // 3. Append single file
-    if (mainImageFile) {
-      data.append('image', mainImageFile);
-    }
-  
-    // 4. Append multiple files (The backend expects "images")
-    if (galleryFiles.length > 0) {
-      galleryFiles.forEach((file) => {
-        data.append('images', file);
-      });
-    }
-  
-    try {
-      if (isEditing) {
-        await vehicleAPI.update(selectedId, data);
-      } else {
-        await vehicleAPI.create(data);
+  e.preventDefault();
+  setIsSubmitting(true);
+
+  // 1. Initialize FormData
+  const data = new FormData();
+
+  // 2. Efficiently map all fields
+  Object.keys(formData).forEach((key) => {
+    const value = formData[key];
+
+    // CASE A: Main Thumbnail
+    if (key === 'image') {
+      if (value instanceof File) {
+        data.append('image', value);
       }
-      alert("Success!");
-      refreshData();
-    } catch (error) {
-      console.error("Upload failed", error.response?.data);
-      alert(error.response?.data?.detail || "Something went wrong");
+    } 
+    // CASE B: Gallery Images (Multiple)
+    else if (key === 'images') {
+      value.forEach((file) => {
+        if (file instanceof File) data.append('images', file);
+      });
+    } 
+    // CASE C: Features (Convert comma string to JSON list)
+    else if (key === 'features') {
+      const featureArray = typeof value === 'string' 
+        ? value.split(',').map(f => f.trim()).filter(Boolean) 
+        : value;
+      data.append('features', JSON.stringify(featureArray));
+    } 
+    // CASE D: Standard Text/Numbers (The "Etc")
+    else {
+      // Don't append null or undefined to avoid backend validation errors
+      if (value !== null && value !== undefined && value !== '') {
+        data.append(key, value);
+      }
     }
-  };
+  });
+
+  // 3. API Call Logic
+  try {
+    const apiCall = editingVehicle 
+      ? vehicleAPI.update(editingVehicle.id, data) 
+      : vehicleAPI.create(data);
+
+    await apiCall;
+    
+    toast.success(editingVehicle ? "Vehicle updated!" : "Added to Speedy inventory!");
+    
+    // 4. UI Cleanup
+    setIsDialogOpen(false);
+    resetForm();
+    fetchInventory(); // Refresh the table
+  } catch (error) {
+    const errorMsg = error.response?.data?.detail || "Upload failed. Please check your connection.";
+    console.error("Speedy Upload Error:", error.response?.data);
+    toast.error(errorMsg);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
     
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();

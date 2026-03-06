@@ -125,78 +125,42 @@ const AdminPanel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // IMPORTANT: You must use the browser's FormData object for files!
+    const data = new FormData();
     
-    // Validation Check before even sending
-    if (!formData.name || !formData.price) {
-      toast.error("Name and Price are required!");
-      return;
+    // 1. Append text fields
+    data.append('name', formState.name);
+    data.append('price', formState.price);
+    data.append('category', formState.category);
+    data.append('description', formState.description);
+    
+    // 2. Append JSON as string (Backend will json.loads this)
+    data.append('features', JSON.stringify(formState.features || []));
+  
+    // 3. Append single file
+    if (mainImageFile) {
+      data.append('image', mainImageFile);
     }
   
-    setIsSubmitting(true);
+    // 4. Append multiple files (The backend expects "images")
+    if (galleryFiles.length > 0) {
+      galleryFiles.forEach((file) => {
+        data.append('images', file);
+      });
+    }
   
     try {
-      const data = new FormData();
-  
-      // Force values to exist so FastAPI doesn't see 'null'
-      data.append('name', String(formData.name).trim());
-      data.append('price', parseInt(formData.price) || 0);
-      
-      // For other numeric/required fields
-      data.append('year', parseInt(formData.year) || 2026);
-      data.append('type', formData.type || "Car");
-      data.append('service', formData.service || "For Sale");
-      data.append('category', formData.category || "Sedan");
-      data.append('condition', formData.condition || "Foreign Used");
-      data.append('location', formData.location || "Lagos");
-      data.append('acceleration', parseFloat(formData.acceleration) || 0.0);
-  
-      // Append remaining optional text fields
-      const optionalFields = [
-        'make', 'model', 'color', 'owner_name', 'address', 
-        'phone_number', 'mileage', 'transmission', 'fuel_type', 'description'
-      ];
-      optionalFields.forEach(field => {
-        data.append(field, formData[field] || "");
-      });
-  
-      // Handle Features
-      const featureArray = typeof formData.features === 'string' 
-        ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-        : [];
-      data.append('features', JSON.stringify(featureArray));
-  
-      // Handle Images
-      if (formData.image instanceof File) {
-        data.append('image', formData.image);
-      }
-      
-      if (Array.isArray(formData.images)) {
-        formData.images.forEach((file) => {
-          if (file instanceof File) data.append('images', file);
-        });
-      }
-  
-      if (editingVehicle) {
-        await vehicleAPI.update(editingVehicle.id, data);
-        toast.success('Updated successfully!');
+      if (isEditing) {
+        await vehicleAPI.update(selectedId, data);
       } else {
         await vehicleAPI.create(data);
-        toast.success('Added successfully!');
       }
-      setIsDialogOpen(false);
-      fetchInventory();
-      resetForm();
+      alert("Success!");
+      refreshData();
     } catch (error) {
-      // This will now print EXACTLY which field caused the 422 error
-      if (error.response && error.response.data && error.response.data.detail) {
-        console.error("VALIDATION ERROR:", error.response.data.detail);
-        toast.error(`Error: ${error.response.data.detail[0].msg} at ${error.response.data.detail[0].loc[1]}`);
-      } else {
-        console.error("Submission Error:", error);
-        toast.error("An unexpected error occurred.");
-      }
-    } finally {
-      setIsSubmitting(false);
+      console.error("Upload failed", error.response?.data);
+      alert(error.response?.data?.detail || "Something went wrong");
     }
   };
     

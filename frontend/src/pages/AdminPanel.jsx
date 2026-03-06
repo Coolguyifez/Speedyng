@@ -124,66 +124,83 @@ const AdminPanel = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-
-  try {
-    const data = new FormData();
-
-    // 1. Mandatory & Numeric Fields (Sanitize to numbers)
-    // If field is empty, send 0 or a valid default to avoid 422
-    data.append('name', formData.name || '');
-    data.append('price', parseInt(formData.price) || 0);
-    data.append('year', parseInt(formData.year) || 2026);
-    data.append('acceleration', parseFloat(formData.acceleration) || 0.0);
-    
-    // 2. Text Fields
-    const textFields = [
-      'make', 'model', 'type', 'service', 'category', 'condition', 
-      'location', 'color', 'owner_name', 'address', 'phone_number', 
-      'mileage', 'transmission', 'fuel_type', 'description'
-    ];
-    textFields.forEach(field => data.append(field, formData[field] || ''));
-
-    // 3. Features (Ensure it's a JSON string)
-    const featureArray = typeof formData.features === 'string'
-      ? formData.features.split(',').map(f => f.trim()).filter(Boolean)
-      : [];
-    data.append('features', JSON.stringify(featureArray));
-
-    // 4. Main Image Fix
-    // If it's a new File, upload it. 
-    // If editing and it's a string (the URL), don't append it to "image" 
-    // because the backend expects a File or nothing.
-    if (formData.image instanceof File) {
-      data.append('image', formData.image);
-    }
-
-    // 5. Gallery Images
-    formData.images.forEach((file) => {
-      if (file instanceof File) {
-        data.append('images', file);
+    e.preventDefault();
+    setIsSubmitting(true);
+  
+    try {
+      const data = new FormData();
+  
+      // 1. CRITICAL: Handle Numeric Fields
+      // If these are empty strings, FastAPI throws a 422. 
+      // We force them to valid numbers or 0.
+      const priceVal = parseInt(formData.price);
+      data.append('price', isNaN(priceVal) ? 0 : priceVal);
+  
+      const yearVal = parseInt(formData.year);
+      data.append('year', isNaN(yearVal) ? 2026 : yearVal);
+  
+      const accelVal = parseFloat(formData.acceleration);
+      data.append('acceleration', isNaN(accelVal) ? 0.0 : accelVal);
+  
+      // 2. Handle Text Fields (Ensure they aren't undefined/null)
+      const textFields = [
+        'name', 'make', 'model', 'type', 'service', 'category', 'condition', 
+        'location', 'color', 'owner_name', 'address', 'phone_number', 
+        'mileage', 'transmission', 'fuel_type', 'description'
+      ];
+      textFields.forEach(field => {
+        data.append(field, formData[field] || "");
+      });
+  
+      // 3. Features (Must be a JSON string for the backend)
+      let featureList = [];
+      if (typeof formData.features === 'string' && formData.features.trim() !== "") {
+        featureList = formData.features.split(',').map(f => f.trim()).filter(Boolean);
+      } else if (Array.isArray(formData.features)) {
+        featureList = formData.features;
       }
-    });
-
-    if (editingVehicle) {
-      await vehicleAPI.update(editingVehicle.id, data);
-      toast.success('Vehicle Updated!');
-    } else {
-      await vehicleAPI.create(data);
-      toast.success('Vehicle Added!');
+      data.append('features', JSON.stringify(featureList));
+  
+      // 4. Main Image Logic
+      // Only append if it's a new File. If it's a URL (string), skip it.
+      if (formData.image instanceof File) {
+        data.append('image', formData.image);
+      }
+  
+      // 5. Gallery Images
+      if (Array.isArray(formData.images)) {
+        formData.images.forEach((file) => {
+          if (file instanceof File) {
+            data.append('images', file);
+          }
+        });
+      }
+  
+      // API Call
+      if (editingVehicle) {
+        await vehicleAPI.update(editingVehicle.id, data);
+        toast.success('Speedy Inventory Updated!');
+      } else {
+        await vehicleAPI.create(data);
+        toast.success('Successfully Added to Speedy!');
+      }
+  
+      setIsDialogOpen(false);
+      fetchInventory();
+      resetForm();
+    } catch (error) {
+      // This will now print EXACTLY which field caused the 422 error
+      if (error.response && error.response.data && error.response.data.detail) {
+        console.error("VALIDATION ERROR:", error.response.data.detail);
+        toast.error(`Error: ${error.response.data.detail[0].msg} at ${error.response.data.detail[0].loc[1]}`);
+      } else {
+        console.error("Submission Error:", error);
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsDialogOpen(false);
-    fetchInventory();
-    resetForm();
-  } catch (error) {
-    console.error("Submission Error Details:", error.response?.data?.detail);
-    toast.error("Check required fields or numeric values.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   const filteredVehicles = vehicles.filter((v) => {
     const sLower = searchQuery.toLowerCase();

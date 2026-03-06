@@ -6,7 +6,7 @@ import secrets
 from datetime import datetime, timedelta
 from typing import List, Optional
 from urllib.parse import quote
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query, Body, Form, File, UploadFile
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
@@ -15,8 +15,6 @@ from sqlalchemy.future import select
 from sqlalchemy import text
 
 import resend
-import cloudinary
-import cloudinary.uploader
 # Import shared components
 from seed import seed_database # Import your seed function
 from database import get_db, engine, Base
@@ -39,18 +37,6 @@ logger = logging.getLogger(__name__)
 # -------------------- App Setup --------------------
 app = FastAPI(title="Speedy Vehicle Dealership API")
 api_router = APIRouter()
-
-# -------------------- Cloudinary Configuration --------------------
-cloudinary.config( 
-  cloud_name = os.getenv("CLOUDINARY_CLOUD_NAME"), 
-  api_key = os.getenv("CLOUDINARY_API_KEY"), 
-  api_secret = os.getenv("CLOUDINARY_API_SECRET"),
-  secure = True
-)
-
-# --- CRITICAL FIX: Ensure static directories exist before mounting ---
-UPLOAD_DIR = os.path.join(os.getcwd(), "static", "uploads")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 # Secure CORS configuration for Render deployment
 app.add_middleware(
@@ -148,82 +134,41 @@ async def send_reset_email(email_to: str, reset_link: str):
     except Exception as e:
         logger.error(f"Resend Error: {str(e)}")
         raise e
-
-
-        # -------------------- Helper Functions --------------------
-
-async def upload_to_cloudinary(file: UploadFile, folder: str = "speedy"):
-    """Helper to upload files directly to Cloudinary and return the secure URL"""
-    try:
-        # Seek to the beginning of the file to ensure we read everything
-        file.file.seek(0)
-        
-        result = cloudinary.uploader.upload(
-            file.file,
-            folder=f"speedy/{folder}",
-            resource_type="auto"
-        )
-        # We return the secure_url which starts with https://
-        return result.get("secure_url")
-    except Exception as e:
-        logger.error(f"Cloudinary Upload Failed: {e}")
-        return None
-
-
-def get_cloudinary_public_id(url: str):
-    """
-    Extracts the public_id from a Cloudinary URL.
-    Input: https://res.cloudinary.com/demo/image/upload/v1/speedy/main/car.jpg
-    Output: speedy/main/car
-    """
-    if not url or "res.cloudinary.com" not in url:
-        return None
-    
-    try:
-        # 1. Split by 'upload/' to get the path after the base URL
-        parts = url.split('upload/')
-        if len(parts) < 2:
-            return None
-        
-        # 2. Remove the versioning (the part starting with 'v' followed by numbers)
-        path_parts = parts[1].split('/')
-        if path_parts[0].startswith('v') and path_parts[0][1:].isdigit():
-            path_parts = path_parts[1:]
-            
-        # 3. Join back and strip the file extension (.jpg, .png, etc)
-        public_id_with_ext = "/".join(path_parts)
-        public_id = public_id_with_ext.rsplit('.', 1)[0]
-        return public_id
-    except Exception as e:
-        logger.error(f"Failed to extract Public ID: {e}")
-        return None
-
-async def delete_from_cloudinary(url: str):
-    """Utility to delete image from Cloudinary by its URL"""
-    public_id = get_cloudinary_public_id(url)
-    if public_id:
-        try:
-            # Simple direct call to the Cloudinary SDK
-            cloudinary.uploader.destroy(public_id)
-            logger.info(f"Cloudinary Deleted: {public_id}")
-        except Exception as e:
-            logger.error(f"Cloudinary Destruction Error: {e}")
         
     
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
 def serialize_vehicle(v):
     return {
-        "id": v.id, "name": v.name, "type": v.type, "service": v.service,
-        "category": v.category, "price": v.price, "condition": v.condition,
-        "location": v.location, "acceleration": v.acceleration, "color": v.color,
-        "make": v.make, "model": v.model, "owner_name": v.owner_name,
-        "address": v.address, "phone_number": v.phone_number, "image": v.image,
-        "images": v.images or [], "features": v.features or [], "year": v.year,
-        "mileage": v.mileage, "transmission": v.transmission, "fuel_type": v.fuel_type,
-        "description": v.description, "verified": v.verified,
-        "created_at": v.created_at.isoformat() if v.created_at else None,
-        "updated_at": v.updated_at.isoformat() if v.updated_at else None
+        "id": getattr(vehicle, 'id', None),
+        "name": getattr(vehicle, 'name', 'Unknown'),
+        "make": getattr(vehicle, 'make', 'Unknown'),
+        "model" : getattr(vehicle, 'make', 'Unknown'),
+        "vin" : getattr(vehicle,'vin', 'Unknown'),
+        "type": getattr(vehicle, 'type', 'Unknown'),
+        "service": getattr(vehicle, 'service', 'Unknown'),
+        "category": getattr(vehicle, 'category', 'Uncategorized'),
+        "price": getattr(vehicle, 'price', 0),
+        "condition": getattr(vehicle, 'condition', 'Used'),
+        "location": getattr(vehicle, 'location', 'Unknown'),
+        "acceleration": getattr(vehicle, 'acceleration', None), 
+        "color": getattr(vehicle, 'color', 'Unknown'),
+        "owner_name": getattr(vehicle, 'owner_name', ''),
+        "address": getattr(vehicle, 'address', ''),          
+        "phone_number": getattr(vehicle, 'phone_number', ''),
+        "image": getattr(vehicle, 'image', ''),
+        # Ensures these return [] if None to prevent .map() errors in React
+        "images": getattr(vehicle, 'images', []) or [],
+        "features": getattr(vehicle, 'features', []) or [],
+        "year": getattr(vehicle, 'year', None),
+        "mileage": getattr(vehicle, 'mileage', '0'),
+        "transmission": getattr(vehicle, 'transmission', 'Automatic'),
+        "fuel_type": getattr(vehicle, 'fuel_type', 'Petrol'),
+        "description": getattr(vehicle, 'description', ''),
+        "verified": getattr(vehicle, 'verified', False),
+        # Convert datetime to ISO string for JSON compatibility
+        "created_at": vehicle.created_at.isoformat() if hasattr(vehicle, 'created_at') and vehicle.created_at else None,
+        "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None
     }
 
 
@@ -438,204 +383,129 @@ async def reset_database():
 # -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])
 async def get_vehicles(
-    category: Optional[str] = Query(None),
-    v_type: Optional[str] = Query(None, alias="type"),
-    service: Optional[str] = Query(None),
+    category: Optional[str] = Query(None), # Handles ?type=Luxury Sedan
+    v_type: Optional[str] = Query(None, alias="type"), # Handles ?type=Truck
+    service: Optional[str] = Query(None),             # Handles ?service=Rent
+    color: Optional[str] = Query(None),  
     make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db)
 ):
-    query = select(Vehicle)
-    if category: query = query.filter(Vehicle.category == category)
-    if v_type: query = query.filter(Vehicle.type == v_type)
-    if service: query = query.filter(Vehicle.service == service)
-    if make: query = query.filter(Vehicle.make == make)
-    
-    result = await db.execute(query.order_by(Vehicle.id.desc()))
-    return [serialize_vehicle(v) for v in result.scalars().all()]
 
+    try:
+        query = select(Vehicle)
+        
+        # 1. Filter by Category (e.g., Luxury Sedan, Compact SUV)
+        if category:
+            query = query.filter(Vehicle.category == category)
+
+        # 2. Filter by Type (e.g., Car, Truck, Bus, Motorcycle)
+        if v_type:
+            query = query.filter(Vehicle.type == v_type)
+            
+        # 3. Filter by Service (e.g., Sales, Rent, Auction)
+        if service:
+            query = query.filter(Vehicle.service == service)  
+            
+        # 4. Filter by Color (e.g., Black, Red, White)
+        if color:
+            query = query.filter(Vehicle.color.ilike(f"%{color}%")) 
+
+         # 3. Filter by make (e.g., Toyota, BMW, Honda)
+        if make:
+            query = query.filter(Vehicle.make == make)  
+                
+        # Order by newest first so Speedy always looks fresh
+
+        query = query.order_by(Vehicle.id.desc())
+        
+        result = await db.execute(query)
+
+        vehicles = result.scalars().all()
+        
+        return [serialize_vehicle(v) for v in vehicles]
+
+    except Exception as e:
+    
+        logger.error(f"Error fetching vehicles with filters: {e}")
+
+        raise HTTPException(status_code=500, detail="Database connection failed")
+        
+    
 @api_router.post("/vehicles", response_model=VehicleResponse)
-async def create_vehicle(
-    name: str = Form(...), 
-    type: str = Form("Car"), 
-    price: str = Form("0"), # Changed to str for safety
-    category: str = Form("Sedan"), 
-    service: str = Form("Sale"), # Added
-    location: str = Form("Lagos"),
-    condition: str = Form("Foreign Used"),
-    make: str = Form (""),
-    model: str = Form (""),
-    year: str = Form("2026"), # Changed to str
-    mileage: str = Form("0"), # Added
-    color: str = Form(""), # Added
-    acceleration: str = Form(""), # Added
-    transmission: str = Form("Automatic"), # Added
-    fuel_type: str = Form("Petrol"), # Added
-    owner_name: str = Form(""), # Added
-    phone_number: str = Form(""), # Added
-    address: str = Form(""), # Added
-    description: str = Form(""),
-    features: str = Form("[]"),
-    image: Optional[UploadFile] = File(None), 
-    images: Optional[List[UploadFile]] = File(None),
-    db: AsyncSession = Depends(get_db), 
-    current_admin: User = Depends(get_current_admin)
-):
-    # Safe conversion logic
-    def to_int(val, default=0):
-        try: return int(float(val)) if val else default
-        except: return default
-
-    main_url = await upload_to_cloudinary(image, "main_images") if image else "https://res.cloudinary.com/demo/image/upload/v1/sample.jpg"
-    
-    gallery = []
-    if images:
-        for img in images:
-            if img.filename:
-                url = await upload_to_cloudinary(img, "gallery")
-                if url: gallery.append(url)
-
-    new_v = Vehicle(
-        name=name, type=type, price=to_int(price), category=category,
-        service=service, location=location, condition=condition, 
-        make=make, model= model, year=to_int(year, 2026),
-        mileage=mileage, color=color, acceleration=acceleration,
-        transmission=transmission, fuel_type=fuel_type,
-        owner_name=owner_name, phone_number=phone_number,
-        address=address, description=description, 
-        features=json.loads(features) if features else [],
-        image=main_url, images=gallery, verified=True
-    )
-    db.add(new_v)
-    await db.commit()
-    await db.refresh(new_v)
-    return serialize_vehicle(new_v)
-    
-@api_router.put("/vehicles/{v_id}", response_model=VehicleResponse)
-async def update_vehicle(
-    v_id: int,
-    name: Optional[str] = Form(None),
-    type: Optional[str] = Form(None),
-    price: Optional[str] = Form(None),
-    service: Optional[str] = Form(None),
-    mileage: Optional[str] = Form(None),
-    category: Optional[str] = Form(None),
-    owner_name: Optional[str] = Form(None),
-    phone_number: Optional[str] = Form(None),
-    address: Optional[str] = Form(None),
-    color: Optional[str] = Form(None),
-    transmission: Optional[str] = Form(None),
-    fuel_type: Optional[str] = Form(None),
-    acceleration: Optional[str] = Form(None),
-    location: Optional[str] = Form(None),
-    year: Optional[str] = Form(None),
-    make: Optional[str] = Form(None),
-    model: Optional[str] = Form(None),
-    condition: Optional[str] = Form(None),
-    description: Optional[str] = Form(None),
-    features: Optional[str] = Form(None),
-    image: Optional[UploadFile] = File(None),
-    images: Optional[List[UploadFile]] = File(None),
-    db: AsyncSession = Depends(get_db),
-    current_admin: User = Depends(get_current_admin)
+async def create_Vehicle(
+    vehicle_data: VehicleCreate, 
+    current_admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db)
 ):
     try:
-        result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
-        vehicle = result.scalar_one_or_none()
-        if not vehicle: 
-            raise HTTPException(status_code=404, detail="Vehicle not found")
-
-        # Create a dictionary of all potential updates
-        updates = {
-            "name": name, "type": type, "service": service, "mileage": mileage,
-            "category": category, "owner_name": owner_name, "phone_number": phone_number,
-            "address": address, "color": color, "transmission": transmission,
-            "fuel_type": fuel_type, "acceleration": acceleration, "location": location,
-            "make": make, "model": model, "condition": condition, "description": description
-        }
-
-        # Safe dynamic update: only update if the attribute exists in the model
-        for key, value in updates.items():
-            if value is not None:
-                if hasattr(vehicle, key):
-                    setattr(vehicle, key, value)
-                else:
-                    logger.warning(f"Field '{key}' skipped: not found in Vehicle model.")
-
-        # 2. Handle Numeric Conversions safely
-        if price and price.strip():
-            try: vehicle.price = int(float(price))
-            except: pass
+        # 1. Convert the incoming schema to a dictionary
+        vehicle_dict = vehicle_data.dict()
         
-        if year and year.strip():
-            try: vehicle.year = int(float(year))
-            except: pass
+        # 2. Remove 'verified' if it exists in the incoming data to avoid conflicts
+        vehicle_dict.pop('verified', None)
+        
+        # 3. Create the Vehicle with the dictionary and explicitly set verified=True
+        new_vehicle = Vehicle(**vehicle_dict, verified=True)
 
-        # 3. Handle Features (JSON)
-        if features:
-            try: 
-                vehicle.features = json.loads(features)
-            except Exception as e:
-                logger.error(f"Failed to parse features JSON: {e}")
-
-        # 4. Handle Main Image replacement
-        if image and image.filename:
-            url = await upload_to_cloudinary(image, "main_images")
-            if url: vehicle.image = url
-
-        # 5. Handle Gallery additions
-        if images:
-            current_gallery = list(vehicle.images or [])
-            for img in images:
-                if img.filename:
-                    url = await upload_to_cloudinary(img, "gallery")
-                    if url: current_gallery.append(url)
-            vehicle.images = current_gallery
-
+        db.add(new_vehicle)
+        
         await db.commit()
-        await db.refresh(vehicle)
-        return serialize_vehicle(vehicle)
-    
-    except Exception as e:
-        logger.error(f"CRITICAL UPDATE ERROR: {str(e)}")
-        # This returns the error to the frontend so you can see it in the console
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")    
 
-@api_router.delete("/vehicles/{v_id}")
-async def delete_vehicle(
-    v_id: int, 
-    db: AsyncSession = Depends(get_db), 
-    current_admin: User = Depends(get_current_admin)
+        await db.refresh(new_vehicle)
+
+        return serialize_vehicle(new_vehicle)
+
+    except Exception as e:
+
+        logger.error(f"Creation error: {e}")
+
+        raise HTTPException(status_code=400, detail=str(e))        
+
+
+@api_router.get("/vehicles/{vehicle_id}", response_model=VehicleResponse)
+async def get_vehicle(vehicle_id: int, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    return serialize_vehicle(vehicle)
+
+
+# -------------------- Vehicle Management (Admin Only) --------------------
+@api_router.put("/vehicles/{vehicle_id}", response_model=VehicleResponse)
+async def update_vehicle(
+    vehicle_id: int, 
+    vehicle_data: VehicleUpdate, 
+    current_admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db)
 ):
-    result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
+    vehicle = result.scalar_one_or_none()
+    if not vehicle:
+        raise HTTPException(status_code=404, detail="Vehicle not found")
+    for key, value in vehicle_data.dict(exclude_unset=True).items():
+        setattr(vehicle, key, value)
+    vehicle.updated_at = datetime.utcnow()
+    
+    await db.commit()
+    await db.refresh(vehicle)
+    return serialize_vehicle(vehicle)
+
+@api_router.delete("/vehicles/{vehicle_id}")
+async def delete_vehicle(
+    vehicle_id: int, 
+    current_admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
     vehicle = result.scalar_one_or_none()
     
     if not vehicle:
         raise HTTPException(status_code=404, detail="Vehicle not found")
-
-    # Clean up Main Image
-    if vehicle.image:
-        await delete_from_cloudinary(vehicle.image)
-
-    # Clean up Gallery Images (stored as a list of URLs)
-    if vehicle.images:
-        for img_url in vehicle.images:
-            await delete_from_cloudinary(img_url)
 
     await db.delete(vehicle)
     await db.commit()
-    return {"message": "Vehicle and all assets deleted from Cloudinary and DB."}
-
-@api_router.get("/vehicles/{v_id}", response_model=VehicleResponse)
-async def get_vehicle(v_id: int, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Vehicle).filter(Vehicle.id == v_id))
-    vehicle = result.scalar_one_or_none()
-    
-    if not vehicle:
-        logger.error(f"Vehicle with ID {v_id} not found in database.")
-        raise HTTPException(status_code=404, detail="Vehicle not found")
-        
-    return serialize_vehicle(vehicle)
-
+    return {"message": "Vehicle deleted successfully"}
     
     
 
@@ -684,9 +554,6 @@ async def get_chat_history(
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
 
-# Static files for uploaded images
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 BUILD_DIR = os.path.join(os.getcwd(), "frontend", "dist")
 if os.path.exists(os.path.join(BUILD_DIR, "assets")):
     app.mount("/assets", StaticFiles(directory=os.path.join(BUILD_DIR, "assets")), name="assets")
@@ -702,7 +569,7 @@ async def serve_react_app(catchall: str):
 async def startup():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    logger.info("Database synced withwith Cloudinary integration.")
+    logger.info("Database tables created/ready")
 
 
 @app.get("/")

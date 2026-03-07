@@ -22,54 +22,45 @@ const VehicleDetailsPage = () => {
   const [isFavorite, setIsFavorite] = useState(false);
 
   // Fetch real vehicle data from backend
-  useEffect(() => {
-    const fetchVehicleData = async () => {
-      try {
-        setIsLoading(true);
-        // Fetch Vehicle Details
-        const response = await vehicleAPI.getOne(id, name);
-        setVehicle(response.data);
-
-        // Check if this specific user has favorited this car
-        // This requires the backend 'GET /users/me/favorites' route 
-        if (user) {
-          const favsResponse = await vehicleAPI.getFavorites();
-          const isLiked = favsResponse.data.some(fav => fav.id === parseInt(id));
-          setIsFavorite(isLiked);
-        }
-      } catch (error) {
-        console.error("Error loading page:", error);
-        toast.error("Could not load vehicle details");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchVehicleData();
-  }, [id, name, user?.id]);
-
-  const handleFavorite = async () => {
-    if (!user) {
-      toast.error("Please login to save favorites");
-      navigate('/login');
-      return;
-    }
-
+ useEffect(() => {
+  const fetchVehicleData = async () => {
     try {
-      // Toggle favorite in the backend link table
-      const response = await vehicleAPI.toggleFavorite(id);
+      setIsLoading(true);
+      const response = await vehicleAPI.getOne(id);
+      setVehicle(response.data);
       
-      // Update local UI state based on backend response
-      setIsFavorite(response.data.is_favourite);
-      
-      if (response.data.is_favourite) {
-        toast.success('Added to your favorites!');
-      } else {
-        toast.success('Removed from favorites');
-      }
+      // The backend now returns is_favourite directly in the vehicle object
+      setIsFavorite(response.data.is_favourite || false);
     } catch (error) {
-      toast.error("Failed to update favorite");
+      toast.error("Could not load vehicle details");
+    } finally {
+      setIsLoading(false);
     }
   };
+  fetchVehicleData();
+}, [id, user?.id]);
+
+const handleFavorite = async () => {
+  if (!user) {
+    toast.error("Please login to save favorites");
+    return;
+  }
+
+  try {
+    const response = await vehicleAPI.toggleFavorite(id);
+    // Backend returns { is_favourite: true/false }
+    const newStatus = response.data.is_favourite;
+    setIsFavorite(newStatus);
+    
+    if (newStatus) {
+      toast.success('Added to favorites!');
+    } else {
+      toast.success('Removed from favorites');
+    }
+  } catch (error) {
+    toast.error("Action failed");
+  }
+};
   
   const handleShare = async () => {
   const shareData = {

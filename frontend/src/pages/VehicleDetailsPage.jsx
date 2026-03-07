@@ -311,4 +311,4 @@ const VehicleDetailsPage = () => {
   );
 };
 
-export default CarDetailsPage;
+export default VehicleDetailsPage;

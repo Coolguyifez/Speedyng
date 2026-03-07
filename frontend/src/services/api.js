@@ -98,7 +98,7 @@ export const vehicleAPI = {
     const config = category && category !== 'All' ? { params: { category } } : {};
     return api.get('/vehicles', config);
   },
-  getOne: (id) => api.get(`/vehicles/${id}`), 
+  getOne: (name, id) => api.get(`/vehicles/${name}/${id}`), 
   create: (data) => api.post('/vehicles', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   delete: (id) => api.delete(`/vehicles/${id}`),

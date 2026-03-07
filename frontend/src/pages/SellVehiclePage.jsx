@@ -72,48 +72,53 @@ const SellVehiclePage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (images.length === 0) return toast.error("Please upload photos.");
-    setLoading(true);
-  
-    const formData = new FormData();
-    // FIX 1: Access Key MUST be a string in quotes
-    formData.append("access_key", "0447b582-799c-4790-a398-1e9173b7598a");
-    formData.append("subject", `New Vehicle: ${vehicleData.make} ${vehicleData.model}`);
-    formData.append("from_name", "Speedy Car Sales");
-  
-    Object.entries(vehicleData).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
-    });
-  
-    images.forEach((imgObj, index) => {
-      formData.append(`attachment_${index + 1}`, imgObj.file);
-    });
-  
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData,
-        // No headers!
-      });
-  
-      // FIX 2: Check status BEFORE trying to read the body
-      if (response.ok) {
-        setStep(4);
-        toast.success("Listing received!");
-      } else {
-        // If we hit this, the server rejected the data (400/500)
-        const errorText = await response.text().catch(() => "Unknown Server Error");
-        console.error("Server Rejected Request:", errorText);
-        toast.error("Form error. Please check all fields.");
-      }
-    } catch (error) {
-      console.error("Network Error:", error);
-      toast.error("Connection failed. Try with 1 photo.");
-    } finally {
-      setLoading(false);
+  e.preventDefault();
+  if (images.length === 0) return toast.error("Please upload photos.");
+  setLoading(true);
+
+  // 1. Log to your console to verify the key is actually there
+  console.log("Using Key:", WEB3FORMS_KEY); 
+
+  const formData = new FormData();
+  // Ensure the key is the VERY FIRST thing added
+  formData.append("access_key", "0447b582-799c-4790-a398-1e9173b7598a");
+  formData.append("subject", `Vehicle: ${vehicleData.make} ${vehicleData.model}`);
+
+  // Only append non-empty fields
+  Object.entries(vehicleData).forEach(([key, value]) => {
+    if (value && value.toString().trim() !== "") {
+      formData.append(key, value);
     }
-  };
+  });
+
+  // Attach images
+  images.forEach((imgObj, index) => {
+    formData.append(`attachment_${index + 1}`, imgObj.file);
+  });
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData,
+      // No headers - crucial for file uploads
+    });
+
+    if (response.ok) {
+      setStep(4);
+      toast.success("Listing received!");
+    } else {
+      // If we can't read the body because of the recorder plugin, 
+      // we at least know it was a server rejection.
+      console.error("Server Status:", response.status);
+      toast.error(`Error ${response.status}: Please try with fewer photos.`);
+    }
+  } catch (error) {
+    console.error("Network crash:", error);
+    toast.error("Connection lost. Check your internet or image sizes.");
+  } finally {
+    setLoading(false);
+  }
+};
   
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">

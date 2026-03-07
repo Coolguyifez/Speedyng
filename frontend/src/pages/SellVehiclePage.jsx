@@ -145,12 +145,12 @@ const SellVehiclePage = () => {
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
         
-        <div className="flex justify-center mb-8">
+        <div className="flex flex-col items-center justify-center mb-8">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href="/"}>
             <img src="https://i.imgur.com/niaQKv1.png" alt="Speedy Logo" className="h-10 w-auto" />
             <span className="text-2xl font-bold tracking-tighter text-slate-900">Speedy</span>
           </div>
-          <p className= "text-gray-500 text-sm">We help you sell Faster</p>
+          <p className= "text-red-600 text-sm font-medium tracking-wide mt-1">We help you sell Faster</p>
         </div>
 
         <Card className="border-none shadow-2xl rounded-3xl bg-white overflow-hidden">

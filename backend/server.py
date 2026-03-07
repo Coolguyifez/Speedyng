@@ -135,14 +135,14 @@ async def send_reset_email(email_to: str, reset_link: str):
         raise e
 
 
- async def get_optional_user(db: AsyncSession, authorization: Optional[str]) -> Optional[User]:
+
+async def get_optional_user(db: AsyncSession, authorization: Optional[str]) -> Optional[User]:
     """Helper to get user from token if it exists, else return None"""
     if not authorization or not authorization.startswith("Bearer "):
         return None
     try:
         token = authorization.split(" ")[1]
-        # We reuse your existing get_current_user logic but without raising exceptions
-        from auth import decode_token # Ensure this is available in your auth.py
+        from auth import decode_token 
         payload = decode_token(token)
         email = payload.get("sub")
         if not email:
@@ -150,7 +150,7 @@ async def send_reset_email(email_to: str, reset_link: str):
         result = await db.execute(select(User).filter(User.email == email))
         return result.scalar_one_or_none()
     except Exception:
-        return None       
+        return None
         
     
 # Helper to serialize vehicle data for the frontend
@@ -466,7 +466,6 @@ async def get_vehicles(
     make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
     authorization: Optional[str] = Header(None)
-    # Use a helper to check if a user is logged in without forcing login
 ):
     from models import Favorite 
 
@@ -483,16 +482,15 @@ async def get_vehicles(
         result = await db.execute(query)
         vehicles = result.scalars().all()
 
-        # For now, we return all as is_fav=False until you implement 
-        # the optional JWT user check in this route.
-       current_user = await get_optional_user(db, authorization)
-       fav_ids = set()
-       if current_user:
-           fav_query = select(Favorite.vehicle_id).filter(Favorite.user_id == current_user.id)
-           fav_result = await db.execute(fav_query)
-           fav_ids = set(fav_result.scalars().all())
+        # 2. Check favorites
+        current_user = await get_optional_user(db, authorization)
+        fav_ids = set()
+        if current_user:
+            fav_query = select(Favorite.vehicle_id).filter(Favorite.user_id == current_user.id)
+            fav_result = await db.execute(fav_query)
+            fav_ids = set(fav_result.scalars().all())
     
-       return [serialize_vehicle(v, is_fav=(v.id in fav_ids)) for v in vehicles]
+        return [serialize_vehicle(v, is_fav=(v.id in fav_ids)) for v in vehicles]
 
     except Exception as e:
         logger.error(f"Error fetching vehicles: {e}")

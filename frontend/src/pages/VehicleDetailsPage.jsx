@@ -29,7 +29,7 @@ const VehicleDetailsPage = () => {
     try {
       setIsLoading(true);
       const token = user?.token;
-      const response = await vehicleAPI.getOne(id);
+      const response = await vehicleAPI.getOne(name, id);
       setVehicle(response.data);
       
       // The backend now returns is_favorite directly in the vehicle object

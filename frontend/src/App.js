@@ -79,7 +79,7 @@ function App() {
               <SellVehiclePage />
             </ProtectedRoute>
           } />   
-          <Route path="//vehicles/:name/:id" element={
+          <Route path="/vehicles/:name/:id" element={
             <ProtectedRoute>
               <VehicleDetailsPage />
             </ProtectedRoute>

@@ -461,7 +461,7 @@ async def create_Vehicle(
         raise HTTPException(status_code=400, detail=str(e))        
 
 
-@api_router.get("/vehicles/{vehicle_id}", response_model=VehicleResponse)
+@api_router.get("/vehicles/{name}/{vehicle_id}", response_model=VehicleResponse)
 async def get_vehicle(vehicle_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
     vehicle = result.scalar_one_or_none()

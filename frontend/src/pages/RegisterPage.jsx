@@ -132,7 +132,7 @@ const RegisterPage = () => {
             Find the vehicle you’ve always wanted.
           </h2>
           <p className="text-gray-300 text-lg">
-            Join Speedy today to browse thousands of verified listings and connect with our agents who will handle the hard work for you.
+            Join Speedy today to browse thousands of verified vehichles and connect with our agents who will handle the hard work for you.
           </p>
         </div>
       </div>

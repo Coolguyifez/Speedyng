@@ -57,7 +57,6 @@ async def seed_database():
                     phone=u_data["phone"],
                     password=get_password_hash(u_data["password"]),
                     role=u_data["role"],
-                    favorites=[]
                 )
                 session.add(new_user)
                 logger.info(f"✓ Created {u_data['role']}: {u_data['email']}")

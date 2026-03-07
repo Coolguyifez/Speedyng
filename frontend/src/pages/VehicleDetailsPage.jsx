@@ -14,7 +14,7 @@ import ChatWidget from '../components/ChatWidget';
 import { vehicleAPI } from '../services/api'; // Integrated with your backend
 import { toast } from 'sonner';
 
-const CarDetailsPage = () => {
+const VehicleDetailsPage = () => {
   const { id } = useParams();
   const [v, setVehicle] = useState(null);
  const [isLoading, setIsLoading] = useState(true);

@@ -382,4 +382,4 @@ const VehiclesPage = () => {
   );
 };
 
-export default CarsPage;
+export default VehiclesPage;

@@ -34,16 +34,18 @@ const SellVehiclePage = () => {
     e.preventDefault();
     if (images.length === 0) return toast.error("Please upload at least one vehicle photo.");
     setLoading(true);
-
+    
+    const formElement = e.currentTarget;
     const formData = new FormData(e.currentTarget);
+    formData.delete("photos");
     
     // Add images to the same key name
     images.forEach((imgObj) => {
-      formData.append("photos", imgObj.file);
+      formData.append("photos[]", imgObj.file);
     });
 
     try {
-      const response = await fetch(`https://forminit.com/f/6hcg5d1pqeb`, {
+      const response = await fetch(`https://forminit.com/f/${FORMINIT_ID}`, {
         method: 'POST',
         body: formData,
         headers: { 
@@ -55,9 +57,9 @@ const SellVehiclePage = () => {
       if (response.ok) {
         setStep(4);
       } else {
-        const errorData = await response.json();
-        console.error("Forminit Error:", errorData);
-        toast.error("Submission failed. Check dashboard settings.");
+        const errorText = await response.text();
+        console.error("Forminit Server Response:", errorText);
+        toast.error("Submission failed. Check your Forminit file settings.");
       }
     } catch (error) {
       toast.error("Connection error.");

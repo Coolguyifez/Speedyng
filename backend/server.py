@@ -444,13 +444,12 @@ async def get_vehicles(
     color: Optional[str] = Query(None), 
     make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
-    # We use a try/except or an optional dependency to see if a user is logged in
-    user_id: Optional[int] = None 
+    # Use a helper to check if a user is logged in without forcing login
 ):
-    from models import Favorite # Local import to prevent circular issues
+    from models import Favorite 
 
     try:
-        # 1. Build the Vehicle Query
+        # 1. Build Query
         query = select(Vehicle)
         if category: query = query.filter(Vehicle.category == category)
         if v_type: query = query.filter(Vehicle.type == v_type)
@@ -462,22 +461,13 @@ async def get_vehicles(
         result = await db.execute(query)
         vehicles = result.scalars().all()
 
-        # 2. Check for Favorites if we have a user context
-        # Pro-tip: Pass the user ID from your frontend headers if possible
-        fav_vehicle_ids = []
-        # if user_id: 
-        #    fav_query = select(Favorite.vehicle_id).filter(Favorite.user_id == user_id)
-        #    fav_res = await db.execute(fav_query)
-        #    fav_vehicle_ids = fav_res.scalars().all()
-
-        return [
-            serialize_vehicle(v, is_fav=(v.id in fav_vehicle_ids)) 
-            for v in vehicles
-        ]
+        # For now, we return all as is_fav=False until you implement 
+        # the optional JWT user check in this route.
+        return [serialize_vehicle(v, is_fav=False) for v in vehicles]
 
     except Exception as e:
         logger.error(f"Error fetching vehicles: {e}")
-        raise HTTPException(status_code=500, detail="Database connection failed")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
         
     
 @api_router.post("/vehicles", response_model=VehicleResponse)

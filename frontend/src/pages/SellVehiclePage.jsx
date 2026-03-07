@@ -78,13 +78,17 @@ const SellVehiclePage = () => {
 
     try {
       const formData = new FormData();
-      formData.append("access_key", 0447b582-799c-4790-a398-1e9173b7598a);
+      
+      // FIX: Use quotes or the constant defined at the top
+      formData.append("access_key", WEB3FORMS_KEY); 
       formData.append("subject", `New Vehicle: ${vehicleData.make} ${vehicleData.model}`);
       formData.append("from_name", "Speedy Car Sales");
 
       // Only append fields that actually have data
       Object.entries(vehicleData).forEach(([key, value]) => {
-        if (value) formData.append(key, value);
+        if (value && value.toString().trim() !== "") {
+          formData.append(key, value);
+        }
       });
 
       // Append images
@@ -95,23 +99,23 @@ const SellVehiclePage = () => {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
-        // No headers! Let the browser set the boundary.
+        // Let browser set the boundary automatically
       });
 
-      // FIX: Clone the response so PostHog and our code can both read it
-      const clonedResponse = response.clone();
-      const data = await clonedResponse.json();
+      // Cloning ensures both your code and PostHog can read the stream
+      const responseForJson = response.clone();
+      const data = await responseForJson.json();
 
       if (data.success) {
         setStep(4);
         toast.success("Listing received!");
       } else {
         console.error("Web3Forms Rejected:", data);
-        toast.error(data.message || "Check form details and try again.");
+        toast.error(data.message || "Submission rejected. Check your key.");
       }
     } catch (error) {
       console.error("Submission Error:", error);
-      toast.error("Network issue. Try with 1 photo first.");
+      toast.error("Network issue. Try with only 1 photo to test.");
     } finally {
       setLoading(false);
     }

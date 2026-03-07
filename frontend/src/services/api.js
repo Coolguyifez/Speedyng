@@ -93,12 +93,11 @@ export const authAPI = {
 
 // 4. Car API: Handles Inventory
 export const vehicleAPI = {
-  getAll: (category = null) => {
-    // If category is "All" or null, don't send a param
-    const config = category && category !== 'All' ? { params: { category } } : {};
-    return api.get('/vehicles', config);
-  },
-  getOne: (name, id) => api.get(`/vehicles/${name}/${id}`), 
+  getAll: (params = {}) => api.get('/vehicles', { params }),
+  
+  // Updated to match the /vehicles/{name}/{id} pattern
+  getOne: (id, name = "vehicle") => api.get(`/vehicles/${name}/${id}`), 
+  
   create: (data) => api.post('/vehicles', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   delete: (id) => api.delete(`/vehicles/${id}`),

@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 
 
 const VehicleDetailsPage = () => {
-  const { id } = useParams();
+  const { name, id } = useParams();
   const user = JSON.parse(localStorage.getItem('user'));
   const [v, setVehicle] = useState(null);
  const [isLoading, setIsLoading] = useState(true);

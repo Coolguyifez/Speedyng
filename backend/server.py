@@ -165,7 +165,7 @@ def serialize_vehicle(vehicle):
         "fuel_type": getattr(vehicle, 'fuel_type', 'Petrol'),
         "description": getattr(vehicle, 'description', ''),
         "verified": getattr(vehicle, 'verified', False),
-        "is_favourite": is_fav,
+        "is_favorite": is_fav,
         # Convert datetime to ISO string for JSON compatibility
         "created_at": vehicle.created_at.isoformat() if hasattr(vehicle, 'created_at') and vehicle.created_at else None,
         "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, User, LogOut, Home, Car, Truck, Bus, Contact, ChevronDown } from 'lucide-react';
+import { Menu, X, Phone, User, LogOut, Home, Car, Truck, Bus, Contact, ChevronDown, Heart } from 'lucide-react';
 import { MdOutlineSell } from "react-icons/md";
 import { FaMotorcycle } from "react-icons/fa";
 import { FaTruckPickup  } from "react-icons/fa";
@@ -171,6 +171,17 @@ const Header = () => {
                 <span className="text-xs font-bold">07056117175</span>
               </a>
             </div>
+
+            {/* Favorite Icon Link */}
+            <Link 
+              to="/favorites" 
+              className={`p-2 rounded-full transition-colors hover:bg-red-50 group relative ${
+                isActive('/favorites') ? 'text-red-600 bg-red-50' : 'text-gray-600'
+              }`}
+              title="My Favorite Vehicles"
+            >
+              <Heart className={`w-5 h-5 ${isActive('/favorites') ? 'fill-red-600' : 'group-hover:fill-red-600'}`} />
+            </Link>
             
             <div className="flex items-center space-x-2">
               {user ? (
@@ -235,6 +246,18 @@ const Header = () => {
                 >
                   <Home size={20} />
                   <span>Home</span>
+                </Link>
+
+
+                <Link
+                  to="/favorites"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 py-3 px-2 text-base font-medium rounded-lg transition-colors ${
+                    isActive('/favorites') ? 'text-red-600 bg-red-50' : 'text-gray-700'
+                  }`}
+                >
+                  <Heart size={20} className={isActive('/favorites') ? 'fill-red-600' : ''} />
+                  <span>My Favourite Vehicles</span>
                 </Link>
                   
                 {vehicleTypes.map((type) => {

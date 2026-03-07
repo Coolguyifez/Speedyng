@@ -137,7 +137,7 @@ async def send_reset_email(email_to: str, reset_link: str):
     
 # Helper to serialize vehicle data for the frontend
 # Added .isoformat() to prevent JSON 500 errors
-def serialize_vehicle(vehicle):
+def serialize_vehicle(vehicle, is_fav=False):
     return {
         "id": getattr(vehicle, 'id', None),
         "name": getattr(vehicle, 'name', 'Unknown'),

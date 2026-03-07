@@ -15,7 +15,7 @@ const SellVehiclePage = () => {
   const [images, setImages] = useState([]); 
 
   const [vehicleData, setVehicleData] = useState({
-    make: '', model: '', year: '', vin: '',
+    make: '', model: '', year: '', vin: '', feature: '', color: '',
     price: '', location: '', condition: '',
     name: '', phone: '', email: '',
   });
@@ -52,8 +52,8 @@ const SellVehiclePage = () => {
 
   const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 8) {
-      toast.error("Maximum 8 photos allowed for faster processing.");
+    if (images.length + files.length > 10) {
+      toast.error("Maximum 10 photos allowed for faster processing.");
       return;
     }
     setLoading(true);
@@ -108,7 +108,7 @@ const SellVehiclePage = () => {
       const formData = new FormData();
       formData.append("access_key", WEB3FORMS_KEY);
       formData.append("subject", `New Vehicle Listing: ${vehicleData.make} ${vehicleData.model}`);
-      formData.append("from_name", "Speedy Car Sales");
+      formData.append("from_name", "Help me List My Vehicle");
 
       // Add vehicle text data
       Object.entries(vehicleData).forEach(([key, value]) => {
@@ -150,6 +150,7 @@ const SellVehiclePage = () => {
             <img src="https://i.imgur.com/niaQKv1.png" alt="Speedy Logo" className="h-10 w-auto" />
             <span className="text-2xl font-bold tracking-tighter text-slate-900">Speedy</span>
           </div>
+          <p className= "text-gray-500 text-sm">We help you sell Faster</p>
         </div>
 
         <Card className="border-none shadow-2xl rounded-3xl bg-white overflow-hidden">
@@ -160,9 +161,9 @@ const SellVehiclePage = () => {
                 <div className="space-y-6 animate-in fade-in duration-500">
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
-                      <Truck className="text-red-600"/> Vehicle Photos
+                      <Truck className="text-red-600"/> Vehicle Photos(add atleast 5-10 pictures)
                     </h2>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{images.length}/8</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{images.length}/10</span>
                   </div>
                   
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -174,7 +175,7 @@ const SellVehiclePage = () => {
                         </button>
                       </div>
                     ))}
-                    {images.length < 8 && (
+                    {images.length < 10 && (
                       <label className="h-32 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-500 hover:bg-red-50 transition-all">
                         {loading ? <Loader2 className="animate-spin text-red-600" /> : <Plus className="text-gray-400" />}
                         <span className="text-xs text-gray-500 mt-1">{loading ? "Shrinking..." : "Add Photo"}</span>
@@ -188,6 +189,8 @@ const SellVehiclePage = () => {
                     <input name="model" value={vehicleData.model} onChange={handleInputChange} placeholder="Vehicle Model" className="input-field" required />
                     <input name="year" value={vehicleData.year} onChange={handleInputChange} placeholder="Vehicle Year" className="input-field" required />
                     <input name="vin" value={vehicleData.vin} onChange={handleInputChange} placeholder="Vehicle Vin Number" className="input-field" required />
+                    <input name="color" value={vehicleData.color} onChange={handleInputChange} placeholder="Vehicle Exterior/Interior Color" className="input-field" required />
+                    <input name="feature" value={vehicleData.feature} onChange={handleInputChange} placeholder="Vehicle features" className="input-field h-34" required />
                   </div>
                   <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200 text-white">
                     Next: Location & Price <ChevronRight className="ml-2"/>
@@ -200,7 +203,7 @@ const SellVehiclePage = () => {
                   <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="text-red-600"/> Location & <TbCurrencyNaira className="text-red-600"/> Price</h2>
                   <input name="price" value={vehicleData.price} onChange={handleInputChange} type="number" placeholder="Asking Price (₦)" className="input-field" required />
                   <input name="location" value={vehicleData.location} onChange={handleInputChange} placeholder="City / State" className="input-field" required />
-                  <textarea name="condition" value={vehicleData.condition} onChange={handleInputChange} placeholder="Vehicle condition..." className="input-field h-32" />
+                  <textarea name="condition" value={vehicleData.condition} onChange={handleInputChange} placeholder="Vehicle condition & maintenance..." className="input-field h-32" required />
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6"><ChevronLeft className="mr-2"/> Back</Button>
                     <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6 text-white">Next <ChevronRight className="ml-2"/></Button>

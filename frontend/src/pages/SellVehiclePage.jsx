@@ -77,16 +77,18 @@ const SellVehiclePage = () => {
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("access_key", WEB3FORMS_KEY);
+    
+    // 1. Add your Essential Web3Forms keys
+    formData.append("access_key", "0447b582-799c-4790-a398-1e9173b7598a");
     formData.append("subject", `New Vehicle Listing: ${vehicleData.make} ${vehicleData.model}`);
     formData.append("from_name", "Speedy Car Sales");
 
-    // Add text fields
+    // 2. Add text fields from vehicleData
     Object.entries(vehicleData).forEach(([key, value]) => {
       formData.append(key, value);
     });
 
-    // Add Images - Web3Forms handles multiple files via individual appends
+    // 3. Add Images
     images.forEach((imgObj, index) => {
       formData.append(`attachment_${index + 1}`, imgObj.file);
     });
@@ -94,24 +96,28 @@ const SellVehiclePage = () => {
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        body: formData
+        // IMPORTANT: Do NOT set any headers here. 
+        // The browser will automatically handle the multipart boundary.
+        body: formData, 
       });
 
       const data = await response.json();
 
       if (data.success) {
         setStep(4);
+        toast.success("Listing received!");
       } else {
-        console.error("Web3Forms Error:", data);
+        console.error("Submission Error:", data);
         toast.error(data.message || "Submission failed.");
       }
     } catch (error) {
-      toast.error("Network error. Please check your connection.");
+      console.error("Network Error:", error);
+      toast.error("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
       <div className="max-w-2xl mx-auto">

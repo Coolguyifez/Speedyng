@@ -165,6 +165,7 @@ def serialize_vehicle(vehicle):
         "fuel_type": getattr(vehicle, 'fuel_type', 'Petrol'),
         "description": getattr(vehicle, 'description', ''),
         "verified": getattr(vehicle, 'verified', False),
+        "is_favourite": is_fav,
         # Convert datetime to ISO string for JSON compatibility
         "created_at": vehicle.created_at.isoformat() if hasattr(vehicle, 'created_at') and vehicle.created_at else None,
         "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None
@@ -418,10 +419,8 @@ async def get_my_favorites(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-    """Returns all vehicles favorited by the current user"""
-    from models import Favorite # Ensure this is imported
+    from models import Favorite
     
-    # Join Vehicle with Favorite to get only the liked vehicles
     query = (
         select(Vehicle)
         .join(Favorite, Vehicle.id == Favorite.vehicle_id)
@@ -431,58 +430,53 @@ async def get_my_favorites(
     result = await db.execute(query)
     vehicles = result.scalars().all()
     
-    return [serialize_vehicle(v) for v in vehicles]        
+    # Since these are ALL favorites, we pass is_fav=True to every one
+    return [serialize_vehicle(v, is_fav=True) for v in vehicles]        
 
 
 
 # -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])
 async def get_vehicles(
-    category: Optional[str] = Query(None), # Handles ?type=Luxury Sedan
-    v_type: Optional[str] = Query(None, alias="type"), # Handles ?type=Truck
-    service: Optional[str] = Query(None),             # Handles ?service=Rent
-    color: Optional[str] = Query(None),  
+    category: Optional[str] = Query(None),
+    v_type: Optional[str] = Query(None, alias="type"),
+    service: Optional[str] = Query(None),
+    color: Optional[str] = Query(None), 
     make: Optional[str] = Query(None),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    # We use a try/except or an optional dependency to see if a user is logged in
+    user_id: Optional[int] = None 
 ):
+    from models import Favorite # Local import to prevent circular issues
 
     try:
+        # 1. Build the Vehicle Query
         query = select(Vehicle)
+        if category: query = query.filter(Vehicle.category == category)
+        if v_type: query = query.filter(Vehicle.type == v_type)
+        if service: query = query.filter(Vehicle.service == service) 
+        if color: query = query.filter(Vehicle.color.ilike(f"%{color}%")) 
+        if make: query = query.filter(Vehicle.make == make)  
         
-        # 1. Filter by Category (e.g., Luxury Sedan, Compact SUV)
-        if category:
-            query = query.filter(Vehicle.category == category)
-
-        # 2. Filter by Type (e.g., Car, Truck, Bus, Motorcycle)
-        if v_type:
-            query = query.filter(Vehicle.type == v_type)
-            
-        # 3. Filter by Service (e.g., Sales, Rent, Auction)
-        if service:
-            query = query.filter(Vehicle.service == service)  
-            
-        # 4. Filter by Color (e.g., Black, Red, White)
-        if color:
-            query = query.filter(Vehicle.color.ilike(f"%{color}%")) 
-
-         # 3. Filter by make (e.g., Toyota, BMW, Honda)
-        if make:
-            query = query.filter(Vehicle.make == make)  
-                
-        # Order by newest first so Speedy always looks fresh
-
         query = query.order_by(Vehicle.id.desc())
-        
         result = await db.execute(query)
-
         vehicles = result.scalars().all()
-        
-        return [serialize_vehicle(v) for v in vehicles]
+
+        # 2. Check for Favorites if we have a user context
+        # Pro-tip: Pass the user ID from your frontend headers if possible
+        fav_vehicle_ids = []
+        # if user_id: 
+        #    fav_query = select(Favorite.vehicle_id).filter(Favorite.user_id == user_id)
+        #    fav_res = await db.execute(fav_query)
+        #    fav_vehicle_ids = fav_res.scalars().all()
+
+        return [
+            serialize_vehicle(v, is_fav=(v.id in fav_vehicle_ids)) 
+            for v in vehicles
+        ]
 
     except Exception as e:
-    
-        logger.error(f"Error fetching vehicles with filters: {e}")
-
+        logger.error(f"Error fetching vehicles: {e}")
         raise HTTPException(status_code=500, detail="Database connection failed")
         
     

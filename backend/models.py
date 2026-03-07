@@ -15,7 +15,6 @@ class User(Base):
     phone = Column(String(20), nullable=True)
     password = Column(String(255), nullable=False)
     role = Column(String(20), default="user", nullable=False)
-    favorites = Column(ARRAY(Integer), default=[])  # stores car IDs
     reset_token = Column(String, nullable=True)
     reset_token_expires = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -64,3 +63,17 @@ class ChatMessage(Base):
     sender = Column(String(20), nullable=False)  # 'user' or 'bot'
     timestamp = Column(DateTime, default=datetime.utcnow)
     user = relationship("User", backref="chat_messages")
+
+# ================== Favourite Model ==================
+class Favorite(Base):
+    __tablename__ = "favorites"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    # Links to the Agent/User
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    # Links to the specific Vehicle
+    vehicle_id = Column(Integer, ForeignKey("vehicles.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # CRITICAL: This ensures a user can't like the same car multiple times
+    __table_args__ = (UniqueConstraint('user_id', 'vehicle_id', name='_user_vehicle_uc'),)

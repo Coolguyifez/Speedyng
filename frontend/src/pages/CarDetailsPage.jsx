@@ -252,7 +252,7 @@ const CarDetailsPage = () => {
                     { icon: Car, label: 'Make', value: v.make ? `${v.make}` : 'N/A' },
                     { icon: Accessibility, label: 'Model', value: v.model ? `${v.model}` : 'N/A' },
                     { icon: CgCarousel, label: 'Category', value: v.category ? `${v.category}` : 'N/A' },
-                    { icon: Palette , label: 'Exterior Color', value: v.color ? `${v.color}` : 'N/A' },
+                    { icon: Palette , label: 'Exterior/Interior Color', value: v.color ? `${v.color}` : 'N/A' },
                     { icon: Calendar, label: 'Year', value: v.year ? `${v.year}` : 'N/A' },
                     { icon: Gauge, label: 'Mileage', value: v.mileage ? `${v.mileage}` : 'N/A' },
                     { icon: CircleGauge, label: 'Acceleration(0-100 km/h)', value: v.acceleration ? `${v.acceleration}s` : 'N/A' },

@@ -35,7 +35,7 @@ const SellVehiclePage = () => {
         img.src = event.target.result;
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1000; // Slightly smaller for better reliability
+          const MAX_WIDTH = 800; // Slightly smaller for better reliability
           const scaleSize = MAX_WIDTH / img.width;
           canvas.width = MAX_WIDTH;
           canvas.height = img.height * scaleSize;
@@ -44,7 +44,7 @@ const SellVehiclePage = () => {
           canvas.toBlob((blob) => {
             const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
             resolve({ file: compressedFile, url: URL.createObjectURL(blob) });
-          }, 'image/jpeg', 0.6); // 60% quality to ensure small payload
+          }, 'image/jpeg', 0.4); // 60% quality to ensure small payload
         };
       };
     });

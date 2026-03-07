@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Float, Boolean, JSON, UniqueConstraint
+from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Float, Boolean, JSON, UniqueConstraint, Text
 from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime
 from database import Base
 

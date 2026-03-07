@@ -313,7 +313,10 @@ const VehiclesPage = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVehicles.map((v) => (
-              <Link key={v.id} to={`/vehicles/${v.name.toLowerCase().replace(/ /g, '-')}/${v.id}`}>
+              <Link 
+                key={v.id} 
+                to={`/vehicles/${(v.name || 'vehicle').toLowerCase().replace(/\s+/g, '-')}/${v.id}`}
+              >
                 <Card className="overflow-hidden border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
                   <div className="relative h-52 overflow-hidden bg-gray-200">
                     <img

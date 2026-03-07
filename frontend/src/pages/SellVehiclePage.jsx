@@ -34,14 +34,28 @@ const SellVehiclePage = () => {
     e.preventDefault();
     if (images.length === 0) return toast.error("Please upload at least one vehicle photo.");
     setLoading(true);
-    
-    const formElement = e.currentTarget;
-    const formData = new FormData(e.currentTarget);
-    formData.delete("photos");
-    
-    // Add images to the same key name
-    images.forEach((imgObj) => {
-      formData.append("photos[]", imgObj.file);
+
+    // 1. Start with a fresh FormData object
+    const formData = new FormData();
+    const formEl = e.currentTarget;
+
+    // 2. Manually append text fields (matches your input 'name' attributes)
+    formData.append("make", formEl.make.value);
+    formData.append("model", formEl.model.value);
+    formData.append("year", formEl.year.value);
+    formData.append("vin", formEl.vin.value);
+    formData.append("price", formEl.price.value);
+    formData.append("location", formEl.location.value);
+    formData.append("condition", formEl.condition.value);
+    formData.append("name", formEl.name.value);
+    formData.append("phone", formEl.phone.value);
+    formData.append("email", formEl.email.value);
+    formData.append("_gotcha", formEl._gotcha.value); // Spam protection
+
+    // 3. Append images. 
+    // Try "file" or "photos[]" - Forminit usually prefers a list of files
+    images.forEach((imgObj, index) => {
+      formData.append(`file_${index}`, imgObj.file); 
     });
 
     try {
@@ -50,19 +64,20 @@ const SellVehiclePage = () => {
         body: formData,
         headers: { 
           'Accept': 'application/json' 
-          // Note: DO NOT set Content-Type here, the browser does it for FormData
+          // Browser handles Content-Type automatically for FormData
         }
       });
 
       if (response.ok) {
         setStep(4);
       } else {
-        const errorText = await response.text();
-        console.error("Forminit Server Response:", errorText);
-        toast.error("Submission failed. Check your Forminit file settings.");
+        const errorData = await response.json();
+        console.error("Forminit Rejected Request:", errorData);
+        toast.error(errorData.message || "Submission rejected. Check image sizes.");
       }
     } catch (error) {
-      toast.error("Connection error.");
+      console.error("Connection Error:", error);
+      toast.error("Connection error. Try again.");
     } finally {
       setLoading(false);
     }

@@ -7,8 +7,8 @@ import { Toaster } from "./components/ui/sonner";
 // Pages
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
-import CarsPage from "./pages/CarsPage";
-import CarDetailsPage from "./pages/CarDetailsPage";
+import VehiclesPage from "./pages/VehiclesPage";
+import VehicleDetailsPage from "./pages/VehicleDetailsPage";
 import ContactPage from "./pages/ContactPage";
 import SellVehiclePage from './pages/SellVehiclePage';
 import LoginPage from "./pages/LoginPage";
@@ -71,21 +71,17 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/terms" element={<VehiclesPage/>} />
 
           {/* Protected Agent Routes */}
-          <Route path="/Vehicles" element={
-            <ProtectedRoute>
-              <CarsPage />
-            </ProtectedRoute>
-          } />
            <Route path="/sell" element={
             <ProtectedRoute>
               <SellVehiclePage />
             </ProtectedRoute>
           } />   
-          <Route path="/Vehicle/:id" element={
+          <Route path="//vehicles/:name/:id" element={
             <ProtectedRoute>
-              <CarDetailsPage />
+              <VehicleDetailsPage />
             </ProtectedRoute>
           } />
           <Route path="/contact" element={

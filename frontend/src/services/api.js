@@ -96,7 +96,7 @@ export const vehicleAPI = {
   getAll: (params = {}) => api.get('/vehicles', { params }),
   
   // Updated to match the /vehicles/{name}/{id} pattern
-  getOne: (id, name = "vehicle") => api.get(`/vehicles/${name}/${id}`), 
+  getOne: (name, id) => api.get(`/vehicles/${name}/${id}`), 
   
   create: (data) => api.post('/vehicles', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),

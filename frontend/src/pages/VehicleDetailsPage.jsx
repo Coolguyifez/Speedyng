@@ -13,11 +13,11 @@ import Footer from '../components/Footer';
 import ChatWidget from '../components/ChatWidget';
 import { vehicleAPI } from '../services/api'; // Integrated with your backend
 import { toast } from 'sonner';
-import { useAuth } from '../context/AuthContext';
+
 
 const VehicleDetailsPage = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const user = JSON.parse(localStorage.getItem('user'));
   const [v, setVehicle] = useState(null);
  const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);

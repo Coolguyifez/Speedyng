@@ -25,17 +25,55 @@ const SellVehiclePage = () => {
     setVehicleData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e) => {
+  // --- NEW: COMPRESSION LOGIC ---
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1200; 
+          const scaleSize = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob((blob) => {
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            resolve({
+              file: compressedFile,
+              url: URL.createObjectURL(blob)
+            });
+          }, 'image/jpeg', 0.7); // 70% quality
+        };
+      };
+    });
+  };
+
+  const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
     if (images.length + files.length > 10) {
       toast.error("Speedy listings allow a maximum of 10 vehicle photos.");
       return;
     }
-    const newPreviews = files.map(file => ({
-      file,
-      url: URL.createObjectURL(file)
-    }));
-    setImages(prev => [...prev, ...newPreviews]);
+
+    setLoading(true);
+    try {
+      const compressedResults = await Promise.all(files.map(file => compressImage(file)));
+      setImages(prev => [...prev, ...compressedResults]);
+    } catch (err) {
+      toast.error("Error processing images.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeImage = (index) => {
@@ -54,9 +92,8 @@ const SellVehiclePage = () => {
       formData.append(key, vehicleData[key]);
     });
 
-    // 2. Append images - Using 'photos[]' so Forminit sees it as an array
-    images.forEach((imgObj) => {
-      formData.append("photos[]", imgObj.file); 
+   images.forEach((imgObj) => {
+      formData.append("photos", imgObj.file); 
     });
 
     try {
@@ -71,7 +108,7 @@ const SellVehiclePage = () => {
       } else {
         const errorData = await response.json();
         console.error("Forminit Rejected:", errorData);
-        toast.error("Submission rejected. Check your image sizes.");
+        toast.error("Form rejected. Try with fewer photos or check field names.");
       }
     } catch (error) {
       toast.error("Connection error. Try again.");

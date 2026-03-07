@@ -72,53 +72,74 @@ const SellVehiclePage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (images.length === 0) return toast.error("Please upload photos.");
-  setLoading(true);
+    e.preventDefault();
+    if (images.length === 0) return toast.error("Please upload photos.");
+    setLoading(true);
 
-  // 1. Log to your console to verify the key is actually there
-  console.log("Using Key:", WEB3FORMS_KEY); 
+    // 1. REPLACE THIS with your actual Cloud Name from your Dashboard
+    const CLOUD_NAME = "dvxz6mnjt"; 
+    const UPLOAD_PRESET = "speedy_uploads";
 
-  const formData = new FormData();
-  // Ensure the key is the VERY FIRST thing added
-  formData.append("access_key", "0447b582-799c-4790-a398-1e9173b7598a");
-  formData.append("subject", `Vehicle: ${vehicleData.make} ${vehicleData.model}`);
+    try {
+      // --- PART 1: UPLOAD TO CLOUDINARY ---
+      const uploadedUrls = await Promise.all(
+        images.map(async (imgObj) => {
+          const data = new FormData();
+          data.append("file", imgObj.file);
+          data.append("upload_preset", UPLOAD_PRESET);
+          data.append("folder", "vehicle-listings"); // Matches your Asset Folder setting
 
-  // Only append non-empty fields
-  Object.entries(vehicleData).forEach(([key, value]) => {
-    if (value && value.toString().trim() !== "") {
-      formData.append(key, value);
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+            method: "POST",
+            body: data,
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error?.message || "Cloudinary Upload Failed");
+          }
+          
+          const fileData = await res.json();
+          return fileData.secure_url; 
+        })
+      );
+
+      // --- PART 2: SEND TO WEB3FORMS ---
+      const formData = new FormData();
+      formData.append("access_key", WEB3FORMS_KEY);
+      formData.append("subject", `New Vehicle Listing: ${vehicleData.make} ${vehicleData.model}`);
+      formData.append("from_name", "Speedy Car Sales");
+
+      // Add vehicle text data
+      Object.entries(vehicleData).forEach(([key, value]) => {
+        if (value) formData.append(key, value);
+      });
+
+      // Send the Cloudinary links as plain text fields
+      uploadedUrls.forEach((url, index) => {
+        formData.append(`Photo_Link_${index + 1}`, url);
+      });
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setStep(4);
+        toast.success("Listing received with all photos!");
+      } else {
+        toast.error(result.message || "Form submission failed.");
+      }
+    } catch (error) {
+      console.error("Critical Error:", error);
+      toast.error(error.message || "Failed to process images.");
+    } finally {
+      setLoading(false);
     }
-  });
-
-  // Attach images
-  images.forEach((imgObj, index) => {
-    formData.append(`attachment_${index + 1}`, imgObj.file);
-  });
-
-  try {
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData,
-      // No headers - crucial for file uploads
-    });
-
-    if (response.ok) {
-      setStep(4);
-      toast.success("Listing received!");
-    } else {
-      // If we can't read the body because of the recorder plugin, 
-      // we at least know it was a server rejection.
-      console.error("Server Status:", response.status);
-      toast.error(`Error ${response.status}: Please try with fewer photos.`);
-    }
-  } catch (error) {
-    console.error("Network crash:", error);
-    toast.error("Connection lost. Check your internet or image sizes.");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">

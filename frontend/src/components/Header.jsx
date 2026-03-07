@@ -257,7 +257,7 @@ const Header = () => {
                   }`}
                 >
                   <Heart size={20} className={isActive('/favorites') ? 'fill-red-600' : ''} />
-                  <span>My Favourite Vehicles</span>
+                  <span>My Favorite Vehicles</span>
                 </Link>
                   
                 {vehicleTypes.map((type) => {

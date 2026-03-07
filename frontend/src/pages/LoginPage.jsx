@@ -109,7 +109,7 @@ const handleSocialLogin = (provider) => {
             Your dream vehicle is just a login away.
           </h2>
           <p className="text-gray-300 text-lg">
-            Sign in to access our verified Vehicle listings, track your inquiries, and pick up right where you left off.
+            Sign in to access our verified Vehicle details, Sell your vehicles, track your inquiries and favorites, and pick up right where you left off.
           </p>
         </div>
       </div>

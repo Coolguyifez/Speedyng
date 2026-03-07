@@ -102,6 +102,9 @@ export const vehicleAPI = {
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   delete: (id) => api.delete(`/vehicles/${id}`),
 
+  getFavorites: () => api.get('/users/me/favorites'),
+  toggleFavorite: (id) => api.post(`/vehicles/${id}/favorite`),
+
 
   // --- Chat Functions --
   saveChatMessage: (messageData) => {

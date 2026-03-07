@@ -11,6 +11,7 @@ import VehiclesPage from "./pages/VehiclesPage";
 import VehicleDetailsPage from "./pages/VehicleDetailsPage";
 import ContactPage from "./pages/ContactPage";
 import SellVehiclePage from './pages/SellVehiclePage';
+import FavoritesPage from "./pages/FavoritesPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminPanel from "./pages/AdminPanel";
@@ -78,7 +79,14 @@ function App() {
             <ProtectedRoute>
               <SellVehiclePage />
             </ProtectedRoute>
-          } />   
+          } />
+
+          <Route path="/favorites" element={
+            <ProtectedRoute>
+              <FavoritesPage />
+            </ProtectedRoute>
+          } /> 
+            
           <Route path="/vehicles/:name/:id" element={
             <ProtectedRoute>
               <VehicleDetailsPage />

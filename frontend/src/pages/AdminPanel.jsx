@@ -278,7 +278,7 @@ const AdminPanel = () => {
                             </Select>
                           </div>
                           <InputGroup label="Mileage" name="mileage" val={formData.mileage} onChange={handleChange} placeholder="e.g. 45,000 km" />
-                          <InputGroup label="Color" name="color" val={formData.color} onChange={handleChange} placeholder="e.g. Metallic Black" />
+                          <InputGroup label="Exterior/Interior Color" name="color" val={formData.color} onChange={handleChange} placeholder="e.g. Metallic Black" />
                           <InputGroup label="Acceleration (0-100)km/h" name="acceleration" val={formData.acceleration} onChange={handleChange} placeholder="e.g. 4.5" />
                           <div className="space-y-1">
                             <label className="text-xs font-semibold uppercase">Transmission</label>

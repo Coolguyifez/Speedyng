@@ -363,6 +363,8 @@ async def login(credentials: UserLogin, db: AsyncSession = Depends(get_db)):
 @api_router.get("/auth/me", response_model=UserResponse)
 async def get_current_user_profile(current_user: User = Depends(get_current_user)):
     return current_user
+
+    
 # -------------------- reset route database --------------------
 @app.get("/api/admin/reset-db-secret-99")
 async def reset_database():
@@ -377,7 +379,61 @@ async def reset_database():
         return {"status": "success", "message": "Database wiped and re-seeded!"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
         
+# -------------------- Favorite Routes --------------------
+
+@api_router.post("/vehicles/{vehicle_id}/favorite")
+async def toggle_favorite(
+    vehicle_id: int, 
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Toggles a vehicle as a favorite for the current user"""
+    from models import Favorite # Ensure this is imported
+    
+    # 1. Check if the link already exists
+    query = select(Favorite).filter(
+        Favorite.user_id == current_user.id, 
+        Favorite.vehicle_id == vehicle_id
+    )
+    result = await db.execute(query)
+    favorite = result.scalar_one_or_none()
+
+    if favorite:
+        # 2. If it exists, delete it (Unlike)
+        await db.delete(favorite)
+        await db.commit()
+        return {"status": "unliked", "is_favourite": False}
+    else:
+        # 3. If it doesn't, create it (Like)
+        new_fav = Favorite(user_id=current_user.id, vehicle_id=vehicle_id)
+        db.add(new_fav)
+        await db.commit()
+        return {"status": "liked", "is_favourite": True}
+
+
+@api_router.get("/users/me/favorites", response_model=List[VehicleResponse])
+async def get_my_favorites(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Returns all vehicles favorited by the current user"""
+    from models import Favorite # Ensure this is imported
+    
+    # Join Vehicle with Favorite to get only the liked vehicles
+    query = (
+        select(Vehicle)
+        .join(Favorite, Vehicle.id == Favorite.vehicle_id)
+        .filter(Favorite.user_id == current_user.id)
+    )
+    
+    result = await db.execute(query)
+    vehicles = result.scalars().all()
+    
+    return [serialize_vehicle(v) for v in vehicles]        
+
+
 
 # -------------------- Vehicle Routes (Public) --------------------
 @api_router.get("/vehicles", response_model=List[VehicleResponse])

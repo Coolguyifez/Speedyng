@@ -31,7 +31,7 @@ const VehicleDetailsPage = () => {
         setVehicle(response.data);
 
         // Check if this specific user has favorited this car
-        // This requires the backend 'GET /users/me/favorites' route we discussed
+        // This requires the backend 'GET /users/me/favorites' route 
         if (user) {
           const favsResponse = await vehicleAPI.getFavorites();
           const isLiked = favsResponse.data.some(fav => fav.id === parseInt(id));

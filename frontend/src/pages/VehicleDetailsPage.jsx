@@ -23,47 +23,54 @@ const VehicleDetailsPage = () => {
 
   // Fetch real vehicle data from backend
   useEffect(() => {
-  const fetchVehicle = async () => {
+    const fetchVehicleData = async () => {
+      try {
+        setIsLoading(true);
+        // Fetch Vehicle Details
+        const response = await vehicleAPI.getOne(id, name);
+        setVehicle(response.data);
+
+        // Check if this specific user has favorited this car
+        // This requires the backend 'GET /users/me/favorites' route we discussed
+        if (user) {
+          const favsResponse = await vehicleAPI.getFavorites();
+          const isLiked = favsResponse.data.some(fav => fav.id === parseInt(id));
+          setIsFavorite(isLiked);
+        }
+      } catch (error) {
+        console.error("Error loading page:", error);
+        toast.error("Could not load vehicle details");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchVehicleData();
+  }, [id, name, user?.id]);
+
+  const handleFavorite = async () => {
+    if (!user) {
+      toast.error("Please login to save favorites");
+      navigate('/login');
+      return;
+    }
+
     try {
-      setIsLoading(true); 
-      const response = await vehicleAPI.getOne(id);
-      setVehicle(response.data);
+      // Toggle favorite in the backend link table
+      const response = await vehicleAPI.toggleFavorite(id);
+      
+      // Update local UI state based on backend response
+      setIsFavorite(response.data.is_favourite);
+      
+      if (response.data.is_favourite) {
+        toast.success('Added to your favorites!');
+      } else {
+        toast.success('Removed from favorites');
+      }
     } catch (error) {
-      console.error("Error fetching vehicle details:", error);
-      toast.error("Could not load vehicle details");
-    } finally {
-      setIsLoading(false); 
+      toast.error("Failed to update favorite");
     }
   };
-  fetchVehicle();
-}, [id]);
-
-  useEffect(() => {
-    const savedFavorites = JSON.parse(localStorage.getItem('speedy_favorites') || '[]');
-    setIsFavorite(savedFavorites.includes(id));
-  }, [id]);
-
-  const handleFavorite = () => {
-  const savedFavorites = JSON.parse(localStorage.getItem('speedy_favorites') || '[]');
-  let updatedFavorites;
-
-  if (isFavorite) {
-    // Remove from favorites
-    updatedFavorites = savedFavorites.filter(favId => favId !== id);
-    toast.success('Removed from favorites');
-  } else {
-    // Add to favorites
-    updatedFavorites = [...savedFavorites, id];
-    toast.success('Added to favorites!');
-  }
-
-  localStorage.setItem('speedy_favorites', JSON.stringify(updatedFavorites));
-  setIsFavorite(!isFavorite);
   
-  // OPTIONAL: If you have a backend endpoint for this:
-  // vehicleAPI.toggleFavorite(id); 
-};
-
   const handleShare = async () => {
   const shareData = {
     title: `Check out this ${v.name} on Speedy`,

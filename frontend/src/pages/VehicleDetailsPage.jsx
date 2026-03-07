@@ -28,6 +28,7 @@ const VehicleDetailsPage = () => {
   const fetchVehicleData = async () => {
     try {
       setIsLoading(true);
+      const token = user?.token;
       const response = await vehicleAPI.getOne(id);
       setVehicle(response.data);
       

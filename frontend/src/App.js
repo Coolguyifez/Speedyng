@@ -71,7 +71,7 @@ function App() {
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<TermsOfService />} />
-          <Route path="/terms" element={<VehiclesPage/>} />
+          <Route path="/vehicles" element={<VehiclesPage/>} />
 
           {/* Protected Agent Routes */}
            <Route path="/sell" element={

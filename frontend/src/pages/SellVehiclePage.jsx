@@ -75,47 +75,41 @@ const SellVehiclePage = () => {
     e.preventDefault();
     if (images.length === 0) return toast.error("Please upload photos.");
     setLoading(true);
-
+  
+    const formData = new FormData();
+    // FIX 1: Access Key MUST be a string in quotes
+    formData.append("access_key", "0447b582-799c-4790-a398-1e9173b7598a");
+    formData.append("subject", `New Vehicle: ${vehicleData.make} ${vehicleData.model}`);
+    formData.append("from_name", "Speedy Car Sales");
+  
+    Object.entries(vehicleData).forEach(([key, value]) => {
+      if (value) formData.append(key, value);
+    });
+  
+    images.forEach((imgObj, index) => {
+      formData.append(`attachment_${index + 1}`, imgObj.file);
+    });
+  
     try {
-      const formData = new FormData();
-      
-      // FIX: Use quotes or the constant defined at the top
-      formData.append("access_key", WEB3FORMS_KEY); 
-      formData.append("subject", `New Vehicle: ${vehicleData.make} ${vehicleData.model}`);
-      formData.append("from_name", "Speedy Car Sales");
-
-      // Only append fields that actually have data
-      Object.entries(vehicleData).forEach(([key, value]) => {
-        if (value && value.toString().trim() !== "") {
-          formData.append(key, value);
-        }
-      });
-
-      // Append images
-      images.forEach((imgObj, index) => {
-        formData.append(`attachment_${index + 1}`, imgObj.file);
-      });
-
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData,
-        // Let browser set the boundary automatically
+        // No headers!
       });
-
-      // Cloning ensures both your code and PostHog can read the stream
-      const responseForJson = response.clone();
-      const data = await responseForJson.json();
-
-      if (data.success) {
+  
+      // FIX 2: Check status BEFORE trying to read the body
+      if (response.ok) {
         setStep(4);
         toast.success("Listing received!");
       } else {
-        console.error("Web3Forms Rejected:", data);
-        toast.error(data.message || "Submission rejected. Check your key.");
+        // If we hit this, the server rejected the data (400/500)
+        const errorText = await response.text().catch(() => "Unknown Server Error");
+        console.error("Server Rejected Request:", errorText);
+        toast.error("Form error. Please check all fields.");
       }
     } catch (error) {
-      console.error("Submission Error:", error);
-      toast.error("Network issue. Try with only 1 photo to test.");
+      console.error("Network Error:", error);
+      toast.error("Connection failed. Try with 1 photo.");
     } finally {
       setLoading(false);
     }

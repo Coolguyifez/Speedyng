@@ -32,8 +32,8 @@ const VehicleDetailsPage = () => {
       const response = await vehicleAPI.getOne(id);
       setVehicle(response.data);
       
-      // The backend now returns is_favourite directly in the vehicle object
-      setIsFavorite(response.data.is_favourite || false);
+      // The backend now returns is_favorite directly in the vehicle object
+      setIsFavorite(response.data.is_favorite || false);
     } catch (error) {
       toast.error("Could not load vehicle details");
     } finally {

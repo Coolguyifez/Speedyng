@@ -52,7 +52,7 @@ const handleFavorite = async () => {
   try {
     const response = await vehicleAPI.toggleFavorite(id);
     // Backend returns { is_favourite: true/false }
-    const newStatus = response.data.is_favourite;
+    const newStatus = response.data.is_favorite;
     setIsFavorite(newStatus);
     
     if (newStatus) {

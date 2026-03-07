@@ -423,13 +423,13 @@ async def toggle_favorite(
         # 2. If it exists, delete it (Unlike)
         await db.delete(favorite)
         await db.commit()
-        return {"status": "unliked", "is_favourite": False}
+        return {"status": "unliked", "is_favorite": False}
     else:
         # 3. If it doesn't, create it (Like)
         new_fav = Favorite(user_id=current_user.id, vehicle_id=vehicle_id)
         db.add(new_fav)
         await db.commit()
-        return {"status": "liked", "is_favourite": True}
+        return {"status": "liked", "is_favorite": True}
 
 
 @api_router.get("/users/me/favorites", response_model=List[VehicleResponse])

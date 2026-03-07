@@ -462,11 +462,13 @@ async def create_Vehicle(
 
 
 @api_router.get("/vehicles/{name}/{vehicle_id}", response_model=VehicleResponse)
-async def get_vehicle(vehicle_id: int, db: AsyncSession = Depends(get_db)):
+async def get_vehicle(name: str, vehicle_id: int, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
     vehicle = result.scalar_one_or_none()
+    
     if not vehicle:
         raise HTTPException(status_code=404, detail="Vehicle not found")
+        
     return serialize_vehicle(vehicle)
 
 

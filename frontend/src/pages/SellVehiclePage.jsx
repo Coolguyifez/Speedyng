@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Truck, Camera, MapPin, ChevronRight, CheckCircle2, Loader2, X, Plus } from 'lucide-react';
+import { Truck, MapPin, ChevronRight, ChevronLeft, CheckCircle2, Loader2, X, Plus } from 'lucide-react';
 import { TbCurrencyNaira } from "react-icons/tb";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
 
 const SellVehiclePage = () => {
-  const FORMINIT_ID = "6hcg5d1pqeb"; 
+  // 1. Paste your Web3Forms Access Key here
+  const WEB3FORMS_KEY = "0447b582-799c-4790-a398-1e9173b7598a"; 
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]); 
 
-  // PERSISTENT DATA STATE
   const [vehicleData, setVehicleData] = useState({
     make: '', model: '', year: '', vin: '',
     price: '', location: '', condition: '',
-    name: '', phone: '', email: '', _gotcha: ''
+    name: '', phone: '', email: '',
   });
 
   const handleInputChange = (e) => {
@@ -25,7 +25,7 @@ const SellVehiclePage = () => {
     setVehicleData(prev => ({ ...prev, [name]: value }));
   };
 
-  // --- NEW: COMPRESSION LOGIC ---
+  // --- IMAGE COMPRESSION ---
   const compressImage = (file) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -35,24 +35,16 @@ const SellVehiclePage = () => {
         img.src = event.target.result;
         img.onload = () => {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 1200; 
+          const MAX_WIDTH = 1000; // Slightly smaller for better reliability
           const scaleSize = MAX_WIDTH / img.width;
           canvas.width = MAX_WIDTH;
           canvas.height = img.height * scaleSize;
-
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
           canvas.toBlob((blob) => {
-            const compressedFile = new File([blob], file.name, {
-              type: 'image/jpeg',
-              lastModified: Date.now(),
-            });
-            resolve({
-              file: compressedFile,
-              url: URL.createObjectURL(blob)
-            });
-          }, 'image/jpeg', 0.7); // 70% quality
+            const compressedFile = new File([blob], file.name, { type: 'image/jpeg' });
+            resolve({ file: compressedFile, url: URL.createObjectURL(blob) });
+          }, 'image/jpeg', 0.6); // 60% quality to ensure small payload
         };
       };
     });
@@ -60,11 +52,10 @@ const SellVehiclePage = () => {
 
   const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
-    if (images.length + files.length > 10) {
-      toast.error("Speedy listings allow a maximum of 10 vehicle photos.");
+    if (images.length + files.length > 8) {
+      toast.error("Maximum 8 photos allowed for faster processing.");
       return;
     }
-
     setLoading(true);
     try {
       const compressedResults = await Promise.all(files.map(file => compressImage(file)));
@@ -82,41 +73,45 @@ const SellVehiclePage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (images.length === 0) return toast.error("Please upload at least one vehicle photo.");
+    if (images.length === 0) return toast.error("Please upload photos.");
     setLoading(true);
 
     const formData = new FormData();
-    
-    // 1. Append text data from our persistent state
-    Object.keys(vehicleData).forEach(key => {
-      formData.append(key, vehicleData[key]);
+    formData.append("access_key", WEB3FORMS_KEY);
+    formData.append("subject", `New Vehicle Listing: ${vehicleData.make} ${vehicleData.model}`);
+    formData.append("from_name", "Speedy Car Sales");
+
+    // Add text fields
+    Object.entries(vehicleData).forEach(([key, value]) => {
+      formData.append(key, value);
     });
 
-   images.forEach((imgObj) => {
-      formData.append("photos", imgObj.file); 
+    // Add Images - Web3Forms handles multiple files via individual appends
+    images.forEach((imgObj, index) => {
+      formData.append(`attachment_${index + 1}`, imgObj.file);
     });
 
     try {
-      const response = await fetch(`https://forminit.com/f/${FORMINIT_ID}`, {
-        method: 'POST',
-        body: formData,
-        headers: { 'Accept': 'application/json' }
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (data.success) {
         setStep(4);
       } else {
-        const errorData = await response.json();
-        console.error("Forminit Rejected:", errorData);
-        toast.error("Form rejected. Try with fewer photos or check field names.");
+        console.error("Web3Forms Error:", data);
+        toast.error(data.message || "Submission failed.");
       }
     } catch (error) {
-      toast.error("Connection error. Try again.");
+      toast.error("Network error. Please check your connection.");
     } finally {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
@@ -132,14 +127,13 @@ const SellVehiclePage = () => {
           <CardContent className="p-8">
             <form onSubmit={handleSubmit}>
               
-              {/* STEP 1: VEHICLE & PHOTOS */}
               {step === 1 && (
                 <div className="space-y-6 animate-in fade-in duration-500">
                   <div className="flex items-center justify-between">
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                       <Truck className="text-red-600"/> Vehicle Photos
                     </h2>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{images.length}/10</span>
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{images.length}/8</span>
                   </div>
                   
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -151,11 +145,11 @@ const SellVehiclePage = () => {
                         </button>
                       </div>
                     ))}
-                    {images.length < 10 && (
+                    {images.length < 8 && (
                       <label className="h-32 border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-500 hover:bg-red-50 transition-all">
-                        <Plus className="text-gray-400" />
-                        <span className="text-xs text-gray-500 mt-1">Add Photo</span>
-                        <input type="file" accept="image/*" multiple onChange={handleImageChange} className="hidden" />
+                        {loading ? <Loader2 className="animate-spin text-red-600" /> : <Plus className="text-gray-400" />}
+                        <span className="text-xs text-gray-500 mt-1">{loading ? "Shrinking..." : "Add Photo"}</span>
+                        <input type="file" accept="image/*" multiple onChange={handleImageChange} className="hidden" disabled={loading} />
                       </label>
                     )}
                   </div>
@@ -166,13 +160,12 @@ const SellVehiclePage = () => {
                     <input name="year" value={vehicleData.year} onChange={handleInputChange} placeholder="Vehicle Year" className="input-field" required />
                     <input name="vin" value={vehicleData.vin} onChange={handleInputChange} placeholder="Vehicle Vin Number" className="input-field" required />
                   </div>
-                  <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200">
+                  <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200 text-white">
                     Next: Location & Price <ChevronRight className="ml-2"/>
                   </Button>
                 </div>
               )}
 
-              {/* STEP 2: LOCATION & PRICE */}
               {step === 2 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="text-red-600"/> Location & <TbCurrencyNaira className="text-red-600"/> Price</h2>
@@ -180,20 +173,18 @@ const SellVehiclePage = () => {
                   <input name="location" value={vehicleData.location} onChange={handleInputChange} placeholder="City / State" className="input-field" required />
                   <textarea name="condition" value={vehicleData.condition} onChange={handleInputChange} placeholder="Vehicle condition..." className="input-field h-32" />
                   <div className="flex gap-4">
-                    <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6">Back</Button>
-                    <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6 text-white">Next</Button>
+                    <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6"><ChevronLeft className="mr-2"/> Back</Button>
+                    <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6 text-white">Next <ChevronRight className="ml-2"/></Button>
                   </div>
                 </div>
               )}
 
-              {/* STEP 3: CONTACT */}
               {step === 3 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <h2 className="text-2xl font-bold text-slate-900">Seller Contact</h2>
                   <input name="name" value={vehicleData.name} onChange={handleInputChange} placeholder="Full Name" className="input-field" required />
                   <input name="phone" value={vehicleData.phone} onChange={handleInputChange} placeholder="WhatsApp / Phone Number" className="input-field" required />
                   <input name="email" value={vehicleData.email} onChange={handleInputChange} type="email" placeholder="Email Address" className="input-field" required />
-                  <input type="text" name="_gotcha" value={vehicleData._gotcha} onChange={handleInputChange} style={{ display: 'none' }} />
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(2)} className="w-1/3 py-6">Back</Button>
                     <Button disabled={loading} type="submit" className="w-2/3 bg-red-600 py-6 font-bold text-white">
@@ -203,12 +194,11 @@ const SellVehiclePage = () => {
                 </div>
               )}
 
-              {/* STEP 4: SUCCESS */}
               {step === 4 && (
                 <div className="text-center py-10 animate-in zoom-in-95 duration-500">
                   <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-6" />
-                  <h2 className="text-3xl font-bold">Sent to Agents!</h2>
-                  <p className="text-gray-600 mt-4">A Speedy agent will review your vehicle shortly & get back to you.</p>
+                  <h2 className="text-3xl font-bold">Listing Received!</h2>
+                  <p className="text-gray-600 mt-4">We've received your vehicle details. A Speedy agent will contact you shortly.</p>
                   <Button type="button" onClick={() => window.location.href="/"} className="mt-10 bg-gray-900 px-10 py-6 rounded-xl text-white">Return Home</Button>
                 </div>
               )}
@@ -228,7 +218,7 @@ const SellVehiclePage = () => {
         .input-field { 
           width: 100%; padding: 16px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 16px; outline: none; transition: all 0.3s; 
         }
-        .input-field:focus { border-color: #dc2626; background: white; }
+        .input-field:focus { border-color: #dc2626; background: white; box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1); }
       `}</style>
     </div>
   );

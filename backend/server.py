@@ -6,7 +6,7 @@ import secrets
 from datetime import datetime, timedelta
 from typing import List, Optional
 from urllib.parse import quote
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query, Body
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, Query, Body, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
@@ -133,6 +133,24 @@ async def send_reset_email(email_to: str, reset_link: str):
     except Exception as e:
         logger.error(f"Resend Error: {str(e)}")
         raise e
+
+
+ async def get_optional_user(db: AsyncSession, authorization: Optional[str]) -> Optional[User]:
+    """Helper to get user from token if it exists, else return None"""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    try:
+        token = authorization.split(" ")[1]
+        # We reuse your existing get_current_user logic but without raising exceptions
+        from auth import decode_token # Ensure this is available in your auth.py
+        payload = decode_token(token)
+        email = payload.get("sub")
+        if not email:
+            return None
+        result = await db.execute(select(User).filter(User.email == email))
+        return result.scalar_one_or_none()
+    except Exception:
+        return None       
         
     
 # Helper to serialize vehicle data for the frontend
@@ -431,7 +449,10 @@ async def get_my_favorites(
     vehicles = result.scalars().all()
     
     # Since these are ALL favorites, we pass is_fav=True to every one
-    return [serialize_vehicle(v, is_fav=True) for v in vehicles]        
+    return [serialize_vehicle(v, is_fav=True) for v in vehicles]
+
+    
+
 
 
 
@@ -444,6 +465,7 @@ async def get_vehicles(
     color: Optional[str] = Query(None), 
     make: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
+    authorization: Optional[str] = Header(None)
     # Use a helper to check if a user is logged in without forcing login
 ):
     from models import Favorite 
@@ -463,7 +485,14 @@ async def get_vehicles(
 
         # For now, we return all as is_fav=False until you implement 
         # the optional JWT user check in this route.
-        return [serialize_vehicle(v, is_fav=False) for v in vehicles]
+       current_user = await get_optional_user(db, authorization)
+       fav_ids = set()
+       if current_user:
+           fav_query = select(Favorite.vehicle_id).filter(Favorite.user_id == current_user.id)
+           fav_result = await db.execute(fav_query)
+           fav_ids = set(fav_result.scalars().all())
+    
+       return [serialize_vehicle(v, is_fav=(v.id in fav_ids)) for v in vehicles]
 
     except Exception as e:
         logger.error(f"Error fetching vehicles: {e}")
@@ -502,14 +531,33 @@ async def create_Vehicle(
 
 
 @api_router.get("/vehicles/{vehicle_name}/{vehicle_id}", response_model=VehicleResponse)
-async def get_vehicle(vehicle_name: str, vehicle_id: int, db: AsyncSession = Depends(get_db)):
+async def get_vehicle(
+    vehicle_name: str, 
+    vehicle_id: int, 
+    db: AsyncSession = Depends(get_db),
+    authorization: Optional[str] = Header(None) # Automatically grabs the token from Axios
+):
+    from models import Favorite
+    
     result = await db.execute(select(Vehicle).filter(Vehicle.id == vehicle_id))
     vehicle = result.scalar_one_or_none()
     
     if not vehicle:
         raise HTTPException(status_code=404, detail="Vehicle not found")
         
-    return serialize_vehicle(vehicle)
+    # Check if THIS user favorited THIS vehicle
+    is_fav = False
+    current_user = await get_optional_user(db, authorization)
+    
+    if current_user:
+        fav_query = select(Favorite).filter(
+            Favorite.user_id == current_user.id, 
+            Favorite.vehicle_id == vehicle_id
+        )
+        fav_result = await db.execute(fav_query)
+        is_fav = fav_result.scalar_one_or_none() is not None
+        
+    return serialize_vehicle(vehicle, is_fav=is_fav)
 
 
 # -------------------- Vehicle Management (Admin Only) --------------------

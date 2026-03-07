@@ -76,47 +76,42 @@ const SellVehiclePage = () => {
     if (images.length === 0) return toast.error("Please upload photos.");
     setLoading(true);
 
-    const formData = new FormData();
-    
-    // 1. Core Web3Forms Keys
-    formData.append("access_key", WEB3FORMS_KEY);
-    formData.append("subject", `New Vehicle: ${vehicleData.make} ${vehicleData.model}`);
-    formData.append("from_name", "Speedy Car Sales");
-
-    // 2. Add text fields (ONLY if they have a value)
-    // This prevents sending empty strings which can cause 400 errors
-    Object.entries(vehicleData).forEach(([key, value]) => {
-      if (value && value.toString().trim() !== "") {
-        formData.append(key, value);
-      }
-    });
-
-    // 3. Add Images
-    images.forEach((imgObj, index) => {
-      formData.append(`attachment_${index + 1}`, imgObj.file);
-    });
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        // Do NOT set headers. Browser must set multipart/form-data + boundary
-        body: formData, 
+      const formData = new FormData();
+      formData.append("access_key", 0447b582-799c-4790-a398-1e9173b7598a);
+      formData.append("subject", `New Vehicle: ${vehicleData.make} ${vehicleData.model}`);
+      formData.append("from_name", "Speedy Car Sales");
+
+      // Only append fields that actually have data
+      Object.entries(vehicleData).forEach(([key, value]) => {
+        if (value) formData.append(key, value);
       });
 
-      // READ THE BODY ONCE
-      const result = await response.json();
+      // Append images
+      images.forEach((imgObj, index) => {
+        formData.append(`attachment_${index + 1}`, imgObj.file);
+      });
 
-      if (response.ok && result.success) {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+        // No headers! Let the browser set the boundary.
+      });
+
+      // FIX: Clone the response so PostHog and our code can both read it
+      const clonedResponse = response.clone();
+      const data = await clonedResponse.json();
+
+      if (data.success) {
         setStep(4);
         toast.success("Listing received!");
       } else {
-        // This will log the EXACT reason Web3Forms rejected it
-        console.error("Web3Forms Rejected Request:", result);
-        toast.error(result.message || "Submission rejected by server.");
+        console.error("Web3Forms Rejected:", data);
+        toast.error(data.message || "Check form details and try again.");
       }
     } catch (error) {
-      console.error("Network/CORS Error:", error);
-      toast.error("Network error. Please try fewer or smaller images.");
+      console.error("Submission Error:", error);
+      toast.error("Network issue. Try with 1 photo first.");
     } finally {
       setLoading(false);
     }

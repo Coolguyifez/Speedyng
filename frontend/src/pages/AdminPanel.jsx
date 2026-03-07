@@ -348,7 +348,7 @@ const AdminPanel = () => {
                 <thead className="bg-gray-50 border-b">
                   <tr>
                     <th className="p-4 text-left">Vehicle</th>
-                    <th className="p-4 text-left">Body Color</th>
+                    <th className="p-4 text-left">Exterior/Interior Color</th>
                     <th className="p-4 text-left">Price</th>
                     <th className="p-4 text-left">Seller</th>
                     <th className="p-4 text-left">Address</th>

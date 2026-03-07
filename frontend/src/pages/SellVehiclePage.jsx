@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Truck, Camera, MapPin, ChevronRight, ChevronLeft, CheckCircle2, Loader2, X, Plus } from 'lucide-react';
+import { Truck, Camera, MapPin, ChevronRight, CheckCircle2, Loader2, X, Plus } from 'lucide-react';
 import { TbCurrencyNaira } from "react-icons/tb";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -12,6 +12,18 @@ const SellVehiclePage = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]); 
+
+  // PERSISTENT DATA STATE
+  const [vehicleData, setVehicleData] = useState({
+    make: '', model: '', year: '', vin: '',
+    price: '', location: '', condition: '',
+    name: '', phone: '', email: '', _gotcha: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setVehicleData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -35,48 +47,33 @@ const SellVehiclePage = () => {
     if (images.length === 0) return toast.error("Please upload at least one vehicle photo.");
     setLoading(true);
 
-    // 1. Start with a fresh FormData object
     const formData = new FormData();
-    const formEl = e.currentTarget;
+    
+    // 1. Append text data from our persistent state
+    Object.keys(vehicleData).forEach(key => {
+      formData.append(key, vehicleData[key]);
+    });
 
-    // 2. Manually append text fields (matches your input 'name' attributes)
-    formData.append("make", formEl.make.value);
-    formData.append("model", formEl.model.value);
-    formData.append("year", formEl.year.value);
-    formData.append("vin", formEl.vin.value);
-    formData.append("price", formEl.price.value);
-    formData.append("location", formEl.location.value);
-    formData.append("condition", formEl.condition.value);
-    formData.append("name", formEl.name.value);
-    formData.append("phone", formEl.phone.value);
-    formData.append("email", formEl.email.value);
-    formData.append("_gotcha", formEl._gotcha.value); // Spam protection
-
-    // 3. Append images. 
-    // Try "file" or "photos[]" - Forminit usually prefers a list of files
-    images.forEach((imgObj, index) => {
-      formData.append(`file_${index}`, imgObj.file); 
+    // 2. Append images - Using 'photos[]' so Forminit sees it as an array
+    images.forEach((imgObj) => {
+      formData.append("photos[]", imgObj.file); 
     });
 
     try {
       const response = await fetch(`https://forminit.com/f/${FORMINIT_ID}`, {
         method: 'POST',
         body: formData,
-        headers: { 
-          'Accept': 'application/json' 
-          // Browser handles Content-Type automatically for FormData
-        }
+        headers: { 'Accept': 'application/json' }
       });
 
       if (response.ok) {
         setStep(4);
       } else {
         const errorData = await response.json();
-        console.error("Forminit Rejected Request:", errorData);
-        toast.error(errorData.message || "Submission rejected. Check image sizes.");
+        console.error("Forminit Rejected:", errorData);
+        toast.error("Submission rejected. Check your image sizes.");
       }
     } catch (error) {
-      console.error("Connection Error:", error);
       toast.error("Connection error. Try again.");
     } finally {
       setLoading(false);
@@ -87,10 +84,8 @@ const SellVehiclePage = () => {
     <div className="min-h-screen bg-gray-50 py-12 px-4 font-sans">
       <div className="max-w-2xl mx-auto">
         
-        {/* --- LOGO SECTION --- */}
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.location.href="/"}>
-            {/* Replace /logo.png with your actual path */}
             <img src="https://i.imgur.com/niaQKv1.png" alt="Speedy Logo" className="h-10 w-auto" />
             <span className="text-2xl font-bold tracking-tighter text-slate-900">Speedy</span>
           </div>
@@ -129,10 +124,10 @@ const SellVehiclePage = () => {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                    <input name="make" placeholder="Vehicle Make" className="input-field" required />
-                    <input name="model" placeholder="Vehicle Model" className="input-field" required />
-                    <input name="year" placeholder="Vehicle Year" className="input-field" required />
-                    <input name="vin" placeholder="Vehicle Vin Number" className="input-field" required />
+                    <input name="make" value={vehicleData.make} onChange={handleInputChange} placeholder="Vehicle Make" className="input-field" required />
+                    <input name="model" value={vehicleData.model} onChange={handleInputChange} placeholder="Vehicle Model" className="input-field" required />
+                    <input name="year" value={vehicleData.year} onChange={handleInputChange} placeholder="Vehicle Year" className="input-field" required />
+                    <input name="vin" value={vehicleData.vin} onChange={handleInputChange} placeholder="Vehicle Vin Number" className="input-field" required />
                   </div>
                   <Button type="button" onClick={() => images.length > 0 ? setStep(2) : toast.error("Please add a photo")} className="w-full bg-red-600 py-6 text-lg font-bold shadow-lg shadow-red-200">
                     Next: Location & Price <ChevronRight className="ml-2"/>
@@ -140,45 +135,44 @@ const SellVehiclePage = () => {
                 </div>
               )}
 
-              {/* ... STEP 2 & 3 remain the same ... */}
+              {/* STEP 2: LOCATION & PRICE */}
               {step === 2 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
                   <h2 className="text-2xl font-bold flex items-center gap-2"><MapPin className="text-red-600"/> Location & <TbCurrencyNaira className="text-red-600"/> Price</h2>
-                  <input name="price" type="number" placeholder="Asking Price (₦)" className="input-field" required />
-                  <input name="location" placeholder="City / State" className="input-field" required />
-                  <textarea name="condition" placeholder="Vehicle condition..." className="input-field h-32" />
+                  <input name="price" value={vehicleData.price} onChange={handleInputChange} type="number" placeholder="Asking Price (₦)" className="input-field" required />
+                  <input name="location" value={vehicleData.location} onChange={handleInputChange} placeholder="City / State" className="input-field" required />
+                  <textarea name="condition" value={vehicleData.condition} onChange={handleInputChange} placeholder="Vehicle condition..." className="input-field h-32" />
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="w-1/2 py-6">Back</Button>
-                    <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6">Next</Button>
+                    <Button type="button" onClick={() => setStep(3)} className="w-1/2 bg-red-600 py-6 text-white">Next</Button>
                   </div>
-                   
                 </div>
               )}
 
+              {/* STEP 3: CONTACT */}
               {step === 3 && (
                 <div className="space-y-6 animate-in slide-in-from-right-4 duration-300">
-                  <h2 className="text-2xl font-bold">Seller Contact</h2>
-                  <input name="name" placeholder="Full Name" className="input-field" required />
-                  <input name="phone" placeholder="WhatsApp / Phone Number" className="input-field" required />
-                  <input name="email" type="email" placeholder="Email Address" className="input-field" required />
-                  {/* Add this hidden field for spam protection */}
-                  <input type="text" name="_gotcha" style={{ display: 'none' }} />
+                  <h2 className="text-2xl font-bold text-slate-900">Seller Contact</h2>
+                  <input name="name" value={vehicleData.name} onChange={handleInputChange} placeholder="Full Name" className="input-field" required />
+                  <input name="phone" value={vehicleData.phone} onChange={handleInputChange} placeholder="WhatsApp / Phone Number" className="input-field" required />
+                  <input name="email" value={vehicleData.email} onChange={handleInputChange} type="email" placeholder="Email Address" className="input-field" required />
+                  <input type="text" name="_gotcha" value={vehicleData._gotcha} onChange={handleInputChange} style={{ display: 'none' }} />
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(2)} className="w-1/3 py-6">Back</Button>
-                    <Button disabled={loading} type="submit" className="w-2/3 bg-red-600 py-6 font-bold">
+                    <Button disabled={loading} type="submit" className="w-2/3 bg-red-600 py-6 font-bold text-white">
                       {loading ? <Loader2 className="animate-spin" /> : "Submit Vehicle Listing"}
                     </Button>
                   </div>
-                  
                 </div>
               )}
 
+              {/* STEP 4: SUCCESS */}
               {step === 4 && (
                 <div className="text-center py-10 animate-in zoom-in-95 duration-500">
                   <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-6" />
                   <h2 className="text-3xl font-bold">Sent to Agents!</h2>
                   <p className="text-gray-600 mt-4">A Speedy agent will review your vehicle shortly & get back to you.</p>
-                  <Button type="button" onClick={() => window.location.href="/"} className="mt-10 bg-gray-900 px-10 py-6 rounded-xl">Return Home</Button>
+                  <Button type="button" onClick={() => window.location.href="/"} className="mt-10 bg-gray-900 px-10 py-6 rounded-xl text-white">Return Home</Button>
                 </div>
               )}
             </form>

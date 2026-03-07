@@ -25,45 +25,47 @@ const VehicleDetailsPage = () => {
 
   // Fetch real vehicle data from backend
  useEffect(() => {
-  const fetchVehicleData = async () => {
+    const fetchVehicleData = async () => {
+      try {
+        setIsLoading(true);
+        // Ensure name and id are passed to satisfy your route logic
+        const response = await vehicleAPI.getOne(name, id);
+        setVehicle(response.data);
+        
+        // Match the key from your Python backend (is_favorite)
+        setIsFavorite(!!response.data.is_favorite);
+      } catch (error) {
+        toast.error("Could not load vehicle details");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchVehicleData();
+  }, [id, name, user?.id]);
+
+  const handleFavorite = async () => {
+    if (!user) {
+      toast.error("Please login to save favorites");
+      return;
+    }
+
     try {
-      setIsLoading(true);
-      const token = user?.token;
-      const response = await vehicleAPI.getOne(name, id);
-      setVehicle(response.data);
+      const response = await vehicleAPI.toggleFavorite(id);
+      const newStatus = response.data.is_favorite;
       
-      // The backend now returns is_favorite directly in the vehicle object
-      setIsFavorite(response.data.is_favorite || false);
+      setIsFavorite(newStatus);
+      // Sync the actual vehicle object in state as well
+      setVehicle(prev => ({ ...prev, is_favorite: newStatus }));
+      
+      if (newStatus) {
+        toast.success('Added to favorites!');
+      } else {
+        toast.success('Removed from favorites');
+      }
     } catch (error) {
-      toast.error("Could not load vehicle details");
-    } finally {
-      setIsLoading(false);
+      toast.error("Action failed");
     }
   };
-  fetchVehicleData();
-}, [id, user?.id]);
-
-const handleFavorite = async () => {
-  if (!user) {
-    toast.error("Please login to save favorites");
-    return;
-  }
-
-  try {
-    const response = await vehicleAPI.toggleFavorite(id);
-    // Backend returns { is_favourite: true/false }
-    const newStatus = response.data.is_favorite;
-    setIsFavorite(newStatus);
-    
-    if (newStatus) {
-      toast.success('Added to favorites!');
-    } else {
-      toast.success('Removed from favorites');
-    }
-  } catch (error) {
-    toast.error("Action failed");
-  }
-};
   
   const handleShare = async () => {
   const shareData = {
@@ -217,18 +219,11 @@ const handleFavorite = async () => {
                       variant="ghost"
                       size="sm"
                       onClick={handleFavorite}
-                      className={`hover:bg-red-50 ${
-                        isFavorite ? 'text-red-600' : 'text-gray-600'
-                      }`}
+                      className={`hover:bg-red-50 transition-colors ${isFavorite ? 'text-red-600' : 'text-gray-400'}`}
                     >
-                      <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-600' : ''}`} />
+                      <Heart className={`w-6 h-6 transition-all ${isFavorite ? 'fill-current' : 'fill-none'}`} />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleShare}
-                      className="text-gray-600 hover:bg-gray-100"
-                    >
+                    <Button variant="ghost" size="sm" onClick={handleShare} className="text-gray-600 hover:bg-gray-100">
                       <Share2 className="w-5 h-5" />
                     </Button>
                   </div>

@@ -29,7 +29,6 @@ class UserResponse(BaseModel):
     email: EmailStr
     phone: Optional[str] = None
     role: str
-    favorites: List[int] = Field(default_factory=list)
     created_at: datetime
 
     class Config:
@@ -40,6 +39,21 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str
     user: UserResponse
+
+
+# -------------------- Favorite Schemas --------------------
+
+class FavoriteBase(BaseModel):
+    vehicle_id: int
+
+class FavoriteResponse(BaseModel):
+    id: int
+    user_id: int
+    vehicle_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
 
 # -------------------- Vehicle Schemas --------------------
 class VehicleBase(BaseModel):
@@ -100,6 +114,7 @@ class VehicleUpdate(BaseModel):
 class VehicleResponse(VehicleBase):
     id: int
     verified: bool = False
+    is_favourite: bool = False
     created_at: datetime
     updated_at: datetime
 

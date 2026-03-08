@@ -88,7 +88,7 @@ const PrivacyPolicy = () => {
                 </p>
                 <ul className="list-disc ml-6 space-y-3 text-gray-600">
                   <li><strong>AI Chat Logs:</strong> We store chat history (Text, Sender, and Timestamps) linked to your <code>User ID</code> to improve bot responses.</li>
-                  <li><strong>Direct Email Communication:</strong> When you use our contact or "Sell Your Vehicle" forms, your information is sent directly to our secure Business email platform. We do not store these messages in a our database; instead, we review and respond to your inquiries manually through our official email channels to ensure high-quality service.</li>
+                  <li><strong>Direct Email Communication:</strong> When you use our contact or "Book inspection" or "Sell Your Vehicle" forms, your information is sent directly to our secure Business email platform. We do not store these messages in a our database; instead, we review and respond to your inquiries manually through our official email channels to ensure high-quality service.</li>
                 </ul>
               </div>
 

@@ -199,7 +199,7 @@ const handleSocialLogin = (provider) => {
   
             <div className="grid grid-cols-2 gap-4">
               <button type="button" onClick={() => handleSocialLogin('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
-                <FcGoogle w-5 h-5" />
+                <FcGoogle className= "w-5 h-5" />
               </button>
               <button type="button" onClick={() => handleSocialLogin('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
                 <FaFacebook className="text-blue-600 w-5 h-5" />

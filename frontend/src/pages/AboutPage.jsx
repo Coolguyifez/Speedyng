@@ -25,7 +25,7 @@ const AboutPage = () => {
           </h1>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
             More than just a platform. We are a team of dedicated automotive agents 
-            committed to bringing transparency and speed to the Nigerian car market.
+            committed to bringing transparency and speed to the Nigerian vehicle market.
           </p>
         </div>
       </section>

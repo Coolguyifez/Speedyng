@@ -18,7 +18,7 @@ import resend
 # Import shared components
 from seed import seed_database # Import your seed function
 from database import get_db, engine, Base
-from models import User, Vehicle, ChatMessage
+from models import User, Vehicle, ChatMessage, Favorite, Feedback
 from auth import ( 
     get_password_hash, verify_password, create_access_token,  
     get_current_user, get_current_admin
@@ -26,7 +26,7 @@ from auth import (
 from schemas import (
     UserCreate, UserLogin, UserResponse, TokenResponse, ForgotPasswordRequest, ResetPasswordSubmit,
     VehicleCreate, VehicleUpdate, VehicleResponse,  
-    ChatMessageCreate, ChatMessageResponse, MessageHistory,
+    ChatMessageCreate, ChatMessageResponse, MessageHistory, FeedbackCreate, FeedbackResponse,
     StatsResponse, CategoryResponse
 )
 # -------------------- Logging Setup --------------------
@@ -189,7 +189,38 @@ def serialize_vehicle(vehicle, is_fav=False):
         "updated_at": vehicle.updated_at.isoformat() if hasattr(vehicle, 'updated_at') and vehicle.updated_at else None
     }
 
+# -------------------- Feedback Routes --------------------
+@api_router.post("/feedback", response_model=FeedbackResponse)
+async def submit_feedback(
+    data: FeedbackCreate, 
+    db: AsyncSession = Depends(get_db)
+):
+    """Allows users (guest or logged in) to submit a star rating"""
+    try:
+        new_feedback = Feedback(
+            stars=data.stars,
+            user_email=data.user_email,
+            user_name=data.user_name,
+            created_at=datetime.utcnow()
+        )
+        db.add(new_feedback)
+        await db.commit()
+        await db.refresh(new_feedback)
+        return new_feedback
+    except Exception as e:
+        logger.error(f"Feedback submission error: {e}")
+        raise HTTPException(status_code=500, detail="Could not save feedback")
 
+@api_router.get("/admin/feedback", response_model=List[FeedbackResponse])
+async def get_all_feedback(
+    current_admin: User = Depends(get_current_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    """Allows Admin/Agents to view all customer ratings"""
+    result = await db.execute(
+        select(Feedback).order_by(Feedback.created_at.desc())
+    )
+    return result.scalars().all()
 
 # -------------------- Social Auth Helper --------------------
 async def handle_social_user(db: AsyncSession, email: str, name: str, provider: str):

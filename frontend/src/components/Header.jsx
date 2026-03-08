@@ -15,6 +15,9 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [showRating, setShowRating] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -76,8 +79,45 @@ const Header = () => {
   const handleLogout = () => {
     authAPI.logout();
     setUser(null);
+    setShowRating(true); // Trigger the star rating overlay
     toast.success('Logged out successfully');
-    navigate('/');
+    
+    // Slight delay so the toast is visible before the screen blurs
+    setTimeout(() => {
+      setShowRating(true);
+    }, 400);
+  };
+  };
+
+  const handleRatingSubmit = (num) => {
+    setRating(num);
+    
+    try {
+      // 1. Save to your own database via the new API
+      const feedbackData = {
+        stars: num,
+        user_email: user?.email || "Guest", // Capture email if they were logged in
+        user_name: user?.name || "Guest User"
+      };
+
+      // Ensure your api service has a 'post' method or use fetch/axios directly
+      await authAPI.post('/feedback', feedbackData); 
+      
+      toast.success(`Thanks for the ${num}-star rating!`);
+    } catch (error) {
+      console.error("Failed to save rating:", error);
+      // We still show success to the user so their logout flow isn't interrupted
+      toast.success(`Thanks for your feedback!`);
+    }
+    
+    setTimeout(() => {
+      // 2. Open Google Form in new tab
+      window.open("https://forms.gle/sEEdrwkZh77X9XQ78", "_blank");
+      // 3. Redirect main tab to Login
+      navigate('/login');
+      setShowRating(false);
+      setRating(0); // Reset for next time
+    }, 800);
   };
 
   const isAdmin = user && user.role === 'admin';
@@ -356,6 +396,44 @@ const Header = () => {
           </div>
         )}
       </div>
+      {/* --- RATING OVERLAY --- */}
+      {showRating && (
+        <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-md flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-[2.5rem] p-10 max-w-md w-full text-center shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Heart className="w-8 h-8 fill-red-600" />
+            </div>
+            
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Logged Out Successfully</h2>
+            <p className="text-gray-500 mb-8 font-medium">How would you rate your experience today?</p>
+
+            <div className="flex justify-center gap-3 mb-10">
+              {[1, 2, 3, 4, 5].map((num) => (
+                <button
+                  key={num}
+                  onMouseEnter={() => setHoverRating(num)}
+                  onMouseLeave={() => setHoverRating(0)}
+                  onClick={() => handleRatingSubmit(num)}
+                  className="transform transition-all hover:scale-125 active:scale-90"
+                >
+                  <Heart 
+                    className={`w-10 h-10 transition-colors duration-200 ${
+                      (hoverRating || rating) >= num ? 'text-red-600 fill-red-600' : 'text-gray-200'
+                    }`} 
+                  />
+                </button>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => { navigate('/'); setShowRating(false); }}
+              className="text-slate-400 hover:text-slate-600 text-sm font-semibold underline underline-offset-4"
+            >
+              Skip and go to Home
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

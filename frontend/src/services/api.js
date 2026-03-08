@@ -86,8 +86,7 @@ export const authAPI = {
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    // Force a redirect to clear any sensitive state
-    window.location.href = '/login';
+   
   }
 };
 
@@ -117,9 +116,15 @@ export const vehicleAPI = {
 // Fetches the history list for the specific user
   getChatHistory: (userId) => api.get(`/chat/history/${userId}`),
 };
+
+// 5. NEW: Feedback API
+export const feedbackAPI = {
+  submitRating: (ratingData) => api.post('/feedback', ratingData),
+  // You can later add getRatings: () => api.get('/feedback') to show in Admin Panel
+};
   
 
-// 5. Contact & Stats
+// 6. Contact & Stats
 export const contactAPI = {
   send: (data) => api.post('/contact', data),
 };

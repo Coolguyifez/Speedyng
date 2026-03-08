@@ -152,3 +152,17 @@ class CategoryResponse(BaseModel):
     name: str
     count: int
     icon: str
+    
+# -------------------- Feedback Schemas --------------------
+
+class FeedbackCreate(BaseModel):
+    stars: int = Field(..., ge=1, le=5) # Ensures rating is between 1 and 5
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+
+class FeedbackResponse(FeedbackCreate):
+    id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True

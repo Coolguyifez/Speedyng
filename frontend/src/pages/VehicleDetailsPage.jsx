@@ -70,7 +70,7 @@ const VehicleDetailsPage = () => {
   const handleShare = async () => {
   const shareData = {
     title: `Check out this ${v.name} on Speedy`,
-    text: `This is a ${v.name} in ${v.location} for ₦${Number(v.price).toLocaleString()}.`,
+    text: `This is a ${v.name}, ${v.service} in ${v.location} for ₦${Number(v.price).toLocaleString()}.`,
     url: window.location.href,
   };
 

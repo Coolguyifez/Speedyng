@@ -37,7 +37,7 @@ const PrivacyPolicy = () => {
                 <h3 className="font-bold text-gray-900 uppercase tracking-wider text-sm">Contents</h3>
                 <nav className="flex flex-col gap-2 border-l-2 border-gray-200 pl-4">
                   <a href="#collection" className="text-gray-500 hover:text-red-600 transition-colors">Data Collection</a>
-                  <a href="#ai" className="text-gray-500 hover:text-red-600 transition-colors">AI Chat Logs</a>
+                  <a href="#ai" className="text-gray-500 hover:text-red-600 transition-colors">AI Chat Logs/Email Communication</a>
                   <a href="#security" className="text-gray-500 hover:text-red-600 transition-colors">Security & Tokens</a>
                 </nav>
               </div>
@@ -84,11 +84,11 @@ const PrivacyPolicy = () => {
                   <h2 className="text-3xl font-bold">2. AI & Communication</h2>
                 </div>
                 <p className="leading-relaxed mb-4">
-                  Our platform uses an integrated AI assistant. To provide a personalized experience:
+                  Our platform uses integrated tools to facilitate smooth communication. To ensure you receive a fast and reliable response:
                 </p>
                 <ul className="list-disc ml-6 space-y-3 text-gray-600">
-                  <li><strong>Chat Logs:</strong> We store chat history (Text, Sender, and Timestamps) linked to your <code>User ID</code> to improve bot responses.</li>
-                  <li><strong>Contact Forms:</strong> When you use our contact system, we store your message and status (e.g., "pending" or "resolved") to ensure no inquiry is ignored.</li>
+                  <li><strong>AI Chat Logs:</strong> We store chat history (Text, Sender, and Timestamps) linked to your <code>User ID</code> to improve bot responses.</li>
+                  <li><strong>Direct Email Communication:</strong> When you use our contact or "Sell Your Vehicle" forms, your information is sent directly to our secure Business email platform. We do not store these messages in a our database; instead, we review and respond to your inquiries manually through our official email channels to ensure high-quality service.</li>
                 </ul>
               </div>
 

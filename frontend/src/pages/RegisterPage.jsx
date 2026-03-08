@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, User, Phone, ArrowRight } from 'lucide-react';
 import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
+import { FcGoogle } from "react-icons/fc";
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { toast } from 'sonner';
@@ -170,7 +171,7 @@ const RegisterPage = () => {
             {/* Social Registration Grid */}
             <div className="grid grid-cols-2 gap-4 mb-8">
               <button type="button" onClick={() => handleSocialRegister('Google')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
-                <FaGoogle className="text-red-500 w-5 h-5" /> 
+                <FcGoogle className= "w-5 h-5" /> 
               </button>
               <button type="button" onClick={() => handleSocialRegister('Facebook')} className="flex items-center justify-center py-3 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all">
                 <FaFacebook className="text-blue-600 w-5 h-5" /> 

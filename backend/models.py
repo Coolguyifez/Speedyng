@@ -78,3 +78,15 @@ class Favorite(Base):
 
     # CRITICAL: This ensures a user can't like the same car multiple times
     __table_args__ = (UniqueConstraint('user_id', 'vehicle_id', name='_user_vehicle_uc'),)
+
+# ================== Feedback Model ==================
+class Feedback(Base):
+    __tablename__ = "feedbacks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    stars = Column(Integer, nullable=False)
+    user_email = Column(String(100), nullable=True)
+    user_name = Column(String(100), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+

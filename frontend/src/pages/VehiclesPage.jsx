@@ -101,7 +101,7 @@ const VehiclesPage = () => {
   if (makeFromUrl) {
     setSelectedMake(makeFromUrl.toLowerCase());
   } else {
-    setSelectedMake('all');
+    setSelectedMake('All Makes');
   }  
     
   if (typeFromUrl) {

@@ -105,7 +105,7 @@ const ChatWidget = () => {
       return num.toLocaleString();
     };
 
-    cconst getSlug = (name) => name.toLowerCase().replaceAll(' ', '-');
+    const getSlug = (name) => name.toLowerCase().replaceAll(' ', '-');
 
     // If input is empty after trimming
     if (!input) return formatResponse("I'm here to help! What kind of vehicle are you looking for?");

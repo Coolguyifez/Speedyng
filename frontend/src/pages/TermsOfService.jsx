@@ -33,7 +33,7 @@ const TermsOfService = () => {
               <div>
                 <h2 className="text-2xl font-bold mb-3">1. Scope of Service</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  <strong>Speedy</strong> is a curated automotive brokerage. All vehicle listings are managed exclusively by <strong>Speedy Agents</strong>. Users may browse, favorite, and chat with our AI, but cannot post their own listings.
+                  <strong>Speedy</strong> is a curated automotive brokerage. All vehicle listings are managed exclusively by <strong>Speedy Agents</strong>. Users may browse, like, and chat with our AI, but cannot post their own listings.
                 </p>
               </div>
             </div>

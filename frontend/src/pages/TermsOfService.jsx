@@ -65,7 +65,7 @@ const TermsOfService = () => {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-red-600 font-bold">•</span>
-                    <span><strong>Safety:</strong> For your safety, all inspections must take place at the verified addresses listed in our database or as specified by our official agents.</span>
+                    <span><strong>Safety:</strong> For your safety, all inspections must take place at the appropriate location of the vetted dealer/seller or as specified by our official agents.</span>
                   </li>
                 </ul>
               </div>

@@ -112,7 +112,7 @@ const ChatWidget = () => {
     
     if (input === 'cancel' || input === 'reset' || input === 'stop') {
       setChatState({ stage: 'general', tempBrand: null, tempModel: null });
-      return formatResponse("No problem, I've reset our search. What else can I help you with?");
+      return formatResponse("No problem, I've reset our previous Chat. What else can I help you with?");
     }
 
     const isLeaseQuery = SPEEDY_SERVICES.LEASE.some(k => input.includes(k));
@@ -365,7 +365,7 @@ const ChatWidget = () => {
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'awaiting_model') {
-      const isDeclining = input === 'no' || input === "no i don't" || input === 'not really' || input.includes('none');
+      const isDeclining = input === 'no' || input === 'no i do not' || input === "no i don't have" || input === "no i don't" || input === 'not really' || input.includes('none');
       // If user says "Toyota Camry", we strip the brand "Toyota" to get just the model "Camry"
       const modelClean = input.replace(chatState.tempBrand, '').trim();
       const modelName = isDeclining ? 'vehicle' : (modelClean || input);

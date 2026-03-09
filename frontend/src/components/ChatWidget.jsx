@@ -183,7 +183,7 @@ const ChatWidget = () => {
       return formatResponse("Currently, we mostly accept full payments only especially for the rental and lease vehicles. Ask agent for any further options");
     }
 
-    if (input.match(/thank you| wow|wonderful|love you|you are the best|what will i do without you/)) {
+    if (input.match(/thank you|wow|wonderful|love you|you are the best|what will i do without you/)) {
       return formatResponse(
         <span>
           Smile, you're welcome..I would love for you to help us with this

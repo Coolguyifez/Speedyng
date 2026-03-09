@@ -105,13 +105,15 @@ const ChatWidget = () => {
       return num.toLocaleString();
     };
 
+    cconst getSlug = (name) => name.toLowerCase().replaceAll(' ', '-');
+
     // If input is empty after trimming
     if (!input) return formatResponse("I'm here to help! What kind of vehicle are you looking for?");
 
     const isLeaseQuery = SPEEDY_SERVICES.LEASE.some(k => input.includes(k));
     const isRentQuery = SPEEDY_SERVICES.RENTAL.some(k => input.includes(k));
     const isBudgetQuery = SPEEDY_SERVICES.BUDGET.some(k => input.includes(k));
-
+    
     // 1. RENT & LEASE LOGIC
     if (isLeaseQuery || isRentQuery) {
       const filtered = availableVehicles.filter(v => {
@@ -126,9 +128,9 @@ const ChatWidget = () => {
         return formatResponse(
           <span>
             <strong className="text-red-600">{title}</strong><br/>
-            {filtered.slice(0, 5).map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 font-semibold text-left">
-                {v.name} - {isLeaseQuery ? "View Lease Terms" : `₦${v.price.toLocaleString()}/month`}
+            {filtered.slice(0, 20).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} className="text-red-700 underline block text-xs mt-1 font-semibold text-left">
+                {v.name} - {isLeaseQuery ? "View Terms" : `₦${v.price.toLocaleString()}/month`}
               </button>
             ))}
           </span>,
@@ -152,9 +154,9 @@ const ChatWidget = () => {
           <span>
             <strong className="text-red-600">Speedy Budget Sales 💰</strong><br/>
             Affordable options for purchase:
-            {budgetVehicles.slice(0, 10).map(v => (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left font-semibold">
-                {v.name} - ₦{aiFormatPrice(v.price)} - {v.service}
+            {budgetVehicles.slice(0, 20).map(v => (
+              <button key={v.id} onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} className="text-red-700 underline block text-xs mt-1 text-left font-semibold">
+                {v.name} at ₦{aiFormatPrice(v.price)} 
               </button>
             ))}
           </span>,
@@ -178,10 +180,27 @@ const ChatWidget = () => {
     }
 
     if (input.match(/installment|payment plan|credit|pay small/)) {
-      return formatResponse("Currently, we mostly accept full payments only especially for the rental and lease vehicles. Check back soon for 'Pay on credit' options!");
+      return formatResponse("Currently, we mostly accept full payments only especially for the rental and lease vehicles. Ask agent for any further options");
     }
 
-    if (input.match(/sell|agent|list my car/)) {
+    if (input.match(/thank you| wow|wonderful|love you|you are the best|what will i do without you/)) {
+      return formatResponse(
+        <span>
+          Smile, you're welcome..I would love for you to help us with this
+          <a 
+            href="https://forms.gle/sEEdrwkZh77X9XQ78" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-red-600 underline font-semibold ml-1"
+          >
+            feedback form
+          </a>, So we can serve you even better.
+        </span>,
+        "Smile, you welcome..I would love for you to help me with this feedback form at: https://forms.gle/sEEdrwkZh77X9XQ78, so we can serve you better."
+      );
+    }
+
+    if (input.match(/sell|agent|list my/)) {
       return formatResponse("Yes! We help you sell faster and bring the right buyer to you. Contact us at 08135877104 or 07056117175 to list your vehicle.");
     }
 
@@ -189,21 +208,45 @@ const ChatWidget = () => {
       return formatResponse(
         <span>
           <strong className="text-red-600">Speedy Services:</strong><br/>
-          • 🚗 <b>Vehicle Sales:</b> Verified Brand new, Foreign and Nigeria used vehicles.<br/>
+          • 🚗 <b>Vehicle Vetting/Sales:</b> Verified Brand new, Foreign and Nigeria used vehicles.<br/>
           • 🏢 <b>Brokerage:</b> We connect serious buyers with vetted Dealers.<br/>
           • 🛠️ <b>Inspection:</b> Document verification & physical vehicle checks.<br/>
-          • 🚲 <b>Logistics:</b> Sales of vetted dealers(cars, Trucks, Vans, and Motorcycles, Tricycles<br/>
+          • 🚲 <b>Logistics:</b> Sales of vetted dealers/personer sellers(cars, Trucks, Vans, and Motorcycles, Tricycles<br/>
           • 📄 <b>Leasing & Renting:</b> Flexible options for corporate and personal use.
+          You can also check our <button onClick={() => navigate(`/about`)} className="text-red-600 underline font-bold mx-1">Aboutus</button> page for more information!!!
         </span>,
-        "Speedy offers Vehicle Sales, Brokerage, Inspections, Logistics, and Leasing/Rental services."
+        "Speedy offers Sales, Brokerage, Inspections, Logistics, and Leasing. Visit our About Us page for more info!"
       );
     }
     
-    if (input.match(/foreign used|nigeria used|brand new|tokunbo/)) {
-        return formatResponse("I'd be happy to help! We have many vehicles in stock. Check out the 'Condition' filter on our vehicle page.");
+    if (input.match(/foreign used|nigeria used|brand new|tokunbo|local used|new/)) {
+      return formatResponse(
+        <span>
+          I'd be happy to help! We have many vehicles in stock. Check out our 
+          <button 
+            onClick={() => navigate('/vehicles?condition=Brand New')} 
+            className="text-red-600 underline font-bold mx-1"
+          >
+            brand new
+          </button>, 
+          <button 
+            onClick={() => navigate('/vehicles?condition=Foreign Used')} 
+            className="text-red-600 underline font-bold mx-1"
+          >
+            foreign used
+          </button>, and 
+          <button 
+            onClick={() => navigate('/vehicles?condition=Nigeria Used')} 
+            className="text-red-600 underline font-bold mx-1"
+          >
+            Nigeria used
+          </button> vehicles.
+        </span>,
+        "I'd be happy to help! We have many Brand New, Foreign Used, and Nigeria Used vehicles in stock."
+      );
     }
 
-    // CATEGORY SEARCH (Trucks, Vans, Motorcycles, Tricycles)
+    // CATEGORY SEARCH ( Cars, Trucks,Bus, Vans, Motorcycles, Tricycles)
     const categoryMatch = input.match(/truck|car|van|motorcycle|bike|tricycle|bus|keke|pickup/i);
 
     if (categoryMatch) {
@@ -228,7 +271,7 @@ const ChatWidget = () => {
             {foundVehicles.slice(0, 40).map(v => (
               <button 
                 key={v.id} 
-                onClick={() => navigate(`/vehicle/${v.id}`)} 
+                onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} 
                 className="text-red-700 underline block text-xs mt-2 font-semibold text-left"
               >
                 {v.name} - ₦{aiFormatPrice(v.price)} - {v.service}
@@ -264,10 +307,11 @@ const ChatWidget = () => {
         if (results.length > 0) {
           const exactMatch = results.find(v => modelName !== 'vehicle' && v.name.toLowerCase().includes(modelName.toLowerCase()));
           if (exactMatch) {
+            const exactSlug = exactMatch.name.replaceAll(' ', '-').toLowerCase();
             return formatResponse(
               <span>
                 Oh well, we have the <b>{exactMatch.name}</b> 
-                <button onClick={() => navigate(`/vehicle/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
+                <button onClick={() => navigate(`/vehicles/${exactSlug}/${exactMatch.id}`)} className="text-red-600 underline font-bold mx-1">
                   link here
                 </button> 
                 at ₦{aiFormatPrice(exactMatch.price)} ({exactMatch.service}).
@@ -278,8 +322,8 @@ const ChatWidget = () => {
           return formatResponse(
             <span>
               Based on your budget, check these out:
-              {results.slice(0, 10).map(v => (
-                <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 text-left">
+              {results.slice(0, 40).map(v => (
+                <button key={v.id} onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} className="text-red-600 underline block text-xs mt-1 text-left">
                   {v.name} at ₦{aiFormatPrice(v.price)} {v.service}
                 </button>
               ))}
@@ -296,8 +340,8 @@ const ChatWidget = () => {
             return formatResponse(
               <span>
                 I couldn't find a <b>{modelName}</b> under ₦{aiFormatPrice(budget)}, but here are other <b>{brandName.toUpperCase()}</b> deals in your range:
-                {brandCloseMatches.slice(0, 5).map(v => (
-                  <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-2 text-left font-semibold">
+                {brandCloseMatches.slice(0, 20).map(v => (
+                  <button key={v.id} onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} className="text-red-600 underline block text-xs mt-2 text-left font-semibold">
                     {v.name} at ₦{aiFormatPrice(v.price)}
                   </button>
                 ))}
@@ -316,7 +360,7 @@ const ChatWidget = () => {
 
     //MODEL FLOW: IF AWAITING MODEL NAME
     if (chatState.stage === 'awaiting_model') {
-      const isDeclining = input === 'no' || input === 'none' || input.includes('not really');
+      const isDeclining = input === 'no' || input === 'none' || input === 'not really' || input.includes('no I don't');
       // If user says "Toyota Camry", we strip the brand "Toyota" to get just the model "Camry"
       const modelClean = input.replace(chatState.tempBrand, '').trim();
       const modelName = isDeclining ? 'vehicle' : (modelClean || input);
@@ -385,7 +429,7 @@ const ChatWidget = () => {
             //  Create a safe string first
             const featureText = String(v.features || "High performance and verified condition.")
             return (
-              <button key={v.id} onClick={() => navigate(`/vehicle/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold text-left">
+              <button key={v.id} onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold text-left">
                 {v.name} - Features: {featureText.substring(0, 40)}...
               </button>
             );
@@ -394,7 +438,20 @@ const ChatWidget = () => {
         `We don't have that particular brand. I suggest checking out these alternatives: ${otherNames}.`
       );
     }
-    return formatResponse("Thank you for Choosing speedy today for any more information type 'hello' for more option.");
+    return formatResponse(
+      <span>
+        Thank you for choosing Speedy today! For more options, type <b>'hello'</b> or kindly help us by filling out this 
+        <a 
+          href="https://forms.gle/sEEdrwkZh77X9XQ78" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="text-red-600 underline font-semibold ml-1"
+        >
+          feedback form
+        </a>.
+      </span>,
+      "Thank you for choosing Speedy! Type 'hello' for more options or fill out our feedback form at: https://forms.gle/sEEdrwkZh77X9XQ78"
+    );
   };
 
   // HANDLE CLEAR CHAT IN THE UI 

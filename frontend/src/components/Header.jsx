@@ -9,6 +9,7 @@ import { PiVan } from "react-icons/pi";
 import { FiUserCheck } from "react-icons/fi";
 import { Button } from './ui/button';
 import { authAPI } from '../services/api';
+import { feedbackAPI } from '../services/api';
 import { toast } from 'sonner';
 
 const Header = () => {
@@ -100,7 +101,7 @@ const Header = () => {
       };
 
       // Ensure your api service has a 'post' method or use fetch/axios directly
-      await authAPI.post('/feedback', feedbackData); 
+      await feedbackAPI.post('/feedback', feedbackData); 
       
       toast.success(`Thanks for the ${num}-star rating!`);
     } catch (error) {

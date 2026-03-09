@@ -60,24 +60,40 @@ const VehiclesPage = () => {
   const [selectedCondition, setSelectedCondition] = useState('All Conditions');
   const [selectedType, setSelectedType] = useState('All Types');
   const [selectedService, setSelectedService] = useState('All Services');
+  const [selectedMake, setSelectedMake] = useState('all');
   
   const [priceRange, setPriceRange] = useState('all');
 
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
-    const typeFromUrl = searchParams.get('type');
+  const categoryFromUrl = searchParams.get('category');
+  const typeFromUrl = searchParams.get('type');
+  const conditionFromUrl = searchParams.get('condition'); // NEW
+  const makeFromUrl = searchParams.get('make');
 
-    if (categoryFromUrl) {
-      setSelectedCategory(categoryFromUrl);
-      setSelectedType('All Types'); // Reset type if category is specific
-    } else if (typeFromUrl) {
-      setSelectedType(typeFromUrl);
-      setSelectedCategory('all');
-    } else {
-      setSelectedCategory('all');
-      setSelectedType('All Types');
-    }
-  }, [searchParams]);
+  if (categoryFromUrl) {
+    setSelectedCategory(categoryFromUrl);
+  } else {
+    setSelectedCategory('all');
+  }
+
+  if (makeFromUrl) {
+    setSelectedMake(makeFromUrl.toLowerCase());
+  } else {
+    setSelectedMake('all');
+  }  
+    
+  if (typeFromUrl) {
+    setSelectedType(typeFromUrl);
+  } else {
+    setSelectedType('All Types');
+  }
+
+  if (conditionFromUrl) {
+    setSelectedCondition(conditionFromUrl);
+  } else {
+    setSelectedCondition('All Conditions');
+  }
+}, [searchParams]);
   
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -122,6 +138,38 @@ const VehiclesPage = () => {
     setSearchParams(searchParams);
   };
 
+
+  const handleMakeChange = (value) => {
+    setSelectedMake(value);
+    if (value === 'All Makes') {
+      searchParams.delete('make');
+    } else {
+      searchParams.set('make', value);
+    }
+    setSearchParams(searchParams);
+  };
+
+
+  const handleTypeChange = (value) => {
+    setSelectedType(value);
+    if (value === 'All Types') {
+      searchParams.delete('type');
+    } else {
+      searchParams.set('type', value);
+    }
+    setSearchParams(searchParams);
+  };
+
+ const handleConditionChange = (value) => {
+  setSelectedCondition(value);
+  if (value === 'All Conditions') {
+    searchParams.delete('condition');
+  } else {
+    searchParams.set('condition', value);
+  }
+  setSearchParams(searchParams);
+}; 
+
  const filteredVehicles = vehicles.filter((v) => {
     const matchesSearch = v.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || v.category === selectedCategory;
@@ -129,6 +177,7 @@ const VehiclesPage = () => {
     const matchesCondition = selectedCondition === 'All Conditions' || v.condition === selectedCondition;
     const matchesType = selectedType === 'All Types' || v.type?.toLowerCase() === selectedType.toLowerCase();
     const matchesService = selectedService === 'All Services' || v.service === selectedService;
+    const matchesMake = selectedMake === 'All Makes' || v.name.toLowerCase().startsWith(selectedMake);
     
     let matchesPrice = true;
     if (priceRange === 'under10') matchesPrice = v.price < 10000000;
@@ -213,7 +262,7 @@ const VehiclesPage = () => {
               </Select>
   
               {/* Condition Filter */}
-              <Select value={selectedCondition} onValueChange={setSelectedCondition}>
+              <Select value={selectedCondition} onValueChange={handleConditionChange}>
                 <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
                   <SelectValue placeholder="Condition" />
                 </SelectTrigger>
@@ -227,7 +276,7 @@ const VehiclesPage = () => {
               </Select>
               
               {/* Type Filter */}
-              <Select value={selectedType} onValueChange={setSelectedType}>
+              <Select value={selectedType} onValueChange={handleTypeChange}>
                 <SelectTrigger className="border-gray-300 focus:ring-2 focus:ring-red-500">
                   <SelectValue placeholder="Type" />
                 </SelectTrigger>
@@ -284,6 +333,7 @@ const VehiclesPage = () => {
                 setSelectedCondition('All Conditions');
                 setSelectedType('All Types');    
                 setSelectedService('All Services');
+                setSelectedMake('All Makes');
                 setPriceRange('all');
               }}
               className="text-red-600 hover:text-red-700 hover:bg-red-50"

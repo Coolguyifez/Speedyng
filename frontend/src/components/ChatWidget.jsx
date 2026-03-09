@@ -422,14 +422,18 @@ const ChatWidget = () => {
       const others = availableVehicles.slice(0, 30);
       const otherNames = others.map(v => v.name).join(", ");
       setChatState({ ...chatState, stage: 'suggesting_alternatives' });
+      
       return formatResponse(
         <span>
           We don't have that particular brand. I suggest these other brands we have:
-          {others.map(v => {
-            //  Create a safe string first
-            const featureText = String(v.features || "High performance and verified condition.")
+          {others.map((v) => {
+            const featureText = String(v.features || "High performance and verified condition.");
             return (
-              <button key={v.id} onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} className="text-red-600 underline block text-xs mt-1 font-semibold text-left">
+              <button 
+                key={v.id} 
+                onClick={() => navigate(`/vehicles/${getSlug(v.name)}/${v.id}`)} 
+                className="text-red-600 underline block text-xs mt-1 font-semibold text-left"
+              >
                 {v.name} - Features: {featureText.substring(0, 40)}...
               </button>
             );

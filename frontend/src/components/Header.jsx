@@ -87,7 +87,6 @@ const Header = () => {
       setShowRating(true);
     }, 400);
   };
-  };
 
   const handleRatingSubmit = async (num) => {
     setRating(num);

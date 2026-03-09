@@ -89,7 +89,7 @@ const Header = () => {
   };
   };
 
-  const handleRatingSubmit = (num) => {
+  const handleRatingSubmit = async (num) => {
     setRating(num);
     
     try {

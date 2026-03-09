@@ -60,9 +60,31 @@ const VehiclesPage = () => {
   const [selectedCondition, setSelectedCondition] = useState('All Conditions');
   const [selectedType, setSelectedType] = useState('All Types');
   const [selectedService, setSelectedService] = useState('All Services');
-  const [selectedMake, setSelectedMake] = useState('all');
+  const [selectedMake, setSelectedMake] = useState('All Makes');
   
   const [priceRange, setPriceRange] = useState('all');
+
+
+
+  const getDynamicLabel = () => {
+    // 1. If a Brand/Make is selected (most specific)
+    if (selectedMake !== 'All Makes') {
+      return selectedMake.charAt(0).toUpperCase() + selectedMake.slice(1);
+    }
+    
+    // 2. If a Category is selected (e.g., SUV, Sedan)
+    if (selectedCategory !== 'all') {
+      return selectedCategory;
+    }
+    
+    // 3. If a Type is selected (e.g., Truck, Van)
+    if (selectedType !== 'All Types') {
+      return selectedType;
+    }
+    
+    // 4. Default fallback
+    return "Vehicle";
+  };
 
   useEffect(() => {
   const categoryFromUrl = searchParams.get('category');
@@ -177,7 +199,7 @@ const VehiclesPage = () => {
     const matchesCondition = selectedCondition === 'All Conditions' || v.condition === selectedCondition;
     const matchesType = selectedType === 'All Types' || v.type?.toLowerCase() === selectedType.toLowerCase();
     const matchesService = selectedService === 'All Services' || v.service === selectedService;
-    const matchesMake = selectedMake === 'All Makes' || v.name.toLowerCase().startsWith(selectedMake);
+    const matchesMake = selectedMake === 'All Makes' || v.name.toLowerCase().includes(selectedMake.toLowerCase());
     
     let matchesPrice = true;
     if (priceRange === 'under10') matchesPrice = v.price < 10000000;
@@ -321,7 +343,7 @@ const VehiclesPage = () => {
 
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold text-gray-900">{filteredVehicles.length}</span> Vehicles
+              Showing <span className="font-semibold text-gray-900">{filteredVehicles.length}</span> {getDynamicLabel()}{filteredVehicles.length !== 1 ? '(s)' : ''}
             </p>
             <Button
               variant="ghost"

@@ -79,7 +79,6 @@ const Header = () => {
 
   const handleLogout = () => {
     authAPI.logout();
-    setUser(null);
     setShowRating(true); // Trigger the star rating overlay
     toast.success('Logged out successfully');
     
@@ -101,7 +100,7 @@ const Header = () => {
       };
 
       // Ensure your api service has a 'post' method or use fetch/axios directly
-      await feedbackAPI.post('/feedback', feedbackData); 
+      await feedbackAPI.submitRating(feedbackData); 
       
       toast.success(`Thanks for the ${num}-star rating!`);
     } catch (error) {

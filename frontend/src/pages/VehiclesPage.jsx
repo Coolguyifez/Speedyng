@@ -343,7 +343,7 @@ const VehiclesPage = () => {
 
           <div className="mt-4 flex items-center justify-between">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-semibold text-gray-900">{filteredVehicles.length}</span> {getDynamicLabel()}{filteredVehicles.length !== 1 ? '(s)' : ''}
+              Showing <span className="font-semibold text-gray-900">{filteredVehicles.length}</span> {getDynamicLabel()}{filteredVehicles.length !== 1 ? 's' : ''}
             </p>
             <Button
               variant="ghost"

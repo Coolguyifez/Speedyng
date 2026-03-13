@@ -177,7 +177,12 @@ const ChatWidget = () => {
     }
 
     if (input.match(/location|where|office|address/)) {
-      return formatResponse("Our main offices are in Benin and Warri, but we are available nationwide! Check our contact page for more information.");
+      return formatResponse(
+        <span>
+          Our main offices are in Benin and Warri, but we are available nationwide! Check our <button onClick={() => navigate(`/contact`)} className="text-red-600 underline font-bold mx-1">Contact</button> page for more information.
+        </span>,
+        "Our main offices are in Benin and Warri, but we are available nationwide! Check our Contact page for more information."
+      );
     }
 
     if (input.match(/inspect|see the|check the/)) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
+import { GiPadlockOpen } from "react-icons/gi";
 import { toast } from 'sonner';
 import { authAPI } from '../services/api';
 
@@ -45,7 +46,7 @@ const ForgotPassword = () => {
           <>
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Mail className="w-8 h-8 text-red-600" />
+                <GiPadlockOpen className="w-8 h-8 text-red-600" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900">Forgot Password?</h1>
               <p className="text-gray-600 mt-2">No worries! Enter your email and we'll send you a reset link.</p>

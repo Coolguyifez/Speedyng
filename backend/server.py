@@ -672,7 +672,7 @@ async def get_chat_history(
 # -------------------- Final Setup --------------------
 app.include_router(api_router, prefix="/api")
 
-BUILD_DIR = os.path.join(os.getcwd(), "frontend", "dist")
+BUILD_DIR = os.path.join(os.getcwd(), "frontend", "build")
 if os.path.exists(os.path.join(BUILD_DIR, "assets")):
     app.mount("/assets", StaticFiles(directory=os.path.join(BUILD_DIR, "assets")), name="assets")
 

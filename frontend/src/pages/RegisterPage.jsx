@@ -36,7 +36,7 @@ const RegisterPage = () => {
   console.log("Memory Saved:", from);
    
   // Use the same callback routes as Login to keep things simple
-  const REDIRECT_BASE = "https://speedy-backend-fb9s.onrender.com/api/auth";
+  const REDIRECT_BASE = https://speedy-backend-3lq9.onrender.com/api/auth";
   const redirectUri = `${REDIRECT_BASE}/${provider.toLowerCase()}/callback`;
   
   const configs = {

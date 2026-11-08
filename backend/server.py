@@ -42,7 +42,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://speedy-bsvq.onrender.com",
-        "https://speedy-backend-fb9s.onrender.com",
+        "https://speedy-backend-3lq9.onrender.com",
         "http://localhost:3000", # Common for React local dev
         "http://localhost:5173"  # Common for Vite local dev
     ],
